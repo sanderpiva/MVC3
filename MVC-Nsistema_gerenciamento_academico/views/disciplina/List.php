@@ -40,7 +40,7 @@ $error = isset($_GET['erros']) ? htmlspecialchars($_GET['erros']) : '';
 </head>
 <body class="servicos_forms">
 
-    <h2>Consulta Disciplina</h2>
+    <h2>Lista de Disciplina</h2>
 
     <?php if ($message): ?>
         <p style="color: green;"><?= $message ?></p>

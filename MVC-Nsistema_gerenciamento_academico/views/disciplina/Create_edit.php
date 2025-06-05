@@ -80,12 +80,9 @@ $isUpdating = isset($disciplinaData['id_disciplina']) && !empty($disciplinaData[
             <button type="submit"><?= $isUpdating ? 'Atualizar' : 'Cadastrar'; ?></button>
         </form>
 
-        <hr>
-        <?php if ($isUpdating): ?>
-            <a href="index.php?controller=disciplina&action=list">Voltar à lista</a>
-        <?php else: ?>
-            <a href="index.php?controller=professor&action=showServicesPage">Serviços</a> <?php endif; ?>
     </div>
+    <a href="index.php?controller=professor&action=showServicesPage">Serviços</a>
+    <hr>
 </body>
 <footer>
     <p>Desenvolvido por Juliana e Sander</p>

@@ -50,7 +50,8 @@ if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true || $_SESSION['ti
                 <td>
                     <a href="index.php?controller=turma&action=showEditForm&id=<?= $turma['id_turma'] ?>">Editar</a>
                     
-                    <a href="index.php?controller=turma&action=delete&id=<?= $turma['id_turma'] ?>" onclick="return confirm('Tem certeza ? id = ' + '<?= $turma['id_turma'] ?>');">Excluir</a>
+                    <a href="index.php?controller=turma&action=delete&id=<?= $turma['id_turma'] ?>" onclick="return confirm('Tem certeza ? id = ' + '<?= $turma['id_turma'] ?>');">Excluir</a>       
+                
                 </td>
             </tr>
         <?php endforeach; ?>
@@ -58,9 +59,12 @@ if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true || $_SESSION['ti
 </table>
 
 <br>
-<a href="index.php?controller=professor&action=showServicesPage">Servicos</a>
-<br>
+<a href="index.php?controller=professor&action=showServicesPage">Voltar ao Serviços</a>
+<br><hr>
 <a href="index.php?controller=auth&action=logout" style="margin-left:20px;">Logout →</a>
 
 </body>
+<footer>
+    <p>Desenvolvido por Juliana e Sander</p>
+</footer>
 </html>

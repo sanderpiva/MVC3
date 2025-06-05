@@ -1,6 +1,8 @@
 <?php
 // app/Models/ConteudoModel.php
 
+require_once "config/conexao.php";
+
 class ConteudoModel {
     private $db;
 
@@ -51,7 +53,7 @@ class ConteudoModel {
 
     // models/Conteudo_model.php
     public function getConteudoById($id) {
-        $stmt = $this->conexao->prepare("SELECT c.*, d.nome AS nomeDisciplina, d.codigoDisciplina, d.Professor_id_professor
+        $stmt = $this->db->prepare("SELECT c.*, d.nome AS nomeDisciplina, d.codigoDisciplina, d.Professor_id_professor
                                    FROM conteudo c
                                    JOIN disciplina d ON c.Disciplina_id_disciplina = d.id_disciplina
                                    WHERE c.id_conteudo = :id");

@@ -11,10 +11,10 @@ $isUpdating = isset($provaData['id_prova']) && !empty($provaData['id_prova']);
     <title><?= $isUpdating ? 'Atualizar' : 'Cadastrar'; ?> Prova</title>
     <link rel="stylesheet" href="public/css/style.css">
 </head>
-<body>
+<body class="servicos_forms">
     <div class="form_container">
-        <form action="index.php?controller=prova&action=<?= $isUpdating ? 'handleUpdatePost' : 'handleCreatePost'; ?>" method="post">
-            <h2><?= $isUpdating ? 'Atualizar' : 'Cadastrar'; ?> Prova</h2>
+        <form class="form" action="<?= $isUpdating ? 'index.php?controller=prova&action=update' : 'index.php?controller=prova&action=create'; ?>" method="post">
+            <h2>Formulário: <?= $isUpdating ? 'Atualizar' : 'Cadastrar'; ?> Prova</h2>
 
             <label for="codigoProva">Código da prova:</label>
             <?php if ($isUpdating): ?>
@@ -29,13 +29,10 @@ $isUpdating = isset($provaData['id_prova']) && !empty($provaData['id_prova']);
             <input type="text" name="tipo_prova" id="tipo_prova" placeholder="Digite tipo de prova" value="<?php echo htmlspecialchars($provaData['tipo_prova'] ?? ''); ?>" required>
             <hr>
 
-            <label for="disciplina_text">Nome disciplina (texto avulso):</label>
-            <input type="text" name="disciplina_text" id="disciplina_text" placeholder="Digite nome da disciplina" value="<?php echo htmlspecialchars($provaData['disciplina'] ?? ''); ?>" required>
+            <label for="disciplina">Nome disciplina:</label>
+            <input type="text" name="disciplina" id="disciplina" placeholder="Digite tipo de prova" value="<?php echo htmlspecialchars($provaData['disciplina'] ?? ''); ?>" required>
             <hr>
 
-            <label for="nome_professor_text">Nome professor (texto avulso):</label>
-            <input type="text" name="nome_professor_text" id="nome_professor_text" placeholder="Digite nome professor" value="<?php echo htmlspecialchars($provaData['professor'] ?? ''); ?>" required>
-            <hr>
             <label for="conteudo">Conteúdo de prova:</label>
             <input type="text" name="conteudo" id="conteudo" placeholder="Digite conteudo" value="<?php echo htmlspecialchars($provaData['conteudo'] ?? ''); ?>" required>
             <hr>
@@ -44,11 +41,15 @@ $isUpdating = isset($provaData['id_prova']) && !empty($provaData['id_prova']);
             <input type="date" name="data_prova" id="data_prova" placeholder="Digite a data" value="<?php echo htmlspecialchars($provaData['data_prova'] ?? ''); ?>" required>
             <hr>
 
+            <label for="nome_professor">Nome professor:</label>
+            <input type="text" name="nome_professor" id="nome_professor" placeholder="Digite nome professor" value="<?php echo htmlspecialchars($provaData['professor'] ?? ''); ?>" required>
+            <hr>
 
             <label for="id_disciplina">Código disciplina:</label>
             <?php if ($isUpdating): ?>
-                <input type="text" value="<?php echo htmlspecialchars($provaData['codigo_disciplina'] ?? 'N/A'); ?>" readonly required>
+                <input type="text" value="<?php echo htmlspecialchars($provaData['codigoDisciplina'] ?? 'N/A'); ?>" readonly required>
                 <input type="hidden" name="id_disciplina" value="<?php echo htmlspecialchars($provaData['Disciplina_id_disciplina'] ?? ''); ?>">
+            
             <?php else: ?>
                 <select name="id_disciplina" required>
                     <option value="">Selecione codigo disciplina</option>
@@ -63,8 +64,11 @@ $isUpdating = isset($provaData['id_prova']) && !empty($provaData['id_prova']);
 
             <label for="id_professor">Registro do Professor:</label>
             <?php if ($isUpdating): ?>
-                <input type="text" value="<?php echo htmlspecialchars($provaData['nome_professor'] ?? 'N/A'); ?>" readonly required>
-                <input type="hidden" name="id_professor" value="<?php echo htmlspecialchars($provaData['Professor_id_professor'] ?? ''); ?>">
+                <!-- Mostra o nome do professor como texto -->
+                <input type="text" value="<?php echo htmlspecialchars($provaData['professor'] ?? 'N/A'); ?>" readonly required>
+    
+                <!-- Passa o ID ocultamente -->
+                <input type="hidden" name="id_professor" value="<?php echo htmlspecialchars($provaData['Disciplina_Professor_id_professor'] ?? ''); ?>">
             <?php else: ?>
                 <select name="id_professor" required>
                     <option value="">Selecione um professor</option>

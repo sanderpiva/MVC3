@@ -48,6 +48,7 @@ class Prova_controller {
         $disciplinas = $this->disciplinaModel->getAllDisciplinas();
         $professores = $this->professorModel->getAllProfessores();
         
+        include __DIR__ . '/../views/prova/Create_edit.php';
     }
 
     public function handleCreatePost($postData) {
@@ -118,5 +119,20 @@ class Prova_controller {
         }
         return $errors;
     }
+
+    public function update($id) {
+        if (isset($id)) {
+            $turma = $this->provaModel->getDisciplinaById($id);
+            if ($turma) {
+                include __DIR__ . '/../views/prova/Create_edit.php';
+            } else {
+                displayErrorPage("Prova não encontrada para edição.", 'index.php?controller=prova&action=list');
+            }
+        } else {
+            displayErrorPage("ID da prova não especificado para edição.", 'index.php?controller=prova&action=list');
+        }
+    }
+
+    
 }
 ?>

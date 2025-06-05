@@ -33,7 +33,7 @@ $error = isset($_GET['erros']) ? htmlspecialchars($_GET['erros']) : '';
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Lista Questões Prova</title>
+    <title>Lista de Questões Prova</title>
     <link rel="stylesheet" href="public/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
               integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
@@ -41,7 +41,7 @@ $error = isset($_GET['erros']) ? htmlspecialchars($_GET['erros']) : '';
 </head>
 <body class="servicos_forms">
 
-    <h2>Consulta Questões Prova</h2>
+    <h2>Lista de Questões Prova</h2>
 
     <?php if ($message): ?>
         <p style="color: green;"><?= $message ?></p>

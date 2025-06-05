@@ -8,25 +8,11 @@ $isUpdating = isset($conteudoData['id_conteudo']) && !empty($conteudoData['id_co
 $disciplinas = $disciplinas ?? [];
 $errors = $errors ?? [];
 
-// Variáveis que DEVEM ser passadas do Conteudo_controller para esta view:
-// Se $isUpdating for true:
-//    $conteudoData (com id_conteudo, codigoConteudo, titulo, descricao, data_postagem, professor, tipo_conteudo, Disciplina_id_disciplina, nomeDisciplina)
-//    $nomeDisciplinaAtual
-// Se $isUpdating for false:
-//    $disciplinas (lista de todas as disciplinas com id_disciplina, codigoDisciplina, nome, Professor_id_professor)
-//    $professorsLookup (array associativo [id_professor => nome_professor])
-
-// Inicializa $nomeDisciplinaAtual e $professorsLookup para evitar "Undefined variable" se não vierem do controller
 $nomeDisciplinaAtual = $nomeDisciplinaAtual ?? '';
 $professorsLookup = $professorsLookup ?? [];
 
 // Determina qual disciplina deve ser pré-selecionada no dropdown (para o caso de erro de validação no POST ou criação)
 $selectedDisciplinaId = $conteudoData['Disciplina_id_disciplina'] ?? ($_POST['id_disciplina'] ?? '');
-
-// Para os campos "professor" e "disciplina" que no código antigo eram texto livre (agora são FK)
-// Se 'professor' na tabela conteudo for uma FK para id_professor, você precisaria de um select para professores aqui,
-// similar ao de disciplinas. Pelo seu código antigo, parecia ser um texto livre.
-// Para 'disciplina' (nome), você está usando a FK 'id_disciplina' para selecionar.
 
 ?>
 <!DOCTYPE html>
@@ -38,8 +24,8 @@ $selectedDisciplinaId = $conteudoData['Disciplina_id_disciplina'] ?? ($_POST['id
     </head>
 <body class="servicos_forms">
     <div class="form_container">
-        <form action="index.php?controller=conteudo&action=<?= $isUpdating ? 'handleUpdatePost' : 'handleCreatePost'; ?>" method="post">
-            <h2><?= $isUpdating ? 'Atualizar' : 'Cadastrar'; ?> Conteúdo</h2>
+        <form class="form" action="index.php?controller=conteudo&action=<?= $isUpdating ? 'handleUpdatePost' : 'handleCreatePost'; ?>" method="post">
+            <h2>Formulário: <?= $isUpdating ? 'Atualizar' : 'Cadastrar'; ?> Conteúdo</h2>
 
             <?php if (!empty($errors)): ?>
                 <div class="errors" style="color: red;">
@@ -54,31 +40,31 @@ $selectedDisciplinaId = $conteudoData['Disciplina_id_disciplina'] ?? ($_POST['id
                 <input type="hidden" name="id_conteudo" value="<?= htmlspecialchars($conteudoData['id_conteudo'] ?? '') ?>">
             <?php endif; ?>
 
-            <label for="codigoConteudo">Código do Conteúdo:</label>
+            <label for="codigoConteudo">Código do Conteúdo:</label><br>
             <input type="text" name="codigoConteudo" id="codigoConteudo" placeholder="Digite o código" value="<?= htmlspecialchars($conteudoData['codigoConteudo'] ?? $_POST['codigoConteudo'] ?? '') ?>" required>
             <hr>
 
-            <label for="titulo">Título do Conteúdo:</label>
+            <label for="titulo">Título do Conteúdo:</label><br>
             <input type="text" name="titulo" id="titulo" placeholder="Digite o título" value="<?= htmlspecialchars($conteudoData['titulo'] ?? $_POST['titulo'] ?? '') ?>" required>
             <hr>
 
-            <label for="descricao">Descrição do Conteúdo:</label>
+            <label for="descricao">Descrição do Conteúdo:</label><br>
             <textarea name="descricao" id="descricao" placeholder="Digite a descrição" required><?= htmlspecialchars($conteudoData['descricao'] ?? $_POST['descricao'] ?? '') ?></textarea>
             <hr>
 
-            <label for="data_postagem">Data de Postagem:</label>
+            <label for="data_postagem">Data de Postagem:</label><br>    
             <input type="date" name="data_postagem" id="data_postagem" value="<?= htmlspecialchars($conteudoData['data_postagem'] ?? $_POST['data_postagem'] ?? '') ?>" required>
             <hr>
 
-            <label for="professor">Professor (Nome/Texto Livre):</label>
+            <label for="professor">Professor:</label><br>
             <input type="text" name="professor" id="professor" placeholder="Digite o nome do professor" value="<?= htmlspecialchars($conteudoData['professor'] ?? $_POST['professor'] ?? '') ?>" required>
             <hr>
 
-            <label for="tipo_conteudo">Tipo de Conteúdo:</label>
+            <label for="tipo_conteudo">Tipo de Conteúdo:</label><br>
             <input type="text" name="tipo_conteudo" id="tipo_conteudo" placeholder="Ex: Artigo, Vídeo, Material de Apoio" value="<?= htmlspecialchars($conteudoData['tipo_conteudo'] ?? $_POST['tipo_conteudo'] ?? '') ?>" required>
             <hr>
 
-            <label for="id_disciplina">Código da disciplina:</label>
+            <label for="id_disciplina">Código da disciplina:</label><br>
             <?php if ($isUpdating): ?>
                 <input type="text" value="<?= htmlspecialchars($nomeDisciplinaAtual) ?>" readonly required>
                 <input type="hidden" name="id_disciplina" value="<?= htmlspecialchars($conteudoData['Disciplina_id_disciplina'] ?? '') ?>">

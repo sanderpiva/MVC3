@@ -1,8 +1,5 @@
 <?php
-// app/Views/QuestaoProva/Create_edit.php
 
-// The controller should pass $questaoProvaData (null for new, object for edit),
-// $professores, $disciplinas, $provas, $errors, and lookup variables if needed
 $isUpdating = isset($questaoProvaData['id_questao']) && !empty($questaoProvaData['id_questao']);
 ?>
 <!DOCTYPE html>
@@ -15,7 +12,9 @@ $isUpdating = isset($questaoProvaData['id_questao']) && !empty($questaoProvaData
 <body class="servicos_forms">
 
     <div class="form_container">
-        <form class="form" action="index.php?controller=questao_prova&action=handlePost" method="post">
+        
+    
+        <form class="form" action="<?= $isUpdating ? 'index.php?controller=questoes&action=update' : 'index.php?controller=questoes&action=create'; ?>" method="post">
             <h2>Formulário: <?= $isUpdating ? 'Atualizar' : 'Cadastro'; ?> Questão Prova</h2>
             <hr>
 

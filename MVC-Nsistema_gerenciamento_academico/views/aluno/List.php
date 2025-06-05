@@ -33,7 +33,7 @@ if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true || $_SESSION['ti
 </head>
 <body class="servicos_forms">
 
-    <h2>Consulta Aluno</h2>
+    <h2>Lista de Aluno</h2>
 
     <?php if (isset($_GET['message'])): ?>
         <p style="color: green;"><?= htmlspecialchars($_GET['message']) ?></p>

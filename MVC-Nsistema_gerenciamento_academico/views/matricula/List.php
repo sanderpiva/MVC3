@@ -35,7 +35,7 @@ if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true || $_SESSION['ti
 </head>
 <body class="servicos_forms">
 
-    <h2>Consulta Matrícula</h2>
+    <h2>Lista de Matrícula</h2>
 
     <?php
         // Display messages/errors passed from the controller

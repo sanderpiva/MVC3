@@ -1,22 +1,6 @@
 <?php
 
-//Nao funciona o session e nao tem segurança
-// Inicia a sessão apenas se nenhuma estiver ativa
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-// Verifica se o logout foi solicitado antes de qualquer outra ação
-if (isset($_GET['logout']) && $_GET['logout'] == 'true') {
-    header("Location: index.php?controller=auth&action=logout");
-    exit();
-}
-
-// Verifica se o usuário está logado e se é um professor antes de exibir a página
-if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true || $_SESSION['tipo_usuario'] !== 'professor') {
-    header("Location: index.php?controller=auth&action=showLoginForm"); // Corrigido para o controlador certo
-    exit();
-}
+    $isUpdating = isset($respostasData['id_resposta']) && !empty($respostasData['id_resposta']);
 
 ?>
 
@@ -30,7 +14,7 @@ if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true || $_SESSION['ti
 <body class="servicos_forms">
 
     <div class="form_container">
-        <form class="form" action="index.php?controller=resposta&action=<?= isset($isUpdating) && $isUpdating ? 'update' : 'create'; ?>" method="post">
+        <form class="form" action="<?= $isUpdating ? 'index.php?controller=respostas&action=update' : 'index.php?controller=repostas&action=create'; ?>" method="post">
             <h2>Formulário: <?= isset($isUpdating) && $isUpdating ? 'Atualizar' : 'Cadastro'; ?> Respostas</h2>
             <hr>
 
