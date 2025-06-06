@@ -15,12 +15,6 @@ class Disciplina_controller {
         $this->conexao = $conexao;
         $this->disciplinaModel = new DisciplinaModel($this->conexao);
 
-        // Session check - essential for protected routes
-        /*
-        if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true || $_SESSION['tipo_usuario'] !== 'professor') {
-            redirect('../../../index.php'); // Adjust path to your login page
-            exit();
-        }*/
     }
 
     public function list() {
@@ -125,17 +119,22 @@ class Disciplina_controller {
             displayErrorPage("Erro ao atualizar disciplina.", 'index.php?controller=disciplina&action=showEditForm&id=' . $postData['id_disciplina']);
         }
     }
-
+    
     public function delete($id) {
-        if (!isset($id)) {
-            displayErrorPage("ID da disciplina não especificado para exclusão.", 'index.php?controller=disciplina&action=list');
+        
+        if (!isset($id) || !is_numeric($id)) {
+            displayErrorPage("ID da disciplina não especificado.", 'index.php?controller=disciplina&action=list');
             return;
         }
 
-        if ($this->disciplinaModel->deleteDisciplina($id)) {
+        try {
+            if ($this->disciplinaModel->deleteDisciplina($id)) {
             redirect('index.php?controller=disciplina&action=list&message=' . urlencode("Disciplina excluída com sucesso!"));
-        } else {
-            displayErrorPage("Erro ao excluir disciplina.", 'index.php?controller=disciplina&action=list');
+            } else {
+            displayErrorPage("Erro ao excluir disciplinaa.", 'index.php?controller=disciplina&action=list');
+            }
+        } catch (PDOException $e) {
+            displayErrorPage("Erro de banco de dados ao excluir disciplina: " . $e->getMessage(), 'index.php?controller=disciplina&action=list');
         }
     }
 
@@ -176,8 +175,6 @@ class Disciplina_controller {
             $errors[] = "Erro: campo 'Semestre/Período' deve ter entre 3 e 20 caracteres.";
         }
         
-        // You might want to add more robust validation for Professor_id_professor and Turma_id_turma
-        // e.g., checking if the IDs actually exist in their respective tables.
 
         return $errors;
     }

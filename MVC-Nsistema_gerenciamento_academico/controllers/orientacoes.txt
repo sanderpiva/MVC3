@@ -14,10 +14,10 @@ eh possivel listar corretamente. as demais funçoes do CRUD nao!
 //4 junho 2025
 //total: 9
 
-insere: aluno, professor, disciplina, turma, matricula
+insere: aluno, professor, disciplina, turma, matricula, prova
 lista: turma, disciplina, matricula, aluno, professor, prova
 questoes, conteudo (falta respostas)
-update: turma, disciplina
+update: turma, disciplina, questoes, prova, conteudo
 delete: turma, aluno, professor, questoes, prova, conteudo
 
 
@@ -27,8 +27,12 @@ tente Questoes, na atualização
 na inserção, pode ser qualquer outro
 
 
-Update: Falta 7, a maioria com erros, outros nao carregam dados
-Insert: Falta 4
+Update: Falta 4, a maioria com erros, outros nao carregam dados
+(aluno, professor, respostas, matricula)
+
+Insert: Falta 3 (questoes, respostas, conteudo)
+
 List: OK
-Delete: Falta 3
+Delete: Falta 2
+(respostas, matricula)
 //Problemas de formatação no Conteudo e Prova

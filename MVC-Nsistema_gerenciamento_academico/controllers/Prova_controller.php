@@ -55,7 +55,7 @@ class Prova_controller {
         if (isset($id)) {
             $prova = $this->provaModel->getProvaById($id);
             if ($prova) {
-                include __DIR__ . '/../views/provaa/Create_edit.php';
+                include __DIR__ . '/../views/prova/Create_edit.php';
             } else {
                 displayErrorPage("Prova não encontrada para edição.", 'index.php?controller=prova&action=list');
             }
@@ -120,17 +120,45 @@ class Prova_controller {
 
 
     private function validateProvaData($data) {
-        $errors = [];
-        if (empty($data['titulo']) || strlen($data['titulo']) < 5) {
-            $errors[] = "O título deve ter pelo menos 5 caracteres.";
+        $erros = "";
+        //var_dump($_POST);
+
+        if (
+            empty($_POST["codigoProva"]) ||
+            empty($_POST["tipo_prova"]) ||
+            empty($_POST["disciplina"]) ||
+            empty($_POST["conteudo"]) ||
+            empty($_POST["data_prova"]) ||
+            empty($_POST["nome_professor"]) ||
+            empty($_POST["id_disciplina"]) ||
+            empty($_POST["id_professor"]) 
+            
+        ) {
+            $erros .= "Todos os campos devem ser preenchidos.<br>";
         }
-        if (empty($data['descricao']) || strlen($data['descricao']) < 10) {
-            $errors[] = "A descrição deve ter pelo menos 10 caracteres.";
+
+        if (strlen($_POST["codigoProva"]) < 3 || strlen($_POST["codigoProva"]) > 20) {
+            $erros .= "Erro: campo 'Código da Prova' deve ter entre 3 e 20 caracteres.<br>";
         }
-        if (empty($data['data_prova'])) {
-            $errors[] = "A data da prova é obrigatória.";
+
+        if (strlen($_POST["tipo_prova"]) < 3 || strlen($_POST["tipo_prova"]) > 30) {
+            $erros .= "Erro: campo 'Tipo de Prova' deve ter entre 3 e 30 caracteres.<br>";
         }
-        return $errors;
+
+        if (strlen($_POST["disciplina"]) < 3 || strlen($_POST["disciplina"]) > 20) {
+            $erros .= "Erro: campo 'Disciplina' deve ter entre 3 e 20 caracteres.<br>";
+        }
+
+        if (strlen($_POST["conteudo"]) < 30 || strlen($_POST["conteudo"]) > 300) {
+            $erros .= "Erro: campo 'Conteúdo da Prova' deve ter entre 30 e 300 caracteres.<br>";
+        }
+
+
+        if (strlen($_POST["nome_professor"]) < 5 || strlen($_POST["nome_professor"]) > 20) {
+            $erros .= "Erro: campo 'Professor' deve ter entre 5 e 20 caracteres.<br>";
+        }
+
+
     }
 
     public function update($id) {

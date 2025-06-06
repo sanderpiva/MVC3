@@ -57,13 +57,31 @@ class ProvaModel {
 
 
     public function createProva($data) {
-        $sql = "INSERT INTO prova (titulo, descricao, data_prova) VALUES (:titulo, :descricao, :data_prova)";
-        $stmt = $this->db->prepare($sql);
+        //$sql = "INSERT INTO prova (titulo, descricao, data_prova) VALUES (:titulo, :descricao, :data_prova)";
+        //$stmt = $this->db->prepare($sql);
+        /*
         return $stmt->execute([
             ':titulo' => $data['titulo'],
             ':descricao' => $data['descricao'],
             ':data_prova' => $data['data_prova']
+        ]);*/
+
+
+        $sql = "INSERT INTO prova (codigoProva, tipo_prova, disciplina, conteudo, data_prova, professor, Disciplina_id_disciplina, Disciplina_Professor_id_professor)
+                VALUES (:codigo, :tipo, :disciplina, :conteudo, :data, :professor_nome, :id_disciplina, :id_professor)";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([
+            ':codigo' => $data['codigoProva'],
+            ':tipo' => $data['tipo_prova'],
+            ':disciplina' => $data['disciplina'],
+            ':conteudo' => $data['conteudo'],
+            ':data' => $data['data_prova'],
+            ':professor_nome' => $data['nome_professor'],
+            ':id_disciplina' => $data['id_disciplina'],
+            ':id_professor' => $data['id_professor']
+            
         ]);
+
     }
 
     /*
@@ -99,7 +117,7 @@ class ProvaModel {
             ':disciplina' => $data['disciplina'],
             ':conteudo' => $data['conteudo'],
             ':data_prova' => $data['data_prova'],
-            ':professor' => $data['professor'],
+            ':professor' => $data['nome_professor'],
             ':id_prova' => $data['id_prova'],
             ':Disciplina_id_disciplina' => $data['id_disciplina'],
             ':Disciplina_Professor_id_professor' => $data['id_professor']

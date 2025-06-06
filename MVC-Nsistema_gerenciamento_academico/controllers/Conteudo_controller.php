@@ -127,6 +127,21 @@ class Conteudo_controller {
     /**
      * Lida com a requisição POST para criar um novo conteúdo.
      */
+
+    public function create($id) {
+        if (isset($id)) {
+            $conteudo = $this->conteudoModel->getConteudoById($id);
+            if ($conteudo) {
+                include __DIR__ . '/../views/conteudo/Create_edit.php';
+            } else {
+                displayErrorPage("Conteudo não encontrado para edição.", 'index.php?controller=conteudo&action=list');
+            }
+        } else {
+            displayErrorPage("ID da conteudo não especificado para edição.", 'index.php?controller=conteudo&action=list');
+        }
+    }
+
+
     public function handleCreatePost($postData) {
         $errors = $this->validateConteudoData($postData);
         if (!empty($errors)) {
