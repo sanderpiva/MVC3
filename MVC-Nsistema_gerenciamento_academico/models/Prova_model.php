@@ -85,7 +85,10 @@ class ProvaModel {
                     disciplina = :disciplina,
                     conteudo = :conteudo,
                     data_prova = :data_prova,
-                    professor = :professor
+                    professor = :professor,
+                    Disciplina_id_disciplina = :Disciplina_id_disciplina,
+                    Disciplina_Professor_id_professor = :Disciplina_Professor_id_professor
+
                 WHERE id_prova = :id_prova";
         
         $stmt = $this->db->prepare($sql);
@@ -97,7 +100,10 @@ class ProvaModel {
             ':conteudo' => $data['conteudo'],
             ':data_prova' => $data['data_prova'],
             ':professor' => $data['professor'],
-            ':id_prova' => $data['id_prova']
+            ':id_prova' => $data['id_prova'],
+            ':Disciplina_id_disciplina' => $data['id_disciplina'],
+            ':Disciplina_Professor_id_professor' => $data['id_professor']
+            
         ]);
     }
 

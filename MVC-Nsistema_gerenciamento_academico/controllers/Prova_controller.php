@@ -51,6 +51,19 @@ class Prova_controller {
         include __DIR__ . '/../views/prova/Create_edit.php';
     }
 
+    public function create($id) {
+        if (isset($id)) {
+            $prova = $this->provaModel->getProvaById($id);
+            if ($prova) {
+                include __DIR__ . '/../views/provaa/Create_edit.php';
+            } else {
+                displayErrorPage("Prova não encontrada para edição.", 'index.php?controller=prova&action=list');
+            }
+        } else {
+            displayErrorPage("ID da prova não especificado para edição.", 'index.php?controller=prova&action=list');
+        }
+    }
+
     public function handleCreatePost($postData) {
         $errors = $this->validateProvaData($postData);
         if (!empty($errors)) {
@@ -122,8 +135,8 @@ class Prova_controller {
 
     public function update($id) {
         if (isset($id)) {
-            $turma = $this->provaModel->getDisciplinaById($id);
-            if ($turma) {
+            $prova = $this->provaModel->getProvaById($id);
+            if ($prova) {
                 include __DIR__ . '/../views/prova/Create_edit.php';
             } else {
                 displayErrorPage("Prova não encontrada para edição.", 'index.php?controller=prova&action=list');

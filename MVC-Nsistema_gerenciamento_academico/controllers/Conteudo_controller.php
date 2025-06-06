@@ -144,6 +144,19 @@ class Conteudo_controller {
         }
     }
 
+    public function update($id) {
+        if (isset($id)) {
+            $conteudo = $this->conteudoModel->getConteudoById($id);
+            if ($conteudo) {
+                include __DIR__ . '/../views/conteudo/Create_edit.php';
+            } else {
+                displayErrorPage("Conteudo não encontrada para edição.", 'index.php?controller=conteudo&action=list');
+            }
+        } else {
+            displayErrorPage("ID da conteudo não especificado para edição.", 'index.php?controller=conteudo&action=list');
+        }
+    }
+
     /**
      * Lida com a requisição POST para atualizar um conteúdo existente.
      */

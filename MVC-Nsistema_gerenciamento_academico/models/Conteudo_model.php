@@ -100,7 +100,9 @@ class ConteudoModel {
                     descricao = :descricao,
                     data_postagem = :data_postagem,
                     Disciplina_id_disciplina = :id_disciplina,
-                    tipo_conteudo = :tipo_conteudo
+                    tipo_conteudo = :tipo_conteudo,
+                    professor = :professor,
+                    disciplina = :disciplina
                 WHERE id_conteudo = :id_conteudo";
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([
@@ -110,7 +112,9 @@ class ConteudoModel {
             ':data_postagem' => $data['data_postagem'],
             ':id_disciplina' => $data['id_disciplina'],
             ':tipo_conteudo' => $data['tipo_conteudo'],
-            ':id_conteudo' => $data['id_conteudo']
+            ':id_conteudo' => $data['id_conteudo'],
+            ':professor' => $data['professor'],
+            ':disciplina' => $data['disciplina']
         ]);
     }
 

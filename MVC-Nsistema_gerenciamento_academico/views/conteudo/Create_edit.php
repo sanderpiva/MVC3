@@ -24,7 +24,7 @@ $selectedDisciplinaId = $conteudoData['Disciplina_id_disciplina'] ?? ($_POST['id
     </head>
 <body class="servicos_forms">
     <div class="form_container">
-        <form class="form" action="index.php?controller=conteudo&action=<?= $isUpdating ? 'handleUpdatePost' : 'handleCreatePost'; ?>" method="post">
+        <form class="form" action="<?= $isUpdating ? 'index.php?controller=conteudo&action=update' : 'index.php?controller=conteudo&action=create'; ?>" method="post">
             <h2>Formulário: <?= $isUpdating ? 'Atualizar' : 'Cadastrar'; ?> Conteúdo</h2>
 
             <?php if (!empty($errors)): ?>
@@ -64,9 +64,9 @@ $selectedDisciplinaId = $conteudoData['Disciplina_id_disciplina'] ?? ($_POST['id
             <input type="text" name="tipo_conteudo" id="tipo_conteudo" placeholder="Ex: Artigo, Vídeo, Material de Apoio" value="<?= htmlspecialchars($conteudoData['tipo_conteudo'] ?? $_POST['tipo_conteudo'] ?? '') ?>" required>
             <hr>
 
-            <label for="id_disciplina">Código da disciplina:</label><br>
+            <label for="id_disciplina">Nome da disciplina:</label><br>
             <?php if ($isUpdating): ?>
-                <input type="text" value="<?= htmlspecialchars($nomeDisciplinaAtual) ?>" readonly required>
+                <input type="text" name="disciplina" value="<?= htmlspecialchars($nomeDisciplinaAtual) ?>" readonly required>
                 <input type="hidden" name="id_disciplina" value="<?= htmlspecialchars($conteudoData['Disciplina_id_disciplina'] ?? '') ?>">
                 <hr>
             <?php else: ?>

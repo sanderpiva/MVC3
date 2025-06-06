@@ -91,8 +91,8 @@ class Disciplina_controller {
 
     public function update($id) {
         if (isset($id)) {
-            $turma = $this->disciplinaModel->getDisciplinaById($id);
-            if ($turma) {
+            $disciplina = $this->disciplinaModel->getDisciplinaById($id);
+            if ($disciplina) {
                 include __DIR__ . '/../views/disciplina/Create_edit.php';
             } else {
                 displayErrorPage("Disciplina não encontrada para edição.", 'index.php?controller=disciplina&action=list');

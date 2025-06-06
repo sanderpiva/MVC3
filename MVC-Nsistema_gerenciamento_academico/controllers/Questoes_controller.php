@@ -44,13 +44,13 @@ class Questoes_controller {
     public function showEditForm($id) {
         //handleLogout();
         if (!isset($id) || !is_numeric($id)) {
-            displayErrorPage("ID da questão da prova não especificado ou inválido para edição.", 'index.php?controller=questao_prova&action=list');
+            displayErrorPage("ID da questão da prova não especificado ou inválido para edição.", 'index.php?controller=questoes&action=list');
             return;
         }
 
         $questaoProvaData = $this->questaoProvaModel->getQuestaoById($id);
         if (!$questaoProvaData) {
-            displayErrorPage("Questão da prova não encontrada para edição.", 'index.php?controller=questao_prova&action=list');
+            displayErrorPage("Questão da prova não encontrada para edição.", 'index.php?controller=questoes&action=list');
             return;
         }
 
@@ -91,9 +91,22 @@ class Questoes_controller {
         include __DIR__ . '/../views/questoes/Create_edit.php';
     }
 
-    public function handlePost() {
+    public function update($id) {
+        if (isset($id)) {
+            $questoes = $this->questoesModel->getQuestoesById($id);
+            if ($questoes) {
+                include __DIR__ . '/../views/questoes/Create_edit.php';
+            } else {
+                displayErrorPage("Disciplina não encontrada para edição.", 'index.php?controller=questoes&action=list');
+            }
+        } else {
+            displayErrorPage("ID da disciplina não especificado para edição.", 'index.php?controller=questoes&action=list');
+        }
+    }
+
+    public function handleUpdatePost() {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            displayErrorPage("Requisição inválida.", 'index.php?controller=questao_prova&action=list');
+            displayErrorPage("Requisição inválida.", 'index.php?controller=questoes&action=list');
             return;
         }
 
@@ -136,7 +149,7 @@ class Questoes_controller {
                 }
             }
 
-            include __DIR__ . '/../Views/QuestaoProva/Create_edit.php';
+            include __DIR__ . '/../views/questoes/Create_edit.php';
             return;
         }
 
@@ -144,28 +157,28 @@ class Questoes_controller {
             if (isset($postData['id_questao']) && !empty($postData['id_questao'])) {
                 // Update existing question
                 if ($this->questaoProvaModel->updateQuestao($postData)) {
-                    redirect('index.php?controller=questao_prova&action=list&message=' . urlencode("Questão atualizada com sucesso!"));
+                    redirect('index.php?controller=questoes&action=list&message=' . urlencode("Questão atualizada com sucesso!"));
                 } else {
-                    displayErrorPage("Erro ao atualizar questão.", 'index.php?controller=questao_prova&action=showEditForm&id=' . $postData['id_questao']);
+                    displayErrorPage("Erro ao atualizar questão.", 'index.php?controller=questoes&action=showEditForm&id=' . $postData['id_questao']);
                 }
             } else {
                 // Insert new question
                 if ($this->questaoProvaModel->insertQuestao($postData)) {
-                    redirect('index.php?controller=questao_prova&action=list&message=' . urlencode("Questão cadastrada com sucesso!"));
+                    redirect('index.php?controller=questoes&action=list&message=' . urlencode("Questão cadastrada com sucesso!"));
                 } else {
-                    displayErrorPage("Erro ao cadastrar questão.", 'index.php?controller=questao_prova&action=showCreateForm');
+                    displayErrorPage("Erro ao cadastrar questão.", 'index.php?controller=questoes&action=showCreateForm');
                 }
             }
         } catch (PDOException $e) {
         
-            displayErrorPage("Erro de banco de dados: " . $e->getMessage(), 'index.php?controller=questao_prova&action=list');
+            displayErrorPage("Erro de banco de dados: " . $e->getMessage(), 'index.php?controller=questoes&action=list');
         }
     }
 
     public function delete($id) {
         
         if (!isset($id) || !is_numeric($id)) {
-            displayErrorPage("ID da questão da prova não especificado ou inválido para exclusão.", 'index.php?controller=questao_prova&action=list');
+            displayErrorPage("ID da questão da prova não especificado ou inválido para exclusão.", 'index.php?controller=questoes&action=list');
             return;
         }
 

@@ -1,3 +1,11 @@
+<?php
+// views/disciplina/Create_edit.php
+
+// The controller should pass $disciplinaData (null for new, object for edit),
+// $professores, $turmas, and $errors to this view.
+$isUpdating = isset($professorData['id_professor']) && !empty($professorData['id_professor']);
+?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
