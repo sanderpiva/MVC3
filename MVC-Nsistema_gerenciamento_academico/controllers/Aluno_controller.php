@@ -222,6 +222,7 @@ class Aluno_controller
         //require_once 'models/DinamicActions_model.php';
         include __DIR__ . 'models/DinamicActions_model.php';
     }
-    
+
 }
 ?>
+

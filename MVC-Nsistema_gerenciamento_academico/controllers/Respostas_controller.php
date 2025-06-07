@@ -25,6 +25,21 @@ class Respostas_controller {
         include __DIR__ . '/../views/respostas/List.php';
     }
 
+
+    public function create($id) {
+        if (isset($id)) {
+            $resposta = $this->respostaModel->getRespostaById($id);
+            if ($prova) {
+                include __DIR__ . '/../views/resposta/Create_edit.php';
+            } else {
+                displayErrorPage("Resposta não encontrada para edição.", 'index.php?controller=resposta&action=list');
+            }
+        } else {
+            displayErrorPage("ID da resposta não especificado para edição.", 'index.php?controller=resposta&action=list');
+        }
+    }
+
+
     // Shows the form for creating a new response
     public function showCreateForm() {
         $respostaData = null; // No data for creation
@@ -112,7 +127,7 @@ class Respostas_controller {
 
         try {
             if ($this->respostaModel->createResposta($postData)) {
-                $this->redirect('index.php?controller=resposta&action=list&message=' . urlencode("Resposta cadastrada com sucesso!"));
+                $this->redirect('index.php?controller=respostas&action=list&message=' . urlencode("Resposta cadastrada com sucesso!"));
             } else {
                 $this->displayErrorPage("Erro ao cadastrar resposta.", 'index.php?controller=respostas&action=showCreateForm');
             }
@@ -238,4 +253,17 @@ class Respostas_controller {
         exit;
     }
 
+    
+    public function update($id) {
+        if (isset($id)) {
+            $resposta = $this->Model->getRespostaById($id);
+            if ($resposta) {
+                include __DIR__ . '/../views/respostas/Create_edit.php';
+            } else {
+                displayErrorPage("Resposta não encontrada para edição.", 'index.php?controller=resposta&action=list');
+            }
+        } else {
+            displayErrorPage("ID da resposta não especificado para edição.", 'index.php?controller=resposta&action=list');
+        }
+    }
 }

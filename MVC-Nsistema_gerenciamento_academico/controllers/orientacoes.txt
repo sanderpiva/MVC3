@@ -26,13 +26,11 @@ delete: turma, aluno, professor, questoes, prova, conteudo
 tente Questoes, na atualização
 na inserção, pode ser qualquer outro
 
-
 Update: Falta 4, a maioria com erros, outros nao carregam dados
 (aluno, professor, respostas, matricula)
 
-Insert: Falta 3 (questoes, respostas, conteudo)
+Insert: Falta 2 (questoes, conteudo)
 
 List: OK
-Delete: Falta 2
-(respostas, matricula)
+Delete: Falta 1 (matricula)
 //Problemas de formatação no Conteudo e Prova

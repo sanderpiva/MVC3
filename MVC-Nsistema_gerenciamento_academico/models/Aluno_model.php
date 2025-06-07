@@ -58,14 +58,17 @@ class AlunoModel {
 
         try {
             // Ajuste a query SQL e os parâmetros para a tabela 'aluno'
-            $sql = "INSERT INTO aluno (matricula, nome, email, endereco, telefone, senha, Turma_id_turma)
-                    VALUES (:matricula, :nome, :email, :endereco, :telefone, :senha, :turma_id)";
+            $sql = "INSERT INTO aluno (matricula, nome, cpf, email, data_nascimento, endereco, cidade, telefone, Turma_id_turma, senha)
+                    VALUES (:matricula, :nome, :cpf, :email, :data_nascimento, :endereco, :cidade, :telefone, :turma_id, :senha )";
             $stmt = $this->db->prepare($sql);
             return $stmt->execute([
                 ':matricula' => $matricula,
                 ':nome'      => $nome,
+                ':cpf'       => $cpf, // CPF não está sendo passado, ajuste conforme necessário
                 ':email'     => $email,
+                ':data_nascimento' => $data_nascimento, // Data de nascimento não está sendo passada, ajuste conforme necessário
                 ':endereco'  => $endereco,
+                ':cidade'    => $cidade, // Cidade não está sendo passada, ajuste conforme necessário
                 ':telefone'  => $telefone,
                 ':senha'     => $hashSenha,
                 ':turma_id'  => $turmaId

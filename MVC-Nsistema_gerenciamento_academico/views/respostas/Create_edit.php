@@ -1,21 +1,19 @@
 <?php
-
-    $isUpdating = isset($respostasData['id_resposta']) && !empty($respostasData['id_resposta']);
-
+    $isUpdating = isset($respostaData['id_resposta']) && !empty($respostaData['id_resposta']);
 ?>
 
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Página Web - <?= isset($isUpdating) && $isUpdating ? 'Atualizar' : 'Cadastro'; ?> Respostas</title>
+    <title>Página Web - <?= $isUpdating ? 'Atualizar' : 'Cadastro'; ?> Respostas</title>
     <link rel="stylesheet" href="public/css/style.css">
 </head>
 <body class="servicos_forms">
 
     <div class="form_container">
-        <form class="form" action="<?= $isUpdating ? 'index.php?controller=respostas&action=update' : 'index.php?controller=repostas&action=create'; ?>" method="post">
-            <h2>Formulário: <?= isset($isUpdating) && $isUpdating ? 'Atualizar' : 'Cadastro'; ?> Respostas</h2>
+        <form class="form" action="<?= $isUpdating ? 'index.php?controller=respostas&action=update' : 'index.php?controller=respostas&action=create'; ?>" method="post">
+            <h2>Formulário: <?= $isUpdating ? 'Atualizar' : 'Cadastro'; ?> Respostas</h2>
             <hr>
 
             <?php if (!empty($errors)): ?>
@@ -28,9 +26,9 @@
             <?php endif; ?>
 
             <label for="codigoRespostas">Código Respostas:</label>
-            <?php if (isset($isUpdating) && $isUpdating): ?>
+            <?php if ($isUpdating): ?>
                 <input type="text" name="codigoRespostas" id="codigoRespostas" placeholder="" value="<?= htmlspecialchars($respostaData['codigoRespostas'] ?? '') ?>" required>
-                <input type="hidden" name="id_respostas" value="<?= htmlspecialchars($respostaData['id_respostas'] ?? '') ?>">
+                <input type="hidden" name="id_resposta" value="<?= htmlspecialchars($respostaData['id_resposta'] ?? '') ?>">
             <?php else: ?>
                 <input type="text" name="codigoRespostas" id="codigoRespostas" placeholder="" value="<?= htmlspecialchars($respostaData['codigoRespostas'] ?? '') ?>" required>
             <?php endif; ?>
@@ -54,7 +52,7 @@
             <hr>
 
             <label for="id_questao">Descrição da Questão:</label>
-            <?php if (isset($isUpdating) && $isUpdating): ?>
+            <?php if ($isUpdating): ?>
                 <input type="text" value="<?= htmlspecialchars($descricaoQuestaoAtual ?? '') ?>" readonly required>
                 <input type="hidden" name="id_questao" value="<?= htmlspecialchars($respostaData['Questoes_id_questao'] ?? '') ?>">
             <?php else: ?>
@@ -71,7 +69,7 @@
             <hr>
 
             <label for="id_prova">Código Prova:</label>
-            <?php if (isset($isUpdating) && $isUpdating): ?>
+            <?php if ($isUpdating): ?>
                 <input type="text" value="<?= htmlspecialchars($codigoProvaAtual ?? '') ?>" readonly required>
                 <input type="hidden" name="id_prova" value="<?= htmlspecialchars($respostaData['Questoes_Prova_id_prova'] ?? '') ?>">
             <?php else: ?>
@@ -88,7 +86,7 @@
             <hr>
 
             <label for="id_disciplina">Disciplina:</label>
-            <?php if (isset($isUpdating) && $isUpdating): ?>
+            <?php if ($isUpdating): ?>
                 <input type="text" value="<?= htmlspecialchars($nomeDisciplinaAtual ?? '') ?>" readonly required>
                 <input type="hidden" name="id_disciplina" value="<?= htmlspecialchars($respostaData['Questoes_Prova_Disciplina_id_disciplina'] ?? '') ?>">
                 <hr>
@@ -110,7 +108,7 @@
             <hr>
 
             <label for="id_professor">Professor:</label>
-            <?php if (isset($isUpdating) && $isUpdating): ?>
+            <?php if ($isUpdating): ?>
                 <input type="text" value="<?= htmlspecialchars($nomeProfessorAtual ?? '') ?>" readonly required>
                 <input type="hidden" name="id_professor" value="<?= htmlspecialchars($respostaData['Questoes_Prova_Disciplina_Professor_id_professor'] ?? '') ?>">
                 <hr>
@@ -128,7 +126,7 @@
             <hr>
 
             <label for="id_aluno">Aluno:</label>
-            <?php if (isset($isUpdating) && $isUpdating): ?>
+            <?php if ($isUpdating): ?>
                 <input type="text" value="<?= htmlspecialchars($nomeAlunoAtual ?? '') ?>" readonly required>
                 <input type="hidden" name="id_aluno" value="<?= htmlspecialchars($respostaData['Aluno_id_aluno'] ?? '') ?>">
                 <hr>
@@ -144,12 +142,12 @@
                 </select>
             <?php endif; ?>
             <hr>
-            <button type="submit"><?= isset($isUpdating) && $isUpdating ? 'Atualizar' : 'Cadastrar'; ?></button>
+            <button type="submit"><?= $isUpdating ? 'Atualizar' : 'Cadastrar'; ?></button>
         </form>
 
         <hr>
-        <?php if (isset($isUpdating) && $isUpdating): ?>
-            <a href="index.php?controller=resposta&action=list">Voltar à lista</a>
+        <?php if ($isUpdating): ?>
+            <a href="index.php?controller=respostas&action=list">Voltar à lista</a>
         <?php endif; ?>
     </div>
     <a href="index.php?controller=professor&action=showServicesPage">Serviços</a>

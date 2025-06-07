@@ -96,14 +96,14 @@ if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true || $_SESSION['ti
     <a href="index.php?controller=auth&action=logout" style="margin-left:20px;">Logout →</a>
 
     <script>
-        function atualizarResposta(id_resposta) {
-            window.location.href = "index.php?controller=resposta&action=showEditForm&id_resposta=" + id_resposta;
+        function atualizarResposta(id) {
+            window.location.href = "index.php?controller=respostas&action=showEditForm&id=" + id;
         }
 
-        function excluirResposta(id_resposta) {
-            const confirmar = confirm("Tem certeza que deseja excluir a resposta com ID: " + id_resposta + "?");
+        function excluirResposta(id) {
+            const confirmar = confirm("Tem certeza que deseja excluir a resposta com ID: " + id + "?");
             if (confirmar) {
-                window.location.href = "index.php?controller=resposta&action=delete&id_resposta=" + id_resposta;
+                window.location.href = "index.php?controller=respostas&action=delete&id=" + id;
             }
         }
     </script>

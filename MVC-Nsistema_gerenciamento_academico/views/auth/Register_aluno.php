@@ -2,9 +2,12 @@
 //require_once __DIR__ . '/../../models/conexao.php';
 require_once "config/conexao.php";
 
-$isUpdating = false;
+$isUpdating = isset($turma['id_turma']) && !empty($turma['id_turma']);
 $alunoData = [];
 $errors = "";
+
+//var_dump($isUpdating);
+//exit;
 
 // Verifica se é edição
 if (isset($_GET['id_aluno']) && !empty($_GET['id_aluno'])) {
@@ -37,7 +40,7 @@ if (isset($_GET['id_aluno']) && !empty($_GET['id_aluno'])) {
 
     <div class="form_container">
         <form class="form" action="index.php?controller=auth&action=registerAluno" method="POST">
-            <h2><?php echo $isUpdating ? 'Atualizar Aluno' : 'Cadastro Aluno'; ?></h2>
+            <h2>Formulário: <?php echo $isUpdating ? 'Atualizar Aluno' : 'Cadastro Aluno'; ?></h2>
             <hr>
 
             <label for="matricula">Matricula:</label>
@@ -74,11 +77,27 @@ if (isset($_GET['id_aluno']) && !empty($_GET['id_aluno'])) {
             <label for="telefone">Telefone:</label>
             <input type="text" name="telefoneAluno" id="telefoneAluno" placeholder="Digite o telefone" value="<?php echo htmlspecialchars($alunoData['telefone'] ?? ''); ?>" required>
             <hr>
-            
+            <!--
             <label for="id_turma">ID turma:</label>
             <input type="text" name="id_turma" id="id_turma" placeholder="Digite ID turma" value="<?php echo htmlspecialchars($alunoData['Turma_id_turma'] ?? ''); ?>" required>
             <hr>
-            
+            -->
+
+            <label for="id_turma">Nome da turma:</label>
+            <?php if ($isUpdating): ?>
+                <input type="text" value="<?php echo $nomeTurmaAtual; ?>" readonly required>
+                <input type="hidden" name="id_turma" value="<?php echo htmlspecialchars($alunoData['Turma_id_turma']); ?>">
+                <hr>
+            <?php else: ?>
+                <select name="id_turma" required>
+                    <option value="">Selecione um nome de turma</option>
+                    <?php foreach ($turmas as $turma): ?>
+                        <option value="<?= $turma['id_turma'] ?>"><?= htmlspecialchars($turma['nomeTurma']) ?></option>
+                    <?php endforeach; ?>
+                </select>
+                <hr>
+            <?php endif; ?>
+
             <?php if ($isUpdating): ?>
                 <label for="novaSenha">Nova Senha:</label>
                 <input type="password" id="novaSenha" name="novaSenha" placeholder="Digite a nova senha (opcional)">
