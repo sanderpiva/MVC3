@@ -152,4 +152,12 @@ class AlunoModel {
             return [];
         }
     }
+
+    public function getAllDisciplinas() {
+        $query = "SELECT * FROM disciplina"; // Certifique-se de que essa tabela existe
+        $stmt = $this->db->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);   
+    }   
+     
 }

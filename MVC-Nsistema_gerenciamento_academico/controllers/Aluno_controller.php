@@ -1,11 +1,14 @@
 <?php
 
+
 require_once __DIR__ . '/../models/Aluno_model.php'; // Adicione esta linha!
+require_once __DIR__ . '/../models/DinamicActions_model.php'; // Adicione esta linha!
 
 class Aluno_controller
 {
 
     private $alunoModel;
+    private $dinamicActions; // Propriedade para armazenar o modelo DinamicActions
     private $conexao; // Propriedade para armazenar a conexão
 
     /**
@@ -16,6 +19,7 @@ class Aluno_controller
     public function __construct($conexao) {
         $this->conexao = $conexao; // Armazena a conexão
         $this->alunoModel = new AlunoModel($this->conexao); // Corrigido o nome da classe para ProfessorModel (com P maiúsculo)
+        $this->dinamicActions = new DinamicActions($this->conexao); // Inicializa o modelo DinamicActions com a conexão
     }
 
     public function list() {
@@ -32,8 +36,43 @@ class Aluno_controller
 
     public function showDynamicServicesPage()
     {
+
+        // 🔍 Obtém a turma e disciplina selecionadas pelo usuário
+        //$turma_selecionada = $_SESSION['turma_selecionada'] ?? null;
+        //$disciplina_selecionada = $_SESSION['disciplina_selecionada'] ?? null;
+
+        // 🔄 Busca os dados corretamente 2
+        //$turmas = $this->alunoModel->getAllTurmas();
+        //$disciplinas = $this->alunoModel->getAllDisciplinas();
+        //$dados = $this->dinamicActions->getConteudosPorTurmaEDisciplina($turma_selecionada, $disciplina_selecionada);
+
+        //require_once __DIR__ . '/../views/aluno/Dinamic_selection.php';
+
+// 🔍 Obtém a turma e disciplina selecionadas pelo usuário
+        $turma_selecionada = $_SESSION['turma_selecionada'] ?? null;
+        $disciplina_selecionada = $_SESSION['disciplina_selecionada'] ?? null;
+
+        // 🚀 Depuração - Mostra os valores armazenados na sessão
+        echo "<h3>Debug da sessão:</h3>";
+        var_dump($_SESSION);
+
+        // 🔄 Busca os dados corretamente
+        $turmas = $this->alunoModel->getAllTurmas();
+        $disciplinas = $this->alunoModel->getAllDisciplinas();
+        $dados = $this->dinamicActions->getConteudosPorTurmaEDisciplina($turma_selecionada, $disciplina_selecionada);
+
+        // 🚀 Depuração - Mostra os resultados obtidos da Model
+        echo "<h3>Debug dos dados:</h3>";
+        echo "<pre>";
+        print_r($dados);
+        echo "</pre>";
+
+
+        //
+        //$turmas = $this->alunoModel->getAllTurmas();
+        //$disciplinas = $this->alunoModel->getAllDisciplinas();
         
-        require_once __DIR__ . '/../views/aluno/Dashboard_dinamico.php';
+        //require_once __DIR__ . '/../views/aluno/Dinamic_selection.php';
     }
 
     public function showStaticServicesPage()
@@ -159,5 +198,30 @@ class Aluno_controller
         require_once __DIR__ . '/../views/aluno/matematica-estatica/prova.php';
 
     }
+
+    
+    public function showDynamicOptions()
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        // Verifica se o usuário está logado e é um aluno
+        if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true || $_SESSION['tipo_usuario'] !== 'aluno') {
+            header("Location: index.php?controller=auth&action=showLoginForm");
+            exit();
+        }
+
+        // Obtém as turmas e disciplinas do modelo
+        $turmas = $this->alunoModel->getAllTurmas();
+        $disciplinas = $this->alunoModel->getAllDisciplinas();
+
+        // Verifica se houve erro na conexão ou no formulário
+        $erro_conexao = null;
+        $erro_form = null;
+        //require_once 'models/DinamicActions_model.php';
+        include __DIR__ . 'models/DinamicActions_model.php';
+    }
+    
 }
 ?>
