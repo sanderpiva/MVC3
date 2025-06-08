@@ -93,6 +93,7 @@ class Auth_controller {
     }
 
     public function showAlunoRegisterForm() {
+        $turmas = $this->authModel->getTurmas(); // Recupera as turmas do banco de dados
         require_once __DIR__ . '/../views/auth/register_aluno.php';
     }
 
@@ -104,7 +105,10 @@ class Auth_controller {
             if (!empty($errors)) {
                 $isUpdating = false;
                 $alunoData = $_POST; // Preserva os dados digitados para reexibir
-                //echo "<p style='color:red;'>Erros encontrados:</p>";
+                //echo "<p style='color:red;'>Erros encontrados:</p>";       
+                // **Definir $turmas antes de carregar a view**
+                $turmas = $this->authModel->getTurmas(); 
+
                 require_once __DIR__ . '/../views/auth/register_aluno.php';
                 return; // Para a execução para mostrar o formulário com erros
             }

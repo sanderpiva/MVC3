@@ -3,6 +3,12 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+// Verifica se o logout foi solicitado antes de qualquer outra ação
+if (isset($_GET['logout']) && $_GET['logout'] == 'true') {
+    header("Location: index.php?controller=auth&action=logout");
+    exit();
+}
+
 // Verifica se o usuário está logado e se é um aluno
 if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true || $_SESSION['tipo_usuario'] !== 'aluno') {
     header("Location: index.php?controller=auth&action=showLoginForm");
@@ -66,5 +72,11 @@ $all_activities_completed = ($pa_status == 1 && $pg_status == 1 && $porcentagem_
             <p id="mensagem-erro" style="color: red; display: none;">Você não fez todas as tarefas!</p>
         <?php endif; ?>
     </div>
+    <hr>
+    <a href="index.php?controller=auth&action=logout" style="text-align: center; display: block;">Logout →</a>
 </body>
+<footer><br><br><br><br><br><br><br><br><br><br><br><br>
+    <p>Desenvolvido por Juliana e Sander</p>
+</footer>
+
 </html>

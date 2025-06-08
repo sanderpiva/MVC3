@@ -187,4 +187,10 @@ class AuthModel {
             return false; // Retorna false em caso de erro
         }
     }
+
+    public function getTurmas() {
+        $sql = "SELECT id_turma, nomeTurma FROM turma ORDER BY nomeTurma ASC";
+        $stmt = $this->pdo->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+   }
 }
