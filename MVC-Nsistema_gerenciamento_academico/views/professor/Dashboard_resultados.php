@@ -49,7 +49,7 @@ if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true || $_SESSION['ti
         <?php
         // Inclui o arquivo de conexão PDO.
         // Certifique-se de que o caminho está correto para o seu arquivo conexaoDados.php
-        require_once "config/conexaoDados.php"; // Ajuste este caminho se necessário
+        global $conexao; 
 
         try {
             // Prepara a consulta SQL para selecionar todos os registros da tabeladados

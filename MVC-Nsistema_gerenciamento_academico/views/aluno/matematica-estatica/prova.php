@@ -48,7 +48,7 @@ $email_aluno_sessao = $_SESSION['email_usuario'] ?? 'email_desconhecido@example.
 $turma_aluno_sessao = $_SESSION['nome_turma'] ?? 'Turma Desconhecida';
 $id_aluno_sessao = $_SESSION['id_usuario'] ?? null; // Adicione o ID do aluno, se disponível na sessão.
 
-require_once "config/conexaoDados.php";
+global $conexao;
 
 $aluno_ja_fez_prova = false;
 $mensagem_alerta = "";
