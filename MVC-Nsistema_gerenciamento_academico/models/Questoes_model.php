@@ -8,8 +8,9 @@ class QuestoesModel {
 
     public function __construct(PDO $conexao) {
         $this->db = $conexao;
+        //$this->questoesModel = new QuestoesModel($this->db); // ou o
     }
-
+    
     public function insertQuestao(array $data) {
         $sql = "INSERT INTO questoes (codigoQuestao, descricao, tipo_prova, Prova_id_prova, Prova_Disciplina_id_disciplina, Prova_Disciplina_Professor_id_professor)
                 VALUES (:codigo, :descricao, :tipo, :id_prova, :id_disciplina, :id_professor)";
@@ -22,6 +23,26 @@ class QuestoesModel {
             ':id_disciplina' => $data['id_disciplina'],
             ':id_professor' => $data['id_professor']
         ]);
+    }
+
+    public function createQuestao($codigoQuestao, $descricao, $tipoProva, $provaId, $disciplinaId, $professorId) {
+    try {
+        $stmt = $this->db->prepare("
+            INSERT INTO questao (codigoQuestao, descricao, tipo_prova, Prova_id_prova, Prova_Disciplina_id_disciplina, Prova_Disciplina_Professor_id_professor)
+            VALUES (:codigoQuestao, :descricao, :tipoProva, :provaId, :disciplinaId, :professorId)
+        ");
+        return $stmt->execute([
+            ':codigoQuestao' => $codigoQuestao,
+            ':descricao' => $descricao,
+            ':tipoProva' => $tipoProva,
+            ':provaId' => $provaId,
+            ':disciplinaId' => $disciplinaId,
+            ':professorId' => $professorId
+        ]);
+        } catch (PDOException $e) {
+            error_log("Erro ao criar questão: " . $e->getMessage());
+            return false;
+        }
     }
 
     public function updateQuestao(array $data) {
@@ -93,4 +114,6 @@ class QuestoesModel {
         // For now, assuming 'professor' in 'prova' table is a direct string field.
         return $this->db->query("SELECT * FROM prova")->fetchAll(PDO::FETCH_ASSOC);
     }
+
+
 }

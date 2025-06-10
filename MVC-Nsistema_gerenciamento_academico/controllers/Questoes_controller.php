@@ -225,4 +225,58 @@ class Questoes_controller {
 
         return $errors;
     }
+
+    public function create($id) {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        // Processa os dados do formulário e cria uma nova questão
+        $this->handleCreatePost($_POST);
+        } else {
+        // Exibe o formulário de criação/edição
+        if ($id) {
+            $questao = $this->questoesModel->getQuestoesById($id);
+            if ($questao) {
+                include __DIR__ . '/../views/questoes/Create_edit.php';
+            } else {
+                displayErrorPage("Questão não encontrada para edição.", 'index.php?controller=questoes&action=list');
+            }
+        } else {
+            displayErrorPage("ID da questão não especificado para edição.", 'index.php?controller=questoes&action=list');
+        }
+    }
+  }
+
+  public function handleCreatePost($postData) {
+    // Filtrar e validar os dados recebidos do formulário
+    $codigoQuestao = filter_var($postData['codigoQuestaoProva'] ?? null, FILTER_SANITIZE_STRING);
+    $descricao = filter_var($postData['descricao_questao'] ?? null, FILTER_SANITIZE_STRING);
+    $tipoProva = filter_var($postData['tipo_prova'] ?? null, FILTER_SANITIZE_STRING);
+    $provaId = filter_var($postData['id_prova'] ?? null, FILTER_SANITIZE_NUMBER_INT);
+    $disciplinaId = filter_var($postData['id_disciplina'] ?? null, FILTER_SANITIZE_NUMBER_INT);
+    $professorId = filter_var($postData['id_professor'] ?? null, FILTER_SANITIZE_NUMBER_INT);
+
+    // Verificar se todos os campos obrigatórios estão preenchidos
+    if (!$codigoQuestao || !$descricao || !$tipoProva || !$provaId || !$disciplinaId || !$professorId) {
+        //var_dump($postData);
+        //exit;
+        displayErrorPage("Dados incompletos para criar questão.", 'index.php?controller=questoes&action=showCreateForm');
+    }
+
+    $data = [
+        'codigoQuestaoProva' => $codigoQuestao,
+        'descricao_questao' => $descricao,
+        'tipo_prova' => $tipoProva,
+        'id_prova' => $provaId,
+        'id_disciplina' => $disciplinaId,
+        'id_professor' => $professorId
+    ];
+
+    $this->questoesModel->insertQuestao($data);
+    // Chamar o método do modelo para criar a questão no banco de dados
+    /*
+    if ($this->questoesModel->createQuestao($codigoQuestao, $descricao, $tipoProva, $provaId, $disciplinaId, $professorId)) {
+        redirect('index.php?controller=questoes&action=list&message=' . urlencode("Questão criada com sucesso!"));
+    } else {
+        displayErrorPage("Erro ao criar questão. Tente novamente.", 'index.php?controller=questoes&action=showCreateForm');
+    }*/
+  }
 }

@@ -68,8 +68,14 @@ if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true || $_SESSION['ti
                         <td><?= htmlspecialchars($matricula['nome_professor'] ?? 'N/A') ?></td>
                         <td><?= htmlspecialchars($matricula['codigo_turma']) ?></td>
                         <td id='buttons-wrapper'>
-                            <button onclick="window.location.href='index.php?controller=matricula&action=showEditForm&aluno_id=<?= urlencode($matricula['Aluno_id_aluno']) ?>&disciplina_id=<?= urlencode($matricula['Disciplina_id_disciplina']) ?>'"><i class='fa-solid fa-pen'></i> Atualizar</button>
-                            <button onclick="confirmDelete('<?= urlencode($matricula['Aluno_id_aluno']) ?>', '<?= urlencode($matricula['Disciplina_id_disciplina']) ?>', '<?= htmlspecialchars($matricula['nome_aluno']) ?>', '<?= htmlspecialchars($matricula['nome_disciplina']) ?>')"><i class='fa-solid fa-trash'></i> Excluir</button>
+                            
+                            <a href="index.php?controller=matricula&action=showEditForm&aluno_id=<?= urlencode($matricula['Aluno_id_aluno']) ?>&disciplina_id=<?= urlencode($matricula['Disciplina_id_disciplina']) ?>">Atualizar</a>
+                            <a href="index.php?controller=matricula&action=delete&id=<?= htmlspecialchars($matricula['Aluno_id_aluno']) ?>"
+                               onclick="return confirm('Tem certeza que deseja excluir a matricula com ID: <?= htmlspecialchars($matricula['Aluno_id_aluno']) ?>?');">
+                                <i class='fa-solid fa-trash'></i> Excluir
+                            </a>
+                        
+                        
                         </td>
                     </tr>
                 <?php endforeach; ?>

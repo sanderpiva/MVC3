@@ -60,14 +60,18 @@ $selectedDisciplinaId = $conteudoData['Disciplina_id_disciplina'] ?? ($_POST['id
             <input type="text" name="professor" id="professor" placeholder="Digite o nome do professor" value="<?= htmlspecialchars($conteudoData['professor'] ?? $_POST['professor'] ?? '') ?>" required>
             <hr>
 
+            <label for="disciplina">Disciplina:</label><br>
+            <input type="text" name="disciplina" id="disciplina" placeholder="Digite o nome da disciplina" value="<?= htmlspecialchars($conteudoData['disciplina'] ?? $_POST['disciplina'] ?? '') ?>" required>
+            <hr>
+
             <label for="tipo_conteudo">Tipo de Conteúdo:</label><br>
             <input type="text" name="tipo_conteudo" id="tipo_conteudo" placeholder="Ex: Artigo, Vídeo, Material de Apoio" value="<?= htmlspecialchars($conteudoData['tipo_conteudo'] ?? $_POST['tipo_conteudo'] ?? '') ?>" required>
             <hr>
 
-            <label for="id_disciplina">Nome da disciplina:</label><br>
+            <label for="id_disciplina">Código da disciplina:</label><br>
             <?php if ($isUpdating): ?>
                 <input type="text" name="disciplina" value="<?= htmlspecialchars($nomeDisciplinaAtual) ?>" readonly required>
-                <input type="hidden" name="id_disciplina" value="<?= htmlspecialchars($conteudoData['Disciplina_id_disciplina'] ?? '') ?>">
+                <input type="hidden" name="id_disciplina" value="<?= htmlspecialchars($disciplinas['codigoDisciplina'] ?? '') ?>">
                 <hr>
             <?php else: ?>
                 <select name="id_disciplina" required>

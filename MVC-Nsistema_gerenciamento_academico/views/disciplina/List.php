@@ -55,11 +55,9 @@ $error = isset($_GET['erros']) ? htmlspecialchars($_GET['erros']) : '';
                 <th>Código disciplina</th>
                 <th>Nome</th>
                 <th>Carga Horária</th>
-                <th>Professor (Digitado)</th>
+                <th>Professor</th>
                 <th>Descrição</th>
-                <th>Semestre/Período</th>
-                <th>Nome Professor Associado</th>
-                <th>Nome Turma Associada</th>
+                <th>Turma</th>
                 <th>Ações</th>
             </tr>
         </thead>
@@ -76,8 +74,6 @@ $error = isset($_GET['erros']) ? htmlspecialchars($_GET['erros']) : '';
                         <td><?= htmlspecialchars($disciplina['carga_horaria']) ?></td>
                         <td><?= htmlspecialchars($disciplina['professor_digitado']) ?></td>
                         <td><?= htmlspecialchars($disciplina['descricao']) ?></td>
-                        <td><?= htmlspecialchars($disciplina['semestre_periodo']) ?></td>
-                        <td><?= htmlspecialchars($disciplina['nome_professor'] ?? 'N/A') ?></td>
                         <td><?= htmlspecialchars($disciplina['nome_turma_associada'] ?? 'N/A') ?></td>
                         <td id='buttons-wrapper'>
                             <a href="index.php?controller=disciplina&action=showEditForm&id=<?= htmlspecialchars($disciplina['id_disciplina']) ?>">

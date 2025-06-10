@@ -48,7 +48,7 @@ if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true || $_SESSION['ti
                 <td><?= htmlspecialchars($turma['codigoTurma']) ?></td>
                 <td><?= htmlspecialchars($turma['nomeTurma']) ?></td>
                 <td>
-                    <a href="index.php?controller=turma&action=showEditForm&id=<?= $turma['id_turma'] ?>">Editar</a>
+                    <a href="index.php?controller=turma&action=showEditForm&id=<?= $turma['id_turma'] ?>">Atualizar - </a>
                     
                     <a href="index.php?controller=turma&action=delete&id=<?= $turma['id_turma'] ?>" onclick="return confirm('Tem certeza ? id = ' + '<?= $turma['id_turma'] ?>');">Excluir</a>       
                 

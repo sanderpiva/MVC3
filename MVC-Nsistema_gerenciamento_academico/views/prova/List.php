@@ -54,7 +54,7 @@ $error = isset($_GET['erros']) ? htmlspecialchars($_GET['erros']) : '';
             <tr>
                 <th>Código de prova</th>
                 <th>Tipo</th>
-                <th>Disciplina</th>        <th>Conteúdo</th>
+                <th>Nome da Disciplina</th>        <th>Conteúdo</th>
                 <th>Data</th>
                 <th>Professor</th>         <th>Código da Disciplina</th> <th>Registro do Professor</th> <th>Ações</th>
             </tr>
@@ -69,7 +69,7 @@ $error = isset($_GET['erros']) ? htmlspecialchars($_GET['erros']) : '';
                     <tr>
                         <td><?= htmlspecialchars($prova['codigoProva']) ?></td>
                         <td><?= htmlspecialchars($prova['tipo_prova']) ?></td>
-                        <td><?= htmlspecialchars($prova['nome_disciplina'] ?? 'N/A') ?></td>
+                        <td><?= htmlspecialchars($prova['disciplina'] ?? 'N/A') ?></td>
                         <td><?= htmlspecialchars($prova['conteudo']) ?></td>
                         <td><?= htmlspecialchars($prova['data_prova']) ?></td>
                         <td><?= htmlspecialchars($prova['nome_professor'] ?? 'N/A') ?></td>

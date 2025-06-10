@@ -1,6 +1,6 @@
 <?php
 // controllers/Matricula_controller.php
-
+        
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
 ini_set('display_startup_errors', '1');
@@ -47,6 +47,8 @@ class Matricula_controller {
      * @param int $alunoId The ID of the student.
      * @param int $disciplinaId The ID of the discipline.
      */
+    
+    
     public function showEditForm($alunoId, $disciplinaId) {
         if ($alunoId && $disciplinaId) {
             $matricula = $this->matriculaModel->getMatriculaByIds($alunoId, $disciplinaId);
@@ -68,6 +70,8 @@ class Matricula_controller {
             redirect('index.php?controller=matricula&action=list&error=' . urlencode("IDs de aluno ou disciplina não especificados para edição."));
         }
     }
+    
+    
 
     /**
      * Handles the POST request to create a new enrollment.
@@ -89,28 +93,33 @@ class Matricula_controller {
      * Handles the POST request to update an existing enrollment.
      * @param array $postData The POST data.
      */
+    //var_dump($postData);
+    //exit();
+
     public function update($postData) {
+        
         $originalAlunoId = filter_var($postData['original_aluno_id'] ?? null, FILTER_SANITIZE_NUMBER_INT);
         $originalDisciplinaId = filter_var($postData['original_disciplina_id'] ?? null, FILTER_SANITIZE_NUMBER_INT);
         $novoAlunoId = filter_var($postData['aluno_id'] ?? null, FILTER_SANITIZE_NUMBER_INT);
         $novaDisciplinaId = filter_var($postData['disciplina_id'] ?? null, FILTER_SANITIZE_NUMBER_INT);
-
+        //echo "Original Aluno ID: $originalAlunoId, Original Disciplina ID: $originalDisciplinaId, Novo Aluno ID: $novoAlunoId, Nova Disciplina ID: $novaDisciplinaId";
+        // 🚀 Adicione esta verificação para evitar valores nulos
         if (!$originalAlunoId || !$originalDisciplinaId || !$novoAlunoId || !$novaDisciplinaId) {
             redirect('index.php?controller=matricula&action=list&error=' . urlencode("Dados de atualização inválidos ou incompletos."));
         }
 
-        // Check if the new combination already exists and is not the original one
+        // 🚀 Verifique se a combinação já existe antes de tentar atualizar
         if ($this->matriculaModel->matriculaExists($novoAlunoId, $novaDisciplinaId, $originalAlunoId, $originalDisciplinaId)) {
             redirect('index.php?controller=matricula&action=showEditForm&aluno_id=' . urlencode($originalAlunoId) . '&disciplina_id=' . urlencode($originalDisciplinaId) . '&error=' . urlencode("Não foi possível atualizar a matrícula. Esta combinação Aluno/Disciplina já existe."));
         }
 
+        // 🚀 Finalmente, chame a função `updateMatricula()` passando os 4 argumentos corretamente
         if ($this->matriculaModel->updateMatricula($originalAlunoId, $originalDisciplinaId, $novoAlunoId, $novaDisciplinaId)) {
             redirect('index.php?controller=matricula&action=list&message=' . urlencode("Matrícula atualizada com sucesso!"));
         } else {
             redirect('index.php?controller=matricula&action=showEditForm&aluno_id=' . urlencode($originalAlunoId) . '&disciplina_id=' . urlencode($originalDisciplinaId) . '&error=' . urlencode("Erro ao atualizar a matrícula. Nenhuma alteração realizada ou dados inválidos."));
         }
     }
-
     /**
      * Handles the request to delete an enrollment.
      * @param int $alunoId The ID of the student whose enrollment is to be deleted.

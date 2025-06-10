@@ -29,8 +29,8 @@ na inserção, pode ser qualquer outro
 Update: Falta 4, a maioria com erros, outros nao carregam dados
 (aluno, professor, respostas, matricula)
 
-Insert: Falta 2 (questoes, conteudo)
+Insert: Falta 1 (questoes)
 
 List: OK
-Delete: Falta 1 (matricula)
+Delete: OK
 //Problemas de formatação no Conteudo e Prova

@@ -91,6 +91,8 @@ class MatriculaModel {
      * @return bool True on success, false on failure.
      */
     public function updateMatricula($originalAlunoId, $originalDisciplinaId, $novoAlunoId, $novaDisciplinaId) {
+    
+    
         try {
             $stmt = $this->db->prepare("
                 UPDATE matricula SET

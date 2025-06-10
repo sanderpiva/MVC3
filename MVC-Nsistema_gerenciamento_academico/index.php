@@ -1,4 +1,5 @@
 <?php
+
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -92,7 +93,16 @@ $methodToCall = $actionParam;
 
 if (method_exists($controller, $methodToCall)) {
     switch ($methodToCall) {
-        case 'showEditForm': // Ação para exibir formulário de edição (GET)
+        //case 'showEditForm': // Ação para exibir formulário de edição (GET)
+        case 'showEditForm':
+            if ($controllerClassName === 'Matricula_controller') {
+            // Para matrícula, precisa de dois parâmetros
+            $controller->$methodToCall($_GET['aluno_id'] ?? null, $_GET['disciplina_id'] ?? null);
+            } else {
+            // Para outras tabelas, só o ID
+            $controller->$methodToCall($_GET['id'] ?? null);
+            }
+            break;
         case 'delete':  // Ação para excluir (GET) deleteTurma
             $controller->$methodToCall($_GET['id'] ?? null); // Passa o ID se for edição ou exclusão
             break;

@@ -72,14 +72,16 @@ class ConteudoModel {
         // Se a coluna 'professor' (texto) ainda existe na sua tabela 'conteudo'
         // e você quer mantê-la como texto livre sem FK, adicione-a aqui.
         // Exemplo: INSERT INTO conteudo (..., professor, ...) VALUES (..., :professor, ...)
-        $sql = "INSERT INTO conteudo (codigoConteudo, titulo, descricao, data_postagem, Disciplina_id_disciplina, tipo_conteudo)
-                VALUES (:codigoConteudo, :titulo, :descricao, :data_postagem, :id_disciplina, :tipo_conteudo)";
+        $sql = "INSERT INTO conteudo (codigoConteudo, titulo, descricao, data_postagem, professor, disciplina, tipo_conteudo, Disciplina_id_disciplina)
+                VALUES (:codigoConteudo, :titulo, :descricao, :data_postagem, :professor, :disciplina, :tipo_conteudo, :id_disciplina)";
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([
             ':codigoConteudo' => $data['codigoConteudo'],
             ':titulo' => $data['titulo'],
             ':descricao' => $data['descricao'],
             ':data_postagem' => $data['data_postagem'],
+            ':professor' => $data['professor'], 
+            ':disciplina' => $data['disciplina'], 
             ':id_disciplina' => $data['id_disciplina'],
             ':tipo_conteudo' => $data['tipo_conteudo']
         ]);
