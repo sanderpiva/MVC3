@@ -16,14 +16,14 @@ $isUpdating = isset($professorData['id_professor']) && !empty($professorData['id
 <body class="servicos_forms">
 
     <div class="form_container">
-        <form class="form" action="index.php?controller=auth&action=registerProfessor" method="POST">
-            <h2><?php echo $isUpdating ? 'Atualizar Professor' : 'Cadastro Professor'; ?></h2>
+        <form class="form" action="<?= $isUpdating ? 'index.php?controller=professor&action=updateProfessor' : 'index.php?controller=auth&action=registerProfessor'; ?>" method="post">
+            <h2>Formulário: <?php echo $isUpdating ? 'Atualizar Professor' : 'Cadastro Professor'; ?></h2>
             <hr>
 
             <label for="registroProfessor">Registro:</label>
             <input type="text" name="registroProfessor" id="registroProfessor" placeholder="Digite o registro" value="<?php echo htmlspecialchars($professorData['registroProfessor'] ?? ''); ?>" required>
             <?php if ($isUpdating): ?>
-                <input type="hidden" name="id_professor" value="<?php echo htmlspecialchars($_GET['id_professor'] ?? ''); ?>">
+                <input type="hidden" name="id_professor" value="<?php echo htmlspecialchars($professorData['id_professor'] ?? ''); ?>">
             <?php endif; ?>
             <hr>
 
@@ -60,9 +60,9 @@ $isUpdating = isset($professorData['id_professor']) && !empty($professorData['id
         <?php if (!empty($errors)): ?>
             <?php echo $errors; ?>
         <?php endif; ?>
+        
     </div>
-    <a href="<?php echo $isUpdating ? '../../controllers/professor/listar.php' : '../../index.php'; ?>">
-        <?php echo $isUpdating ? 'Voltar para Professores' : 'Home Page'; ?>
-    </a>
+    <a href="index.php?controller=professor&action=showServicesPage">Serviços</a>
+    <hr>
 </body>
 </html>
