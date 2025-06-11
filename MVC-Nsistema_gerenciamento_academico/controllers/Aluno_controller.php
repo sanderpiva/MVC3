@@ -3,10 +3,11 @@
 
 require_once __DIR__ . '/../models/Aluno_model.php'; // Adicione esta linha!
 require_once __DIR__ . '/../models/DinamicActions_model.php'; // Adicione esta linha!
+require_once __DIR__ . '/../models/Turma_model.php'; // Adicione esta linha!
 
 class Aluno_controller
 {
-
+    private $turmaModel; // Propriedade para armazenar o modelo TurmaModel
     private $alunoModel;
     private $dinamicActions; // Propriedade para armazenar o modelo DinamicActions
     private $conexao; // Propriedade para armazenar a conexão
@@ -20,6 +21,7 @@ class Aluno_controller
         $this->conexao = $conexao; // Armazena a conexão
         $this->alunoModel = new AlunoModel($this->conexao); // Corrigido o nome da classe para ProfessorModel (com P maiúsculo)
         $this->dinamicActions = new DinamicActions($this->conexao); // Inicializa o modelo DinamicActions com a conexão
+        $this->turmaModel = new TurmaModel($this->conexao); // Inicializa o modelo TurmaModel com a conexão
     }
 
     public function list() {
@@ -37,18 +39,7 @@ class Aluno_controller
     public function showDynamicServicesPage()
     {
 
-        // 🔍 Obtém a turma e disciplina selecionadas pelo usuário
-        //$turma_selecionada = $_SESSION['turma_selecionada'] ?? null;
-        //$disciplina_selecionada = $_SESSION['disciplina_selecionada'] ?? null;
-
-        // 🔄 Busca os dados corretamente 2
-        //$turmas = $this->alunoModel->getAllTurmas();
-        //$disciplinas = $this->alunoModel->getAllDisciplinas();
-        //$dados = $this->dinamicActions->getConteudosPorTurmaEDisciplina($turma_selecionada, $disciplina_selecionada);
-
-        //require_once __DIR__ . '/../views/aluno/Dinamic_selection.php';
-
-// 🔍 Obtém a turma e disciplina selecionadas pelo usuário
+        
         $turma_selecionada = $_SESSION['turma_selecionada'] ?? null;
         $disciplina_selecionada = $_SESSION['disciplina_selecionada'] ?? null;
 
@@ -67,11 +58,6 @@ class Aluno_controller
         print_r($dados);
         echo "</pre>";
 
-
-        //
-        //$turmas = $this->alunoModel->getAllTurmas();
-        //$disciplinas = $this->alunoModel->getAllDisciplinas();
-        
         //require_once __DIR__ . '/../views/aluno/Dinamic_selection.php';
     }
 
@@ -85,18 +71,26 @@ class Aluno_controller
         require_once __DIR__ . '/../views/aluno/Dashboard_algebrando.php'; // ATENÇÃO: Verifique este caminho
     }
 
+    
     public function showEditForm($id) {
-        if (isset($id)) {
-            $aluno = $this->alunoModel->getAlunoById($id);
-            if ($aluno) {
-                include __DIR__ . '/../views/auth/Register_aluno.php';
-            } else {
-                displayErrorPage("Aluno não encontrado para edição.", 'index.php?controller=aluno&action=list');
-            }
+        if (isset($id) && !empty($id)) {
+            $alunoData = $this->alunoModel->getAlunoById($id); 
+            $turmas = $this->turmaModel->getAllTurmas(); // Supondo que você tenha um TurmaModel ou um método para buscar turmas
+
+        if ($alunoData) {
+            $alunoData = $alunoData; // Não é necessário, mas ilustra que a var está no escopo
+            $turmas = $turmas;
+            
+            include __DIR__ . '/../views/auth/Register_aluno.php';
         } else {
-            displayErrorPage("ID do aluno não especificado para edição.", 'index.php?controller=aluno&action=list');
+            displayErrorPage("Aluno não encontrado para edição.", 'index.php?controller=aluno&action=list');
         }
+    } else {
+        // Para o caso de não ter ID, ainda precisamos de $turmas para o formulário de cadastro
+        $turmas = $this->turmaModel->getAllTurmas(); 
+        include __DIR__ . '/../views/auth/Register_aluno.php';
     }
+   }
 
 
 
@@ -199,9 +193,12 @@ class Aluno_controller
 
     }
 
-    
+    //
     public function showDynamicOptions()
-    {
+    {   
+        //echo "A função foi chamada!"; 
+        //exit();
+
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
@@ -219,9 +216,101 @@ class Aluno_controller
         // Verifica se houve erro na conexão ou no formulário
         $erro_conexao = null;
         $erro_form = null;
-        //require_once 'models/DinamicActions_model.php';
-        include __DIR__ . 'models/DinamicActions_model.php';
+
+        $conteudosPorTurmaEDisciplina = [];
+
+        // Itera sobre as turmas e disciplinas e chama o método do modelo
+        foreach ($turmas as $turma) {
+            foreach ($disciplinas as $disciplina) {
+                $conteudosPorTurmaEDisciplina[$turma][$disciplina] = $this->dinamicActions->getConteudosPorTurmaEDisciplina($turma, $disciplina);
+            }
+        }
+
+        //include __DIR__ . 'models/DinamicActions_model.php';
+        
+        
+        return $conteudosPorTurmaEDisciplina;    
+
     }
+
+    // Método para processar a submissão do formulário de atualização
+    public function updateAluno() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_aluno'])) {
+            // Coletar e sanitizar dados
+            $id_aluno = htmlspecialchars($_POST['id_aluno']);
+            $matricula = htmlspecialchars($_POST['matricula'] ?? '');
+            $nome = htmlspecialchars($_POST['nome'] ?? '');
+            $cpf = htmlspecialchars($_POST['cpf'] ?? '');
+            $email = htmlspecialchars($_POST['email'] ?? '');
+            $data_nascimento = htmlspecialchars($_POST['data_nascimento'] ?? '');
+            $endereco = htmlspecialchars($_POST['endereco'] ?? '');
+            $cidade = htmlspecialchars($_POST['cidade'] ?? '');
+            $telefone = htmlspecialchars($_POST['telefone'] ?? '');
+            $turma_id_turma = htmlspecialchars($_POST['Turma_id_turma'] ?? '');
+            $novaSenha = $_POST['novaSenha'] ?? null; // A senha pode ser opcional na atualização
+
+            $errors = []; // Array para armazenar erros de validação
+
+            // --- Validação dos dados ---
+            if (empty($matricula)) {
+                $errors[] = "A matrícula é obrigatória.";
+            }
+            if (empty($nome)) {
+                $errors[] = "O nome do aluno é obrigatório.";
+            }
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $errors[] = "Formato de e-mail inválido.";
+            }
+            // Adicione mais validações conforme necessário (ex: CPF, data, etc.)
+            // --- Fim da Validação ---
+
+            if (empty($errors)) {
+                $dadosParaAtualizar = [
+                    'id_aluno' => $id_aluno,
+                    'matricula' => $matricula,
+                    'nome' => $nome,
+                    'cpf' => $cpf,
+                    'email' => $email,
+                    'data_nascimento' => $data_nascimento,
+                    'endereco' => $endereco,
+                    'cidade' => $cidade,
+                    'telefone' => $telefone,
+                    'Turma_id_turma' => $turma_id_turma,
+                ];
+
+                if (!empty($novaSenha)) {
+                    $dadosParaAtualizar['novaSenha'] = $novaSenha; // Inclui a nova senha se fornecida
+                }
+
+                // --- DEBUG LOG: Dados para atualizar no Controller ---
+                error_log("DEBUG ALUNO CONTROLLER: Dados para atualizar: " . print_r($dadosParaAtualizar, true));
+
+                if ($this->alunoModel->updateAluno($dadosParaAtualizar)) {
+                    // --- DEBUG LOG: Sucesso na atualização ---
+                    error_log("DEBUG ALUNO CONTROLLER: Aluno atualizado com sucesso (ID: " . $id_aluno . ")");
+                    redirect('index.php?controller=aluno&action=list'); // Redireciona para a lista
+                } else {
+                    // --- DEBUG LOG: Falha na atualização ---
+                    error_log("DEBUG ALUNO CONTROLLER: Falha ao atualizar aluno (ID: " . $id_aluno . ")");
+                    $errors[] = "Erro ao atualizar aluno no banco de dados. Tente novamente.";
+                    // Se falhar na atualização do banco, recarrega o formulário com os dados enviados
+                    $alunoData = $_POST; // Preserva os dados digitados
+                    include __DIR__ . '/../views/auth/Register_aluno.php'; // Usa a view de formulário novamente
+                }
+            } else {
+                // --- DEBUG LOG: Erros de validação ---
+                error_log("DEBUG ALUNO CONTROLLER: Erros de validação: " . print_r($errors, true));
+                // Se houver erros de validação, recarrega o formulário mostrando os erros
+                $alunoData = $_POST; // Preserva os dados digitados
+                include __DIR__ . '/../views/auth/Register_aluno.php'; // Usa a view de formulário novamente
+            }
+
+        } else {
+            error_log("DEBUG ALUNO CONTROLLER: Requisição inválida para updateAluno.");
+            displayErrorPage("Requisição inválida para atualização de aluno.", 'index.php?controller=aluno&action=list');
+        }
+    }
+
 
 }
 ?>

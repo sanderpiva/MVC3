@@ -26,8 +26,8 @@ delete: turma, aluno, professor, questoes, prova, conteudo
 tente Questoes, na atualização
 na inserção, pode ser qualquer outro
 
-Update: Falta 3, a maioria com erros, outros nao carregam dados
-(aluno, respostas, matricula)
+Update: Falta 2, a maioria com erros, outros nao carregam dados
+(respostas, matricula)
 
 Insert: Falta 1 (questoes)
 

@@ -125,9 +125,9 @@ class AuthModel {
         $errors = "";
 
         // Verificação de campos obrigatórios
-        if (empty($data["matricula"]) || empty($data["nomeAluno"]) ||
-            empty($data["emailAluno"]) || empty($data["enderecoAluno"]) ||
-            empty($data["telefoneAluno"])) {
+        if (empty($data["matricula"]) || empty($data["nome"]) ||
+            empty($data["email"]) || empty($data["endereco"]) ||
+            empty($data["telefone"])) {
             $errors .= "Todos os campos devem ser preenchidos.<br>";
         }
 
@@ -135,37 +135,45 @@ class AuthModel {
         if (strlen($data["matricula"]) < 3 || strlen($data["matricula"]) > 20) {
             $errors .= "Erro: campo 'Matricula do Aluno' deve ter entre 3 e 20 caracteres.<br>";
         }
-        if (strlen($data["nomeAluno"]) < 10 || strlen($data["nomeAluno"]) > 30) {
+        if (strlen($data["nome"]) < 10 || strlen($data["nome"]) > 30) {
             $errors .= "Erro: campo 'Nome do Aluno' deve ter entre 10 e 30 caracteres.<br>";
         }
-        if (!filter_var($data["emailAluno"], FILTER_VALIDATE_EMAIL)) {
+        if (!filter_var($data["email"], FILTER_VALIDATE_EMAIL)) {
             $errors .= "Erro: campo 'E-mail' inválido.<br>";
         }
-        if (strlen($data["enderecoAluno"]) < 5 || strlen($data["enderecoAluno"]) > 100) {
+        if (strlen($data["endereco"]) < 5 || strlen($data["endereco"]) > 100) {
             $errors .= "Erro: campo 'Endereço' deve ter entre 5 e 100 caracteres.<br>";
         }
-        if (strlen($data["telefoneAluno"]) < 10 || strlen($data["telefoneAluno"]) > 25) {
+        if (strlen($data["telefone"]) < 10 || strlen($data["telefone"]) > 25) {
             $errors .= "Erro: campo 'Telefone' deve ter entre 10 e 25 caracteres.<br>";
         }
 
         return $errors;
     }
 
+    public function getTurmas() {
+        $sql = "SELECT id_turma, nomeTurma FROM turma ORDER BY nomeTurma ASC";
+        $stmt = $this->pdo->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function registerAluno($data) {
         //var_dump($data);
         //die(); // só
         $matricula = $data['matricula'] ?? '';
-        $nome = $data['nomeAluno'] ?? '';
+        $nome = $data['nome'] ?? '';
         $cpf = $data['cpf'] ?? '';
-        $email = $data['emailAluno'] ?? '';
+        $email = $data['email'] ?? '';
         $data_nascimento = $data['data_nascimento'] ?? '';
-        $endereco = $data['enderecoAluno'] ?? '';
-        $cidade = $data['cidadeAluno'] ?? '';
-        $telefone = $data['telefoneAluno'] ?? '';
-        $id_turma = $data['id_turma'] ?? '';
+        $endereco = $data['endereco'] ?? '';
+        $cidade = $data['cidade'] ?? '';
+        $telefone = $data['telefone'] ?? '';
+        $id_turma = $data['Turma_id_turma'] ?? '';
         $senha = $data['senha'] ?? '';
         $hashSenha = password_hash($senha, PASSWORD_DEFAULT);
-
+        //ate aqui ok!
+        //var_dump($data);
+        //die(); // só
         try {
             $sql = "INSERT INTO aluno (matricula, nome, cpf, email, data_nascimento, endereco, cidade, telefone, Turma_id_turma, senha) VALUES (:matricula, :nome, :cpf, :email, :data_nascimento, :endereco, :cidade, :telefone, :id_turma, :senha)";
             $stmt = $this->pdo->prepare($sql); // Usando $this->pdo para a conexão
@@ -187,10 +195,5 @@ class AuthModel {
             return false; // Retorna false em caso de erro
         }
     }
-
-    public function getTurmas() {
-        $sql = "SELECT id_turma, nomeTurma FROM turma ORDER BY nomeTurma ASC";
-        $stmt = $this->pdo->query($sql);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-   }
+   
 }

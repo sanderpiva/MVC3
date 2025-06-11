@@ -97,10 +97,10 @@ class Questoes_controller {
             if ($questoes) {
                 include __DIR__ . '/../views/questoes/Create_edit.php';
             } else {
-                displayErrorPage("Disciplina não encontrada para edição.", 'index.php?controller=questoes&action=list');
+                displayErrorPage("Questão não encontrada para edição.", 'index.php?controller=questoes&action=list');
             }
         } else {
-            displayErrorPage("ID da disciplina não especificado para edição.", 'index.php?controller=questoes&action=list');
+            displayErrorPage("ID da questão não especificado para edição.", 'index.php?controller=questoes&action=list');
         }
     }
 

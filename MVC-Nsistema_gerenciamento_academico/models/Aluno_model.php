@@ -32,7 +32,7 @@ class AlunoModel {
     public function getAlunoById($id) {
         try {
             // Ajuste as colunas para a tabela 'aluno' e a condição WHERE
-            $stmt = $this->db->prepare("SELECT id_aluno, matricula, nome, email, endereco, telefone, Turma_id_turma FROM aluno WHERE id_aluno = :id");
+            $stmt = $this->db->prepare("SELECT * FROM aluno WHERE id_aluno = :id");
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
             $stmt->execute();
             return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -79,48 +79,7 @@ class AlunoModel {
         }
     }
 
-    /**
-     * Updates an existing student record.
-     * @param int $id The ID of the student to update.
-     * @param string $matricula The new enrollment number.
-     * @param string $nome The new full name.
-     * @param string $email The new email.
-     * @param string $endereco The new address.
-     * @param string $telefone The new phone number.
-     * @param string|null $senha The new password (optional, pass null or empty string if not changing).
-     * @param int $turmaId The new class ID.
-     * @return bool True on success, false on failure.
-     */
-    public function updateAluno($id, $matricula, $nome, $email, $endereco, $telefone, $turmaId, $senha = null) {
-        // Ajuste a query SQL e os parâmetros para a tabela 'aluno' e a condição WHERE
-        $sql = "UPDATE aluno SET matricula = :matricula, nome = :nome, email = :email, endereco = :endereco, telefone = :telefone, Turma_id_turma = :turma_id";
-        $params = [
-            ':matricula' => $matricula,
-            ':nome'      => $nome,
-            ':email'     => $email,
-            ':endereco'  => $endereco,
-            ':telefone'  => $telefone,
-            ':turma_id'  => $turmaId,
-            ':id'        => $id
-        ];
-
-        if ($senha !== null && !empty($senha)) {
-            $hashSenha = password_hash($senha, PASSWORD_DEFAULT);
-            $sql .= ", senha = :senha";
-            $params[':senha'] = $hashSenha;
-        }
-
-        $sql .= " WHERE id_aluno = :id";
-
-        try {
-            $stmt = $this->db->prepare($sql);
-            return $stmt->execute($params);
-        } catch (PDOException $e) {
-            error_log("Erro ao atualizar aluno: " . $e->getMessage());
-            return false;
-        }
-    }
-
+    
     /**
      * Deletes a student record from the database.
      * @param int $id The ID of the student to delete.
@@ -161,6 +120,112 @@ class AlunoModel {
         $stmt = $this->db->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);   
-    }   
+    } 
+    //
+    // 🔍 Método para buscar conteúdos filtrados por turma e disciplina
+    public function getConteudosPorTurmaEDisciplina($turma_selecionada, $disciplina_selecionada) {
+        // 🚀 Verificando se os valores foram passados corretamente
+        echo "<h3>Debug das variáveis recebidas:</h3>";
+        var_dump($turma_selecionada, $disciplina_selecionada);
+
+        try {
+            // 🚀 Teste de conexão
+            $this->conexao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            echo "<p style='color:green;'>✅ Conexão com o banco estabelecida!</p>";
+
+            $sql_conteudos = "SELECT 
+                                c.titulo, 
+                                c.descricao 
+                              FROM 
+                                conteudo c 
+                              INNER JOIN 
+                                disciplina d ON c.Disciplina_id_disciplina = d.id_disciplina 
+                              INNER JOIN 
+                                turma t ON d.Turma_id_turma = t.id_turma 
+                              WHERE 
+                                LOWER(t.nomeTurma) LIKE LOWER(:turma_pattern) 
+                                AND LOWER(d.nome) = LOWER(:disciplina)";
+
+            $stmt_conteudos = $this->conexao->prepare($sql_conteudos);
+            $turma_pattern = $turma_selecionada . '%';
+            $stmt_conteudos->bindParam(':turma_pattern', $turma_pattern, PDO::PARAM_STR);
+            $stmt_conteudos->bindParam(':disciplina', $disciplina_selecionada, PDO::PARAM_STR);
+            $stmt_conteudos->execute();
+            
+            $resultado = $stmt_conteudos->fetchAll(PDO::FETCH_ASSOC);
+
+            // 🚀 Teste para verificar se há resultados
+            echo "<h3>Debug dos resultados da consulta:</h3>";
+            echo "<pre>";
+            print_r($resultado);
+            echo "</pre>";
+            exit(); // Remova após testes!
+
+            return $resultado;
+            
+        } catch (PDOException $e) {
+            return "<p style='color:red;'>Erro na conexão com o banco de dados: " . htmlspecialchars($e->getMessage()) . "</p>";
+        }
+    }
+
+    public function updateAluno($data) {
+        // --- DEBUG LOG: Dados recebidos no Model ---
+        //var_dump($data);
+        //exit(); // Exibe os dados recebidos para depuração
+        error_log("DEBUG ALUNO MODEL: Dados recebidos para atualização: " . print_r($data, true)); //
+
+        $sql = "UPDATE aluno SET
+                    matricula = :matricula,
+                    nome = :nome,
+                    cpf = :cpf,
+                    email = :email,
+                    data_nascimento = :data_nascimento,
+                    endereco = :endereco,
+                    cidade = :cidade,
+                    telefone = :telefone,
+                    Turma_id_turma = :Turma_id_turma";
+
+        $params = [
+            ':matricula'       => $data['matricula'],
+            ':nome'            => $data['nome'],
+            ':cpf'             => $data['cpf'],
+            ':email'           => $data['email'],
+            ':data_nascimento' => $data['data_nascimento'],
+            ':endereco'        => $data['endereco'],
+            ':cidade'          => $data['cidade'],
+            ':telefone'        => $data['telefone'],
+            ':Turma_id_turma'  => $data['Turma_id_turma'],
+            ':id_aluno'        => $data['id_aluno'] // Importante para a cláusula WHERE
+        ];
+
+        if (isset($data['novaSenha']) && !empty($data['novaSenha'])) {
+            $hashSenha = password_hash($data['novaSenha'], PASSWORD_DEFAULT);
+            $sql .= ", senha = :senha";
+            $params[':senha'] = $hashSenha;
+        }
+
+        $sql .= " WHERE id_aluno = :id_aluno";
+
+        // --- DEBUG LOG: Query SQL gerada e Parâmetros ---
+        error_log("DEBUG ALUNO MODEL: SQL: " . $sql); //
+        error_log("DEBUG ALUNO MODEL: Parâmetros: " . print_r($params, true)); //
+
+        try {
+            $stmt = $this->db->prepare($sql);
+            $result = $stmt->execute($params);
+
+            // --- DEBUG LOG: Resultado da execução da query ---
+            error_log("DEBUG ALUNO MODEL: Resultado da execução (true/false): " . ($result ? 'true' : 'false')); //
+            if (!$result) {
+                error_log("DEBUG ALUNO MODEL: Erro PDOInfo: " . print_r($stmt->errorInfo(), true)); //
+            }
+
+            // Retorna se a execução foi bem-sucedida E se alguma linha foi afetada
+            return $result && $stmt->rowCount() > 0;
+        } catch (PDOException $e) {
+            error_log("DEBUG ALUNO MODEL: Erro PDO ao atualizar aluno: " . $e->getMessage()); //
+            return false;
+        }
+    }
      
 }

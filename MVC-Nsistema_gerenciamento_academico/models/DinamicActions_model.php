@@ -1,7 +1,5 @@
 <?php
 
-//require_once __DIR__ . '/../config/conexao.php';
-
 class DinamicActions {
     private $conexao;
 
@@ -10,16 +8,21 @@ class DinamicActions {
     }
 
     // 🔍 Método para buscar conteúdos filtrados por turma e disciplina
-    public function getConteudosPorTurmaEDisciplina($turma_selecionada, $disciplina_selecionada) {
+    public function getConteudosPorTurmaEDisciplina($turma, $disciplina) {
         // 🚀 Verificando se os valores foram passados corretamente
         echo "<h3>Debug das variáveis recebidas:</h3>";
-        var_dump($turma_selecionada, $disciplina_selecionada);
+        var_dump($turma, $disciplina);
+
+        // **Garantir que as variáveis são strings**
+        $turma = is_array($turma) ? implode('', $turma) : (string) $turma;
+        $disciplina = is_array($disciplina) ? implode('', $disciplina) : (string) $disciplina;
 
         try {
-            // 🚀 Teste de conexão
+            // **Testando a conexão**
             $this->conexao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             echo "<p style='color:green;'>✅ Conexão com o banco estabelecida!</p>";
 
+            // **Montando a query**
             $sql_conteudos = "SELECT 
                                 c.titulo, 
                                 c.descricao 
@@ -34,19 +37,22 @@ class DinamicActions {
                                 AND LOWER(d.nome) = LOWER(:disciplina)";
 
             $stmt_conteudos = $this->conexao->prepare($sql_conteudos);
-            $turma_pattern = $turma_selecionada . '%';
+
+            // **Garantindo formato correto da busca**
+            $turma_pattern = $turma . '%';
             $stmt_conteudos->bindParam(':turma_pattern', $turma_pattern, PDO::PARAM_STR);
-            $stmt_conteudos->bindParam(':disciplina', $disciplina_selecionada, PDO::PARAM_STR);
+            $stmt_conteudos->bindParam(':disciplina', $disciplina, PDO::PARAM_STR);
             $stmt_conteudos->execute();
-            
+
+            // **Armazena os resultados**
             $resultado = $stmt_conteudos->fetchAll(PDO::FETCH_ASSOC);
 
-            // 🚀 Teste para verificar se há resultados
+            // **Debug dos resultados**
             echo "<h3>Debug dos resultados da consulta:</h3>";
             echo "<pre>";
             print_r($resultado);
             echo "</pre>";
-            exit(); // Remova após testes!
+            exit(); // Remova após testar!
 
             return $resultado;
             
