@@ -70,24 +70,36 @@ class ProfessorModel {
      * @param string|null $senha A nova senha do professor (opcional, se não for alterada, passe null ou string vazia).
      * @return bool True em caso de sucesso, false em caso de falha.
      */
-    public function updateProfessor($id, $registro, $nome, $email, $endereco, $telefone, $senha = null) {
-        $sql = "UPDATE professor SET registroProfessor = :registroProfessor, nome = :nome, email = :email, endereco = :endereco, telefone = :telefone";
+    public function updateProfessor($data) { // Agora $data é o array que recebemos do controlador
+        
+        //var_dump($data);
+        //exit();
+    // die(); // Para depuração, remova ou comente em produção
+
+        $sql = "UPDATE professor SET 
+                    registroProfessor = :registroProfessor, 
+                    nome = :nome, 
+                    email = :email, 
+                    endereco = :endereco, 
+                    telefone = :telefone";
+        
         $params = [
-            ':registroProfessor' => $registro,
-            ':nome'              => $nome,
-            ':email'             => $email,
-            ':endereco'          => $endereco,
-            ':telefone'          => $telefone,
-            ':id'                => $id
+            ':registroProfessor' => $data['registroProfessor'],
+            ':nome'              => $data['nome'],
+            ':email'             => $data['email'],
+            ':endereco'          => $data['endereco'],
+            ':telefone'          => $data['telefone'],
+            ':id_professor'      => $data['id_professor'] // Usando id_professor da chave do array
         ];
 
-        if ($senha !== null && !empty($senha)) {
-            $hashSenha = password_hash($senha, PASSWORD_DEFAULT);
+        // Verifica se uma nova senha foi fornecida e não está vazia
+        if (isset($data['novaSenha']) && !empty($data['novaSenha'])) {
+            $hashSenha = password_hash($data['novaSenha'], PASSWORD_DEFAULT);
             $sql .= ", senha = :senha";
             $params[':senha'] = $hashSenha;
         }
 
-        $sql .= " WHERE id_professor = :id";
+        $sql .= " WHERE id_professor = :id_professor"; // Cláusula WHERE usando id_professor
 
         try {
             $stmt = $this->db->prepare($sql);
@@ -97,7 +109,6 @@ class ProfessorModel {
             return false;
         }
     }
-
     /**
      * Deleta um professor do banco de dados.
      * @param int $id O ID do professor a ser deletado.
