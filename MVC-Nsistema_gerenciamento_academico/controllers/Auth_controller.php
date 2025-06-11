@@ -67,6 +67,19 @@ class Auth_controller {
         require_once __DIR__ . '/../views/auth/register_professor.php';
     }
 
+    public function showEditForm($id) {
+        if (isset($id)) {
+            $professor = $this->professorModel->getProfessorById($id);
+            if ($professor) {
+                include __DIR__ . '/../views/auth/Register_professor.php';
+            } else {
+                displayErrorPage("Professor não encontrado para edição.", 'index.php?controller=professor&action=list');
+            }
+        } else {
+            displayErrorPage("ID do professor não especificado para edição.", 'index.php?controller=professor&action=list');
+        }
+    }
+
     public function registerProfessor() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $errors = $this->authModel->validateProfessorData($_POST);
@@ -75,8 +88,8 @@ class Auth_controller {
                 $isUpdating = false;
                 $professorData = $_POST; // Preserva os dados digitados para reexibir
                 //echo "<p style='color:red;'>Erros encontrados:</p>";
-                include __DIR__ . '/../views/professor/Create_edit.php';
-                //require_once __DIR__ . '/../views/auth/register_professor.php';
+                //include __DIR__ . '/../views/auth/register_professor.php';
+                require_once __DIR__ . '/../views/auth/register_professor.php';
                 return; // Para a execução para mostrar o formulário com erros
             }
 
@@ -100,13 +113,13 @@ class Auth_controller {
     public function registerAluno() {
         
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            //var_dump($_POST); // Para depuração, remova em produção
+            //exit;
             $errors = $this->authModel->validateAlunoData($_POST);
-
+            
             if (!empty($errors)) {
                 $isUpdating = false;
                 $alunoData = $_POST; // Preserva os dados digitados para reexibir
-                //echo "<p style='color:red;'>Erros encontrados:</p>";       
-                // **Definir $turmas antes de carregar a view**
                 $turmas = $this->authModel->getTurmas(); 
 
                 require_once __DIR__ . '/../views/auth/register_aluno.php';
@@ -125,5 +138,6 @@ class Auth_controller {
         }
   
     }
+
 }
 ?>
