@@ -104,15 +104,9 @@ $isUpdating = isset($questaoProvaData['id_questao']) && !empty($questaoProvaData
 
             <button type="submit"><?= $isUpdating ? 'Atualizar' : 'Cadastrar'; ?></button>
         </form>
-
-        <hr>
-        <?php if ($isUpdating): ?>
-            <a href="index.php?controller=questao_prova&action=list">Voltar à lista</a>
-        <?php else: ?>
-            <a href="index.php?controller=professor&action=showServicesPage">Serviços</a> 
-        <?php endif; ?>
-        
     </div>
+    <a href="index.php?controller=professor&action=showServicesPage">Serviços</a>
+    <hr>
 </body>
 <footer>
     <p>Desenvolvido por Juliana e Sander</p>

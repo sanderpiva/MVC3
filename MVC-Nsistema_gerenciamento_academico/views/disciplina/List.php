@@ -76,13 +76,14 @@ $error = isset($_GET['erros']) ? htmlspecialchars($_GET['erros']) : '';
                         <td><?= htmlspecialchars($disciplina['descricao']) ?></td>
                         <td><?= htmlspecialchars($disciplina['nome_turma_associada'] ?? 'N/A') ?></td>
                         <td id='buttons-wrapper'>
-                            <a href="index.php?controller=disciplina&action=showEditForm&id=<?= htmlspecialchars($disciplina['id_disciplina']) ?>">
+                            <!-- Botão Atualizar agora usa a função JS -->
+                            <button onclick="atualizarDisciplina(<?= htmlspecialchars($disciplina['id_disciplina']) ?>)">
                                 <i class='fa-solid fa-pen'></i> Atualizar
-                            </a>
-                            <a href="index.php?controller=disciplina&action=delete&id=<?= htmlspecialchars($disciplina['id_disciplina']) ?>"
-                               onclick="return confirm('Tem certeza que deseja excluir a disciplina com ID: <?= htmlspecialchars($disciplina['id_disciplina']) ?>?');">
+                            </button>
+                            <!-- Botão Excluir agora usa a função JS -->
+                            <button onclick="excluirDisciplina(<?= htmlspecialchars($disciplina['id_disciplina']) ?>)">
                                 <i class='fa-solid fa-trash'></i> Excluir
-                            </a>
+                            </button>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -94,7 +95,19 @@ $error = isset($_GET['erros']) ? htmlspecialchars($_GET['erros']) : '';
     <a href="index.php?controller=professor&action=showServicesPage">Voltar aos Serviços</a>
     <hr>
     <a href="index.php?controller=auth&action=logout" style="margin-left:20px;">Logout →</a>
+     <!-- Adicione a seção de script para as funções JavaScript -->
+    <script>
+        function atualizarDisciplina(id_disciplina) {
+            window.location.href = "index.php?controller=disciplina&action=showEditForm&id=" + id_disciplina;
+        }
 
+        function excluirDisciplina(id_disciplina) {
+            const confirmar = confirm("Tem certeza que deseja excluir a disciplina com ID: " + id_disciplina + "?");
+            if (confirmar) {
+                window.location.href = "index.php?controller=disciplina&action=delete&id=" + id_disciplina;
+            }
+        }
+    </script>
     </body>
 <footer>
     <p>Desenvolvido por Juliana e Sander</p>

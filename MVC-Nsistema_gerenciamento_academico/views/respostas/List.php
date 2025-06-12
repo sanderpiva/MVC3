@@ -77,7 +77,9 @@ if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true || $_SESSION['ti
                     <td><?= htmlspecialchars($resposta['nome_disciplina']) ?></td>
                     <td><?= htmlspecialchars($resposta['nome_professor']) ?></td>
                     <td id='buttons-wrapper'>
+                         <!-- Botão Atualizar agora usa a função JS -->
                         <button onclick='atualizarResposta("<?= $id_resposta ?>")'><i class='fa-solid fa-pen'></i> Atualizar</button>
+                        <!-- Botão Excluir agora usa a função JS -->
                         <button onclick='excluirResposta("<?= $id_resposta ?>")'><i class='fa-solid fa-trash'></i> Excluir</button>
                     </td>
                 </tr>

@@ -55,7 +55,7 @@ $isUpdating = isset($provaData['id_prova']) && !empty($provaData['id_prova']);
                     <option value="">Selecione codigo disciplina</option>
                     <?php foreach ($disciplinas as $disciplina): ?>
                         <option value="<?= $disciplina['id_disciplina'] ?>">
-                            <?= htmlspecialchars($disciplina['codigoDisciplina'] ?? '') ?> - <?= htmlspecialchars($disciplina['nome'] ?? '') ?>
+                            <?= htmlspecialchars($disciplina['codigoDisciplina'] ?? '') ?> - <?= htmlspecialchars($disciplina['nome_professor'] ?? '') ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
@@ -65,7 +65,7 @@ $isUpdating = isset($provaData['id_prova']) && !empty($provaData['id_prova']);
             <label for="id_professor">Registro do Professor:</label>
             <?php if ($isUpdating): ?>
                 <!-- Mostra o nome do professor como texto -->
-                <input type="text" value="<?php echo htmlspecialchars($provaData['professor'] ?? 'N/A'); ?>" readonly required>
+                <input type="text" value="<?php echo htmlspecialchars($professores['registroProfessor'] ?? 'N/A'); ?>" readonly required>
     
                 <!-- Passa o ID ocultamente -->
                 <input type="hidden" name="id_professor" value="<?php echo htmlspecialchars($provaData['Disciplina_Professor_id_professor'] ?? ''); ?>">

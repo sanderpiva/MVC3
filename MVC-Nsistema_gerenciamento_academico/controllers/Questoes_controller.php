@@ -7,12 +7,12 @@ ini_set('display_startup_errors', '1');
 require_once __DIR__ . '/../models/Questoes_model.php';
 
 class Questoes_controller {
-    private $questaoProvaModel;
+    private $questoesModel;
     private $conexao;
 
     public function __construct($conexao) {
         $this->conexao = $conexao;
-        $this->questaoProvaModel = new QuestoesModel($this->conexao);
+        $this->questoesModel = new QuestoesModel($this->conexao);
 
         // Session check - essential for protected routes
         //checkUserAuth(); // This function should be defined in config/session.php
@@ -20,16 +20,16 @@ class Questoes_controller {
 
     public function list() {
         //handleLogout(); // Handle logout request if present
-        $questoes = $this->questaoProvaModel->getAllQuestoes();
+        $questoes = $this->questoesModel->getAllQuestoes();
         include __DIR__ . '/../views/questoes/List.php';
     }
 
     public function showCreateForm() {
         //handleLogout();
         $questaoProvaData = null; // No data for creation
-        $professores = $this->questaoProvaModel->getAllProfessores();
-        $disciplinas = $this->questaoProvaModel->getAllDisciplinas();
-        $provas = $this->questaoProvaModel->getAllProvas();
+        $professores = $this->questoesModel->getAllProfessores();
+        $disciplinas = $this->questoesModel->getAllDisciplinas();
+        $provas = $this->questoesModel->getAllProvas();
         $errors = []; // Initialize errors for the view
 
         // Build lookup maps for display purposes (similar to original form logic)
@@ -48,15 +48,15 @@ class Questoes_controller {
             return;
         }
 
-        $questaoProvaData = $this->questaoProvaModel->getQuestaoById($id);
+        $questaoProvaData = $this->questoesModel->getQuestaoById($id);
         if (!$questaoProvaData) {
             displayErrorPage("Questão da prova não encontrada para edição.", 'index.php?controller=questoes&action=list');
             return;
         }
 
-        $professores = $this->questaoProvaModel->getAllProfessores();
-        $disciplinas = $this->questaoProvaModel->getAllDisciplinas();
-        $provas = $this->questaoProvaModel->getAllProvas();
+        $professores = $this->questoesModel->getAllProfessores();
+        $disciplinas = $this->questoesModel->getAllDisciplinas();
+        $provas = $this->questoesModel->getAllProvas();
         $errors = []; // Initialize errors for the view
 
         // Build lookup maps for display purposes (similar to original form logic)
@@ -116,9 +116,9 @@ class Questoes_controller {
         if (!empty($errors)) {
             // If there are errors, reload the form with existing data and errors
             $questaoProvaData = $postData; // Pass submitted data back to form for sticky fields
-            $professores = $this->questaoProvaModel->getAllProfessores();
-            $disciplinas = $this->questaoProvaModel->getAllDisciplinas();
-            $provas = $this->questaoProvaModel->getAllProvas();
+            $professores = $this->questoesModel->getAllProfessores();
+            $disciplinas = $this->questoesModel->getAllDisciplinas();
+            $provas = $this->questoesModel->getAllProvas();
 
             // Re-build lookup maps for display
             $professorsLookup = [];
@@ -156,14 +156,14 @@ class Questoes_controller {
         try {
             if (isset($postData['id_questao']) && !empty($postData['id_questao'])) {
                 // Update existing question
-                if ($this->questaoProvaModel->updateQuestao($postData)) {
+                if ($this->questoesModel->updateQuestao($postData)) {
                     redirect('index.php?controller=questoes&action=list&message=' . urlencode("Questão atualizada com sucesso!"));
                 } else {
                     displayErrorPage("Erro ao atualizar questão.", 'index.php?controller=questoes&action=showEditForm&id=' . $postData['id_questao']);
                 }
             } else {
                 // Insert new question
-                if ($this->questaoProvaModel->insertQuestao($postData)) {
+                if ($this->questoesModel->insertQuestao($postData)) {
                     redirect('index.php?controller=questoes&action=list&message=' . urlencode("Questão cadastrada com sucesso!"));
                 } else {
                     displayErrorPage("Erro ao cadastrar questão.", 'index.php?controller=questoes&action=showCreateForm');
@@ -183,7 +183,7 @@ class Questoes_controller {
         }
 
         try {
-            if ($this->questaoProvaModel->deleteQuestao($id)) {
+            if ($this->questoesModel->deleteQuestao($id)) {
                 redirect('index.php?controller=questoes&action=list&message=' . urlencode("Questão excluída com sucesso!"));
             } else {
                 displayErrorPage("Erro ao excluir questão.", 'index.php?controller=questoes&action=list');
@@ -269,14 +269,13 @@ class Questoes_controller {
         'id_disciplina' => $disciplinaId,
         'id_professor' => $professorId
     ];
-
-    $this->questoesModel->insertQuestao($data);
+    
     // Chamar o método do modelo para criar a questão no banco de dados
-    /*
-    if ($this->questoesModel->createQuestao($codigoQuestao, $descricao, $tipoProva, $provaId, $disciplinaId, $professorId)) {
+    
+    if ($this->questoesModel->insertQuestao($data)) {
         redirect('index.php?controller=questoes&action=list&message=' . urlencode("Questão criada com sucesso!"));
     } else {
         displayErrorPage("Erro ao criar questão. Tente novamente.", 'index.php?controller=questoes&action=showCreateForm');
-    }*/
+    }
   }
 }

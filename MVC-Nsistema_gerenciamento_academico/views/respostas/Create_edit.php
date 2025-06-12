@@ -1,5 +1,51 @@
 <?php
-    $isUpdating = isset($respostaData['id_resposta']) && !empty($respostaData['id_resposta']);
+// views/resposta/Create_edit.php
+
+// AQUI ESTÁ A CORREÇÃO PRINCIPAL:
+// A variável $isUpdating deve verificar 'id_respostas', que é a chave primária correta do seu banco de dados.
+$isUpdating = isset($respostaData['id_respostas']) && !empty($respostaData['id_respostas']);
+
+// Garante que as variáveis para os dropdowns e erros estão definidas,
+// para evitar "Undefined variable" se o controller não as passar em todos os casos (ex: primeira carga do form de criação).
+$errors = $errors ?? [];
+$questoes = $questoes ?? [];
+$provas = $provas ?? [];
+$disciplinas = $disciplinas ?? [];
+$professores = $professores ?? [];
+$alunos = $alunos ?? [];
+$professorsLookup = $professorsLookup ?? [];
+
+// Variáveis para as máscaras (campos readonly no modo de atualização)
+// Elas devem ser populadas pelo Controller, mas garantimos um valor padrão aqui.
+$descricaoQuestaoAtual = $descricaoQuestaoAtual ?? 'N/A';
+$codigoProvaAtual = $codigoProvaAtual ?? 'N/A';
+$nomeDisciplinaAtual = $nomeDisciplinaAtual ?? 'N/A';
+$nomeProfessorAtual = $nomeProfessorAtual ?? 'N/A';
+$nomeAlunoAtual = $nomeAlunoAtual ?? 'N/A';
+
+// Função auxiliar para obter o valor de um campo, priorizando POST (em caso de erro)
+// ou os dados existentes (para atualização), ou vazio.
+function getFormValue($data, $post, $key) {
+    // Se há dados de POST (submissão com erro), use-os.
+    if (isset($post[$key])) {
+        return htmlspecialchars($post[$key]);
+    }
+    // Caso contrário, se há dados existentes (modo de atualização), use-os.
+    if (isset($data[$key])) {
+        return htmlspecialchars($data[$key]);
+    }
+    // Caso contrário, vazio.
+    return '';
+}
+
+// Para campos de seleção (dropdowns), precisamos do ID selecionado para pré-selecionar
+// Prioriza o POST (em caso de erro de submissão), senão os dados existentes.
+$selectedQuestaoId = $_POST['id_questao'] ?? ($respostaData['Questoes_id_questao'] ?? '');
+$selectedProvaId = $_POST['id_prova'] ?? ($respostaData['Questoes_Prova_id_prova'] ?? '');
+$selectedDisciplinaId = $_POST['id_disciplina'] ?? ($respostaData['Questoes_Prova_Disciplina_id_disciplina'] ?? '');
+$selectedProfessorId = $_POST['id_professor'] ?? ($respostaData['Questoes_Prova_Disciplina_Professor_id_professor'] ?? '');
+$selectedAlunoId = $_POST['id_aluno'] ?? ($respostaData['Aluno_id_aluno'] ?? '');
+
 ?>
 
 <!DOCTYPE html>
@@ -27,40 +73,43 @@
 
             <label for="codigoRespostas">Código Respostas:</label>
             <?php if ($isUpdating): ?>
-                <input type="text" name="codigoRespostas" id="codigoRespostas" placeholder="" value="<?= htmlspecialchars($respostaData['codigoRespostas'] ?? '') ?>" required>
-                <input type="hidden" name="id_resposta" value="<?= htmlspecialchars($respostaData['id_resposta'] ?? '') ?>">
+                <input type="text" name="codigoRespostas" id="codigoRespostas" placeholder="" value="<?= getFormValue($respostaData, $_POST, 'codigoRespostas') ?>" required>
+                <!-- AQUI TAMBÉM: o name do hidden input deve ser 'id_respostas' -->
+                <input type="hidden" name="id_respostas" value="<?= htmlspecialchars($respostaData['id_respostas'] ?? '') ?>">
             <?php else: ?>
-                <input type="text" name="codigoRespostas" id="codigoRespostas" placeholder="" value="<?= htmlspecialchars($respostaData['codigoRespostas'] ?? '') ?>" required>
+                <input type="text" name="codigoRespostas" id="codigoRespostas" placeholder="" value="<?= getFormValue($respostaData, $_POST, 'codigoRespostas') ?>" required>
             <?php endif; ?>
             <hr>
 
             <label for="respostaDada">Resposta Dada:</label>
-            <input type="text" name="respostaDada" id="respostaDada" placeholder="" value="<?= htmlspecialchars($respostaData['respostaDada'] ?? '') ?>" required maxlength="1">
+            <input type="text" name="respostaDada" id="respostaDada" placeholder="" value="<?= getFormValue($respostaData, $_POST, 'respostaDada') ?>" required maxlength="1">
             <hr>
 
             <label>Acertou?</label>
             <div>
-                <input type="radio" id="acertouSim" name="acertou" value="1" <?= (isset($respostaData['acertou']) && $respostaData['acertou'] == 1) ? 'checked' : ''; ?> required>
+                <input type="radio" id="acertouSim" name="acertou" value="1" 
+                    <?= (getFormValue($respostaData, $_POST, 'acertou') == '1') ? 'checked' : ''; ?> required>
                 <label for="acertouSim">Sim</label>
-                <input type="radio" id="acertouNao" name="acertou" value="0" <?= (isset($respostaData['acertou']) && $respostaData['acertou'] == 0) ? 'checked' : ''; ?> required>
+                <input type="radio" id="acertouNao" name="acertou" value="0" 
+                    <?= (getFormValue($respostaData, $_POST, 'acertou') == '0') ? 'checked' : ''; ?> required>
                 <label for="acertouNao">Não</label>
             </div>
             <hr>
 
             <label for="nota">Nota:</label>
-            <input type="number" step="0.01" name="nota" id="nota" placeholder="" value="<?= htmlspecialchars($respostaData['nota'] ?? '') ?>" required min="0">
+            <input type="number" step="0.01" name="nota" id="nota" placeholder="" value="<?= getFormValue($respostaData, $_POST, 'nota') ?>" required min="0">
             <hr>
 
             <label for="id_questao">Descrição da Questão:</label>
             <?php if ($isUpdating): ?>
-                <input type="text" value="<?= htmlspecialchars($descricaoQuestaoAtual ?? '') ?>" readonly required>
+                <input type="text" value="<?= htmlspecialchars($descricaoQuestaoAtual) ?>" readonly required>
                 <input type="hidden" name="id_questao" value="<?= htmlspecialchars($respostaData['Questoes_id_questao'] ?? '') ?>">
             <?php else: ?>
                 <select name="id_questao" id="id_questao" required>
                     <option value="">Selecione a descrição da questão</option>
                     <?php foreach ($questoes as $questao): ?>
                         <option value="<?= htmlspecialchars($questao['id_questao']) ?>"
-                            <?= (isset($respostaData['id_questao']) && $respostaData['id_questao'] == $questao['id_questao']) ? 'selected' : '' ?>>
+                            <?= ($selectedQuestaoId == $questao['id_questao']) ? 'selected' : '' ?>>
                             <?= htmlspecialchars($questao['descricao']) ?>
                         </option>
                     <?php endforeach; ?>
@@ -70,14 +119,14 @@
 
             <label for="id_prova">Código Prova:</label>
             <?php if ($isUpdating): ?>
-                <input type="text" value="<?= htmlspecialchars($codigoProvaAtual ?? '') ?>" readonly required>
+                <input type="text" value="<?= htmlspecialchars($codigoProvaAtual) ?>" readonly required>
                 <input type="hidden" name="id_prova" value="<?= htmlspecialchars($respostaData['Questoes_Prova_id_prova'] ?? '') ?>">
             <?php else: ?>
                 <select name="id_prova" id="id_prova" required>
                     <option value="">Selecione uma prova</option>
                     <?php foreach ($provas as $prova): ?>
                         <option value="<?= htmlspecialchars($prova['id_prova']) ?>"
-                            <?= (isset($respostaData['id_prova']) && $respostaData['id_prova'] == $prova['id_prova']) ? 'selected' : '' ?>>
+                            <?= ($selectedProvaId == $prova['id_prova']) ? 'selected' : '' ?>>
                             <?= htmlspecialchars($prova['codigoProva']) ?>
                         </option>
                     <?php endforeach; ?>
@@ -87,7 +136,7 @@
 
             <label for="id_disciplina">Disciplina:</label>
             <?php if ($isUpdating): ?>
-                <input type="text" value="<?= htmlspecialchars($nomeDisciplinaAtual ?? '') ?>" readonly required>
+                <input type="text" value="<?= htmlspecialchars($nomeDisciplinaAtual) ?>" readonly required>
                 <input type="hidden" name="id_disciplina" value="<?= htmlspecialchars($respostaData['Questoes_Prova_Disciplina_id_disciplina'] ?? '') ?>">
                 <hr>
             <?php else: ?>
@@ -99,7 +148,7 @@
                             $professorNome = $professorsLookup[$professorId] ?? 'Professor Desconhecido';
                         ?>
                         <option value="<?= htmlspecialchars($disciplina['id_disciplina']) ?>"
-                            <?= (isset($respostaData['id_disciplina']) && $respostaData['id_disciplina'] == $disciplina['id_disciplina']) ? 'selected' : '' ?>>
+                            <?= ($selectedDisciplinaId == $disciplina['id_disciplina']) ? 'selected' : '' ?>>
                             <?= htmlspecialchars($disciplina['nome']) . ' (' . htmlspecialchars($professorNome) . ')' ?>
                         </option>
                     <?php endforeach; ?>
@@ -109,7 +158,7 @@
 
             <label for="id_professor">Professor:</label>
             <?php if ($isUpdating): ?>
-                <input type="text" value="<?= htmlspecialchars($nomeProfessorAtual ?? '') ?>" readonly required>
+                <input type="text" value="<?= htmlspecialchars($nomeProfessorAtual) ?>" readonly required>
                 <input type="hidden" name="id_professor" value="<?= htmlspecialchars($respostaData['Questoes_Prova_Disciplina_Professor_id_professor'] ?? '') ?>">
                 <hr>
             <?php else: ?>
@@ -117,7 +166,7 @@
                     <option value="">Selecione um professor</option>
                     <?php foreach ($professores as $professor): ?>
                         <option value="<?= htmlspecialchars($professor['id_professor']) ?>"
-                            <?= (isset($respostaData['id_professor']) && $respostaData['id_professor'] == $professor['id_professor']) ? 'selected' : '' ?>>
+                            <?= ($selectedProfessorId == $professor['id_professor']) ? 'selected' : '' ?>>
                             <?= htmlspecialchars($professor['nome']) ?>
                         </option>
                     <?php endforeach; ?>
@@ -127,7 +176,7 @@
 
             <label for="id_aluno">Aluno:</label>
             <?php if ($isUpdating): ?>
-                <input type="text" value="<?= htmlspecialchars($nomeAlunoAtual ?? '') ?>" readonly required>
+                <input type="text" value="<?= htmlspecialchars($nomeAlunoAtual) ?>" readonly required>
                 <input type="hidden" name="id_aluno" value="<?= htmlspecialchars($respostaData['Aluno_id_aluno'] ?? '') ?>">
                 <hr>
             <?php else: ?>
@@ -135,7 +184,7 @@
                     <option value="">Selecione um aluno</option>
                     <?php foreach ($alunos as $aluno): ?>
                         <option value="<?= htmlspecialchars($aluno['id_aluno']) ?>"
-                            <?= (isset($respostaData['id_aluno']) && $respostaData['id_aluno'] == $aluno['id_aluno']) ? 'selected' : '' ?>>
+                            <?= ($selectedAlunoId == $aluno['id_aluno']) ? 'selected' : '' ?>>
                             <?= htmlspecialchars($aluno['nome']) ?>
                         </option>
                     <?php endforeach; ?>
@@ -144,11 +193,6 @@
             <hr>
             <button type="submit"><?= $isUpdating ? 'Atualizar' : 'Cadastrar'; ?></button>
         </form>
-
-        <hr>
-        <?php if ($isUpdating): ?>
-            <a href="index.php?controller=respostas&action=list">Voltar à lista</a>
-        <?php endif; ?>
     </div>
     <a href="index.php?controller=professor&action=showServicesPage">Serviços</a>
     <hr>

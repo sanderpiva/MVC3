@@ -70,8 +70,14 @@ if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true || $_SESSION['ti
                         <td><?= htmlspecialchars($aluno['cidade']) ?></td>
                         <td><?= htmlspecialchars($aluno['telefone']) ?></td>
                         <td id='buttons-wrapper'>
-                            <a href="index.php?controller=aluno&action=showEditForm&id=<?= htmlspecialchars($aluno['id_aluno']) ?>" class="button-link edit-button"><i class='fa-solid fa-pen'></i> Atualizar</a>
-                            <a href="index.php?controller=aluno&action=delete&id=<?= htmlspecialchars($aluno['id_aluno']) ?>" class="button-link delete-button" onclick="return confirm('Tem certeza que deseja excluir o aluno <?= htmlspecialchars($aluno['nome']) ?> (Matrícula: <?= htmlspecialchars($aluno['matricula']) ?>)?');"><i class='fa-solid fa-trash'></i> Excluir</a>
+                            <!-- Botão Atualizar agora usa a função JS -->
+                            <button onclick="atualizarAluno(<?= htmlspecialchars($aluno['id_aluno']) ?>)" class="edit-button">
+                                <i class='fa-solid fa-pen'></i> Atualizar
+                            </button>
+                            <!-- Botão Excluir agora usa a função JS -->
+                            <button onclick="excluirAluno(<?= htmlspecialchars($aluno['id_aluno']) ?>, '<?= htmlspecialchars($aluno['nome']) ?>', '<?= htmlspecialchars($aluno['matricula']) ?>')" class="delete-button">
+                                <i class='fa-solid fa-trash'></i> Excluir
+                            </button>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -87,7 +93,20 @@ if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true || $_SESSION['ti
     <a href="index.php?controller=professor&action=showServicesPage">← Voltar aos Serviços</a>
     <hr>
     <a href="index.php?controller=auth&action=logout" style="margin-left:20px;">Logout →</a>
+ <!-- Adicione a seção de script para as funções JavaScript -->
+    <script>
+        function atualizarAluno(id_aluno) {
+            window.location.href = "index.php?controller=aluno&action=showEditForm&id=" + id_aluno;
+        }
 
+        function excluirAluno(id_aluno, nome_aluno, matricula_aluno) {
+            // A confirmação agora é tratada DENTRO da função JavaScript
+            const confirmar = confirm("Tem certeza que deseja excluir o aluno " + nome_aluno + " (Matrícula: " + matricula_aluno + ")?");
+            if (confirmar) {
+                window.location.href = "index.php?controller=aluno&action=delete&id=" + id_aluno;
+            }
+        }
+    </script>
 </body>
 <footer>
     <p>Desenvolvido por Juliana e Sander</p>

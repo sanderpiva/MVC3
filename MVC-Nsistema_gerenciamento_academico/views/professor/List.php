@@ -62,8 +62,14 @@ if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true || $_SESSION['ti
                         <td><?= htmlspecialchars($professor['endereco']) ?></td>
                         <td><?= htmlspecialchars($professor['telefone']) ?></td>
                         <td id='buttons-wrapper'>
-                            <a href="index.php?controller=professor&action=showEditForm&id=<?= htmlspecialchars($professor['id_professor']) ?>" class="button-link edit-button"><i class='fa-solid fa-pen'></i> Atualizar</a>
-                            <a href="index.php?controller=professor&action=delete&id=<?= htmlspecialchars($professor['id_professor']) ?>" class="button-link delete-button" onclick="return confirm('Tem certeza que deseja excluir o professor <?= htmlspecialchars($professor['nome']) ?> (ID: <?= htmlspecialchars($professor['id_professor']) ?>)?');"><i class='fa-solid fa-trash'></i> Excluir</a>
+                            <!-- Botão Atualizar agora usa a função JS -->
+                            <button onclick="atualizarProfessor(<?= htmlspecialchars($professor['id_professor']) ?>)" class="edit-button">
+                                <i class='fa-solid fa-pen'></i> Atualizar
+                            </button>
+                            <!-- Botão Excluir agora usa a função JS -->
+                            <button onclick="excluirProfessor(<?= htmlspecialchars($professor['id_professor']) ?>, '<?= htmlspecialchars($professor['nome']) ?>')" class="delete-button">
+                                <i class='fa-solid fa-trash'></i> Excluir
+                            </button>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -79,7 +85,19 @@ if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true || $_SESSION['ti
     <a href="index.php?controller=professor&action=showServicesPage">Voltar aos Serviços</a>
     <hr>
     <a href="index.php?controller=auth&action=logout" style="margin-left:20px;">Logout →</a>
+<!-- Adicione a seção de script para as funções JavaScript -->
+    <script>
+        function atualizarProfessor(id_professor) {
+            window.location.href = "index.php?controller=professor&action=showEditForm&id=" + id_professor;
+        }
 
+        function excluirProfessor(id_professor, nome_professor) {
+            const confirmar = confirm("Tem certeza que deseja excluir o professor " + nome_professor + " (ID: " + id_professor + ")?");
+            if (confirmar) {
+                window.location.href = "index.php?controller=professor&action=delete&id=" + id_professor;
+            }
+        }
+    </script>
 </body>
 <footer>
     <p>Desenvolvido por Juliana e Sander</p>

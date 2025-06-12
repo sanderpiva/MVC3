@@ -77,13 +77,14 @@ $error = isset($_GET['erros']) ? htmlspecialchars($_GET['erros']) : '';
                         <td><?= htmlspecialchars($questao['nome_disciplina']) ?></td>
                         <td><?= htmlspecialchars($questao['nome_professor']) ?></td>
                         <td id='buttons-wrapper'>
-                            <a href="index.php?controller=questoes&action=showEditForm&id=<?= htmlspecialchars($questao['id_questao']) ?>">
+                            <!-- Botão Atualizar agora usa a função JS -->
+                            <button onclick="atualizarQuestao(<?= htmlspecialchars($questao['id_questao']) ?>)">
                                 <i class='fa-solid fa-pen'></i> Atualizar
-                            </a>
-                            <a href="index.php?controller=questoes&action=delete&id=<?= htmlspecialchars($questao['id_questao']) ?>"
-                               onclick="return confirm('Tem certeza que deseja excluir a questão da prova com ID: <?= htmlspecialchars($questao['id_questao']) ?>?');">
+                            </button>
+                            <!-- Botão Excluir agora usa a função JS -->
+                            <button onclick="excluirQuestao(<?= htmlspecialchars($questao['id_questao']) ?>)">
                                 <i class='fa-solid fa-trash'></i> Excluir
-                            </a>
+                            </button>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -95,7 +96,19 @@ $error = isset($_GET['erros']) ? htmlspecialchars($_GET['erros']) : '';
     <a href="index.php?controller=professor&action=showServicesPage">Voltar aos Serviços</a>
     <hr>
     <a href="index.php?controller=auth&action=logout" style="margin-left:20px;">Logout →</a>
+<!-- Adicione a seção de script para as funções JavaScript -->
+    <script>
+        function atualizarQuestao(id_questao) {
+            window.location.href = "index.php?controller=questoes&action=showEditForm&id=" + id_questao;
+        }
 
+        function excluirQuestao(id_questao) {
+            const confirmar = confirm("Tem certeza que deseja excluir a questão da prova com ID: " + id_questao + "?");
+            if (confirmar) {
+                window.location.href = "index.php?controller=questoes&action=delete&id=" + id_questao;
+            }
+        }
+    </script>
 </body>
 <footer>
     <p>Desenvolvido por Juliana e Sander</p>

@@ -11,10 +11,20 @@ require_once __DIR__ . '/../models/Respostas_model.php';
 class Respostas_controller {
     private $respostaModel;
     private $conexao;
+    private $questoesModel;
+    private $provaModel;
+    private $disciplinaModel;
+    private $professorModel;
+    private $alunoModel;
 
     public function __construct($conexao) {
         $this->conexao = $conexao;
         $this->respostaModel = new RespostaModel($this->conexao);
+        $this->questoesModel = new QuestoesModel($conexao); // INSTANCIADO
+        $this->provaModel = new ProvaModel($conexao);       // INSTANCIADO
+        $this->disciplinaModel = new DisciplinaModel($conexao); // INSTANCIADO
+        $this->professorModel = new ProfessorModel($conexao);   // INSTANCIADO
+        $this->alunoModel = new AlunoModel($conexao); 
 
         
     }
@@ -59,7 +69,7 @@ class Respostas_controller {
     }
 
     // Shows the form for editing an existing response
-    public function showEditForm($id) {
+    /*public function showEditForm($id) {
         if (!isset($id)) {
             $this->displayErrorPage("ID da resposta não especificado para edição.", 'index.php?controller=respostas&action=list');
             return;
@@ -93,7 +103,70 @@ class Respostas_controller {
         $errors = []; // Initialize errors for the view
 
         include __DIR__ . '/../views/respostas/Create_edit.php';
+    }*/
+
+    public function showEditForm($id) {
+        if (!isset($id)) {
+            displayErrorPage("ID da resposta não especificado para edição.", 'index.php?controller=respostas&action=list');
+            return;
+        }
+
+        // CHAVE PARA O SUCESSO: AQUI O MODELO DEVE RETORNAR TUDO (r.* e os JOINs)
+        $respostaData = $this->respostaModel->getRespostaById($id);
+
+        // --- PONTO DE DEPURACAO CRITICO 1 ---
+        // Verifique se $respostaData tem 'id_respostas' e todas as chaves de máscara
+        //echo "<h3>DEBUG: RespostaData (Diretamente do Modelo) em showEditForm</h3>";
+        //var_dump($respostaData);
+        //echo "<hr>";
+        // --- FIM PONTO DE DEPURACAO 1 ---
+
+
+        if (!$respostaData) {
+            displayErrorPage("Resposta não encontrada para edição.", 'index.php?controller=respostas&action=list');
+            return;
+        }
+
+        // 1. Carregue todas as listas para os dropdowns (modo de criação / repopulação de erro)
+        // Isso é necessário mesmo para o modo de edição, caso o formulário seja usado para "criação" ou repopulação.
+        $professores = $this->professorModel->getAllProfessores(); // Use o modelo de Professor
+        $disciplinas = $this->disciplinaModel->getAllDisciplinas(); // Use o modelo de Disciplina
+        $provas = $this->provaModel->getAllProvas();             // Use o modelo de Prova
+        $questoes = $this->questoesModel->getAllQuestoes();       // Use o modelo de Questoes
+        $alunos = $this->alunoModel->getAllAlunos();             // Use o modelo de Aluno
+
+        // 2. Crie o lookup de professores (se necessário para a view)
+        $professorsLookup = [];
+        foreach ($professores as $professor) {
+            $professorsLookup[$professor['id_professor']] = $professor['nome'];
+        }
+
+        // 3. Popule as variáveis de "máscara" usando os dados JÁ RETORNADOS pelo getRespostaById
+        //    (os aliases que definimos no SELECT do modelo)
+        $descricaoQuestaoAtual = $respostaData['descricao_questao_completa'] ?? 'N/A';
+        $codigoProvaAtual = $respostaData['codigo_prova_completa'] ?? 'N/A';
+        $nomeDisciplinaAtual = $respostaData['nome_disciplina_completa'] ?? 'N/A';
+        $nomeProfessorAtual = $respostaData['nome_professor_completa'] ?? 'N/A';
+        $nomeAlunoAtual = $respostaData['nome_aluno_completa'] ?? 'N/A';
+
+        $errors = []; // Initialize errors for the view (se houver erros de validação na submissão anterior)
+
+        // --- PONTO DE DEPURACAO CRITICO 2 ---
+        // Verifique se $isUpdating (calculado na view) será true e se as máscaras estão populadas
+        //echo "<h3>DEBUG: Variáveis para a View em showEditForm (Antes de Incluir)</h3>";
+        //echo "respostaData['id_respostas'] (para isUpdating): "; var_dump($respostaData['id_respostas'] ?? 'Não definido');
+        //echo "descricaoQuestaoAtual: "; var_dump($descricaoQuestaoAtual);
+        //echo "codigoProvaAtual: "; var_dump($codigoProvaAtual);
+        //echo "nomeDisciplinaAtual: "; var_dump($nomeDisciplinaAtual);
+        //echo "nomeProfessorAtual: "; var_dump($nomeProfessorAtual);
+        //echo "nomeAlunoAtual: "; var_dump($nomeAlunoAtual);
+        //echo "<hr>";
+        // --- FIM PONTO DE DEPURACAO 2 ---
+
+        // Inclua a view
+        include __DIR__ . '/../views/respostas/Create_edit.php';
     }
+
 
     // Handles the submission for creating a new response
     public function handleCreatePost($postData) {

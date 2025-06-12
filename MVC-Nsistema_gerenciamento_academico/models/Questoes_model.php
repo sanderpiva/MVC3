@@ -14,35 +14,35 @@ class QuestoesModel {
     public function insertQuestao(array $data) {
         $sql = "INSERT INTO questoes (codigoQuestao, descricao, tipo_prova, Prova_id_prova, Prova_Disciplina_id_disciplina, Prova_Disciplina_Professor_id_professor)
                 VALUES (:codigo, :descricao, :tipo, :id_prova, :id_disciplina, :id_professor)";
-        $stmt = $this->db->prepare($sql);
-        return $stmt->execute([
-            ':codigo' => $data['codigoQuestaoProva'],
-            ':descricao' => $data['descricao_questao'],
-            ':tipo' => $data['tipo_prova'],
-            ':id_prova' => $data['id_prova'],
-            ':id_disciplina' => $data['id_disciplina'],
-            ':id_professor' => $data['id_professor']
-        ]);
-    }
+        
+        try {
+            $stmt = $this->db->prepare($sql);
+            
+            // --- PONTO DE DEPURACAO NO MODEL (temporário) ---
+            // Você pode logar os dados que estão sendo enviados para depuração
+            // error_log("Dados para insertQuestao: " . print_r($data, true));
+            // --- FIM PONTO DE DEPURACAO ---
 
-    public function createQuestao($codigoQuestao, $descricao, $tipoProva, $provaId, $disciplinaId, $professorId) {
-    try {
-        $stmt = $this->db->prepare("
-            INSERT INTO questao (codigoQuestao, descricao, tipo_prova, Prova_id_prova, Prova_Disciplina_id_disciplina, Prova_Disciplina_Professor_id_professor)
-            VALUES (:codigoQuestao, :descricao, :tipoProva, :provaId, :disciplinaId, :professorId)
-        ");
-        return $stmt->execute([
-            ':codigoQuestao' => $codigoQuestao,
-            ':descricao' => $descricao,
-            ':tipoProva' => $tipoProva,
-            ':provaId' => $provaId,
-            ':disciplinaId' => $disciplinaId,
-            ':professorId' => $professorId
-        ]);
+            $success = $stmt->execute([
+                ':codigo' => $data['codigoQuestaoProva'], // Verifique se esta chave existe no $data e é o nome da coluna
+                ':descricao' => $data['descricao_questao'], // Verifique se esta chave existe no $data e é o nome da coluna
+                ':tipo' => $data['tipo_prova'], // Verifique se esta chave existe no $data
+                ':id_prova' => $data['id_prova'], // Verifique se esta chave existe no $data
+                ':id_disciplina' => $data['id_disciplina'], // Verifique se esta chave existe no $data
+                ':id_professor' => $data['id_professor'] // Verifique se esta chave existe no $data
+            ]);
+
+            return $success; // Retorna true ou false
         } catch (PDOException $e) {
-            error_log("Erro ao criar questão: " . $e->getMessage());
+            // --- PONTO DE DEPURACAO CRITICO NO MODEL ---
+            // Log do erro completo para ajudar na depuração.
+            error_log("Erro de PDO ao inserir questão: " . $e->getMessage() . " | SQLSTATE: " . $e->getCode());
+            // --- FIM PONTO DE DEPURACAO ---
+
+            // Você pode retornar false ou um código de erro específico para o controller
             return false;
         }
+     
     }
 
     public function updateQuestao(array $data) {
@@ -109,9 +109,7 @@ class QuestoesModel {
     }
 
     public function getAllProvas() {
-        // You might want to adjust this query to include more info if 'professor' is just a string
-        // If 'professor' in 'prova' table is actually a foreign key to 'id_professor' in 'professor' table, you'd join them.
-        // For now, assuming 'professor' in 'prova' table is a direct string field.
+        
         return $this->db->query("SELECT * FROM prova")->fetchAll(PDO::FETCH_ASSOC);
     }
 

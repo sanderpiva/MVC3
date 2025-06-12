@@ -48,10 +48,11 @@ if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true || $_SESSION['ti
                 <td><?= htmlspecialchars($turma['codigoTurma']) ?></td>
                 <td><?= htmlspecialchars($turma['nomeTurma']) ?></td>
                 <td>
-                    <a href="index.php?controller=turma&action=showEditForm&id=<?= $turma['id_turma'] ?>">Atualizar - </a>
+                    <!-- Botão Atualizar agora usa a função JS -->
+                    <button onclick="atualizarTurma(<?= htmlspecialchars($turma['id_turma']) ?>)"><i class='fa-solid fa-pen'></i> Atualizar</button>
                     
-                    <a href="index.php?controller=turma&action=delete&id=<?= $turma['id_turma'] ?>" onclick="return confirm('Tem certeza ? id = ' + '<?= $turma['id_turma'] ?>');">Excluir</a>       
-                
+                    <!-- Botão Excluir agora usa a função JS -->
+                    <button onclick="excluirTurma(<?= htmlspecialchars($turma['id_turma']) ?>)"><i class='fa-solid fa-trash'></i> Excluir</button>
                 </td>
             </tr>
         <?php endforeach; ?>
@@ -62,7 +63,19 @@ if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true || $_SESSION['ti
 <a href="index.php?controller=professor&action=showServicesPage">Voltar ao Serviços</a>
 <br><hr>
 <a href="index.php?controller=auth&action=logout" style="margin-left:20px;">Logout →</a>
+<!-- Adicione a seção de script para as funções JavaScript -->
+<script>
+    function atualizarTurma(id_turma) {
+        window.location.href = "index.php?controller=turma&action=showEditForm&id=" + id_turma;
+    }
 
+    function excluirTurma(id_turma) {
+        const confirmar = confirm("Tem certeza que deseja excluir a turma com ID: " + id_turma + "?");
+        if (confirmar) {
+            window.location.href = "index.php?controller=turma&action=delete&id=" + id_turma;
+        }
+    }
+</script>
 </body>
 <footer>
     <p>Desenvolvido por Juliana e Sander</p>

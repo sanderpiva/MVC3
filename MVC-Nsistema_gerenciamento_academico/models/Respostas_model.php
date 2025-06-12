@@ -33,11 +33,39 @@ class RespostaModel {
         $stmt = $this->db->query("SELECT * FROM aluno");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-
+    /*
     public function getRespostaById($id) {
         $stmt = $this->db->prepare("SELECT * FROM respostas WHERE id_respostas = :id");
         $stmt->execute([':id' => $id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
+    }*/
+
+    public function getRespostaById($id) {
+        $query = "
+            SELECT 
+                r.*, -- Seleciona todas as colunas da tabela respostas (inclui todas as FKs como Questoes_id_questao, Aluno_id_aluno, etc.)
+                q.descricao AS descricao_questao_completa, -- ALIAS para a descrição da questão
+                p.codigoProva AS codigo_prova_completa,   -- ALIAS para o código da prova
+                d.nome AS nome_disciplina_completa,      -- ALIAS para o nome da disciplina
+                prof.nome AS nome_professor_completa,    -- ALIAS para o nome do professor
+                a.nome AS nome_aluno_completa            -- ALIAS para o nome do aluno
+            FROM 
+                respostas r
+            JOIN questoes q ON r.Questoes_id_questao = q.id_questao
+            JOIN prova p ON r.Questoes_Prova_id_prova = p.id_prova
+            JOIN disciplina d ON r.Questoes_Prova_Disciplina_id_disciplina = d.id_disciplina
+            JOIN professor prof ON r.Questoes_Prova_Disciplina_Professor_id_professor = prof.id_professor
+            JOIN aluno a ON r.Aluno_id_aluno = a.id_aluno
+            WHERE 
+                r.id_respostas = :id_respostas"; // Corrigido de ':id' para ':id_respostas' e também na query
+        
+        $stmt = $this->db->prepare($query);
+        $stmt->execute([':id_respostas' => $id]); // Corrigido de ':id' para ':id_respostas'
+        
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        // ... (resto do método) ...
+        return $result;
     }
 
     public function getQuestaoDescricaoById($id) {

@@ -37,12 +37,29 @@ class TurmaModel {
         ]);
     }
 
+    /*
     public function deleteTurma($id) {
         // Adicione isso para confirmar que o ID chegou ao modelo
         error_log("DEBUG: deleteTurma no modelo - Tentando excluir ID: " . $id);
 
         $stmt = $this->db->prepare("DELETE FROM turma WHERE id_turma = :id");
         return $stmt->execute([':id' => $id]);
+    }*/
+
+    public function deleteTurma($id) {
+        try {
+            $sql = "DELETE FROM turma WHERE id_turma = :id";
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            return $stmt->execute([':id' => $id]);
+        } catch (PDOException $e) {
+            if ($e->getCode() == '23000' && strpos($e->getMessage(), '1451') !== false) {
+                error_log("Tentativa de excluir turma com FKs vinculadas (ID: {$id}): " . $e->getMessage());
+                return false; 
+            } else {
+                throw $e;
+            }
+        }
     }
 }
 ?>

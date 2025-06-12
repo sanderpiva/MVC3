@@ -53,7 +53,7 @@ $isUpdating = isset($disciplinaData['id_disciplina']) && !empty($disciplinaData[
             <input type="text" name="semestre_periodo" id="semestre_periodo" placeholder="Digite o semestre/período" value="<?= htmlspecialchars($disciplinaData['semestre_periodo'] ?? '') ?>" required>
             <hr>
 
-            <label for="Professor_id_professor">Professor:</label>
+            <label for="Professor_id_professor">Selecione o registro do Professor:</label>
             <select name="Professor_id_professor" id="Professor_id_professor" required>
                 <option value="">Selecione um professor</option>
                 <?php foreach ($professores as $professor): ?>

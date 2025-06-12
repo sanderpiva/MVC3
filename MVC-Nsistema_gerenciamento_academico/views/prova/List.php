@@ -76,13 +76,14 @@ $error = isset($_GET['erros']) ? htmlspecialchars($_GET['erros']) : '';
                         <td><?= htmlspecialchars($prova['codigo_disciplina'] ?? 'N/A') ?></td>
                         <td><?= htmlspecialchars($prova['registro_professor'] ?? 'N/A') ?></td>
                         <td id='buttons-wrapper'>
-                            <a href="index.php?controller=prova&action=showEditForm&id=<?= htmlspecialchars($prova['id_prova']) ?>">
+                             <!-- Botão Atualizar agora usa a função JS -->
+                            <button onclick="atualizarProva(<?= htmlspecialchars($prova['id_prova']) ?>)">
                                 <i class='fa-solid fa-pen'></i> Atualizar
-                            </a>
-                            <a href="index.php?controller=prova&action=delete&id=<?= htmlspecialchars($prova['id_prova']) ?>"
-                               onclick="return confirm('Tem certeza que deseja excluir a prova com ID: <?= htmlspecialchars($prova['id_prova']) ?>?');">
+                            </button>
+                            <!-- Botão Excluir agora usa a função JS -->
+                            <button onclick="excluirProva(<?= htmlspecialchars($prova['id_prova']) ?>)">
                                 <i class='fa-solid fa-trash'></i> Excluir
-                            </a>
+                            </button>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -94,7 +95,19 @@ $error = isset($_GET['erros']) ? htmlspecialchars($_GET['erros']) : '';
     <a href="index.php?controller=professor&action=showServicesPage">Voltar aos Serviços</a>
     <hr>
     <a href="index.php?controller=auth&action=logout" style="margin-left:20px;">Logout →</a>
+<!-- Adicione a seção de script para as funções JavaScript -->
+    <script>
+        function atualizarProva(id_prova) {
+            window.location.href = "index.php?controller=prova&action=showEditForm&id=" + id_prova;
+        }
 
+        function excluirProva(id_prova) {
+            const confirmar = confirm("Tem certeza que deseja excluir a prova com ID: " + id_prova + "?");
+            if (confirmar) {
+                window.location.href = "index.php?controller=prova&action=delete&id=" + id_prova;
+            }
+        }
+    </script>
 </body>
 <footer>
     <p>Desenvolvido por Juliana e Sander</p>
