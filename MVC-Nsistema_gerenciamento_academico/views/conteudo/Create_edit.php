@@ -71,7 +71,8 @@ $selectedDisciplinaId = $conteudoData['Disciplina_id_disciplina'] ?? ($_POST['id
             <label for="id_disciplina">Código da disciplina:</label><br>
             <?php if ($isUpdating): ?>
                 <input type="text" name="disciplina" value="<?= htmlspecialchars($nomeDisciplinaAtual) ?>" readonly required>
-                <input type="hidden" name="id_disciplina" value="<?= htmlspecialchars($disciplinas['codigoDisciplina'] ?? '') ?>">
+                <input type="hidden" name="id_disciplina" value="<?= htmlspecialchars($conteudoData['id_disciplina'] ?? '') ?>">
+
                 <hr>
             <?php else: ?>
                 <select name="id_disciplina" required>

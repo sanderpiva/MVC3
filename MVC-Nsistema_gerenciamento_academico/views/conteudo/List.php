@@ -72,13 +72,15 @@ $error = isset($_GET['erros']) ? htmlspecialchars($_GET['erros']) : '';
                         <td><?= htmlspecialchars($conteudo['data_postagem']) ?></td>
                         <td><?= htmlspecialchars($conteudo['professor'] ?? 'N/A') ?></td>   <td><?= htmlspecialchars($conteudo['nome_disciplina'] ?? 'N/A') ?></td> <td><?= htmlspecialchars($conteudo['tipo_conteudo']) ?></td>
                         <td id='buttons-wrapper'>
-                            <a href="index.php?controller=conteudo&action=showEditForm&id=<?= htmlspecialchars($conteudo['id_conteudo']) ?>">
+                            <!-- Botão Atualizar agora usa a função JS -->
+                            <button onclick="atualizarConteudo(<?= htmlspecialchars($conteudo['id_conteudo']) ?>)">
                                 <i class='fa-solid fa-pen'></i> Atualizar
-                            </a>
-                            <a href="index.php?controller=conteudo&action=delete&id=<?= htmlspecialchars($conteudo['id_conteudo']) ?>"
-                               onclick="return confirm('Tem certeza que deseja excluir o conteúdo com ID: <?= htmlspecialchars($conteudo['id_conteudo']) ?>?');">
+                            </button>
+                            <!-- Botão Excluir agora usa a função JS -->
+                            <button onclick="excluirConteudo(<?= htmlspecialchars($conteudo['id_conteudo']) ?>)">
                                 <i class='fa-solid fa-trash'></i> Excluir
-                            </a>
+                            </button>
+                            
                         </td>
                     </tr>
                 <?php endforeach; ?>

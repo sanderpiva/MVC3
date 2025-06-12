@@ -52,12 +52,29 @@ class ConteudoModel {
     }*/
 
     // models/Conteudo_model.php
-    public function getConteudoById($id) {
+    /*public function getConteudoById($id) {
         $stmt = $this->db->prepare("SELECT c.*, d.nome AS nomeDisciplina, d.codigoDisciplina, d.Professor_id_professor
                                    FROM conteudo c
                                    JOIN disciplina d ON c.Disciplina_id_disciplina = d.id_disciplina
                                    WHERE c.id_conteudo = :id");
         $stmt->execute([':id' => $id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }*/
+    public function getConteudoById($id) {
+        $query = "SELECT 
+                      c.*, 
+                      d.codigoDisciplina as nomeDisciplina, -- Opcional: para a máscara, se não vier via 'nomeDisciplinaAtual'
+                      d.id_disciplina as id_disciplina -- ESTA LINHA É A MAIS IMPORTANTE: ASSEGURA QUE A FK É RETORNADA
+                  FROM 
+                      conteudo c
+                  JOIN 
+                      disciplina d ON c.Disciplina_id_disciplina = d.id_disciplina -- Assumindo que sua coluna FK em 'conteudos' é 'id_disciplina'
+                  WHERE 
+                      c.id_conteudo = :id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        
+        $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
