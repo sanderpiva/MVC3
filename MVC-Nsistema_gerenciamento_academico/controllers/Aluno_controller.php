@@ -20,7 +20,7 @@ class Aluno_controller
     public function __construct($conexao) {
         $this->conexao = $conexao; // Armazena a conexão
         $this->alunoModel = new AlunoModel($this->conexao); // Corrigido o nome da classe para ProfessorModel (com P maiúsculo)
-        $this->dinamicActions = new DinamicActions($this->conexao); // Inicializa o modelo DinamicActions com a conexão
+        $this->dinamicActions = new DinamicActionsModel($this->conexao); // Inicializa o modelo DinamicActions com a conexão
         $this->turmaModel = new TurmaModel($this->conexao); // Inicializa o modelo TurmaModel com a conexão
     }
 
@@ -34,31 +34,6 @@ class Aluno_controller
     {
         echo "<h1>Bem-vindo ao Dashboard do Aluno</h1>";
         require_once __DIR__ . '/../views/aluno/Dashboard_login.php';
-    }
-
-    public function showDynamicServicesPage()
-    {
-
-        
-        $turma_selecionada = $_SESSION['turma_selecionada'] ?? null;
-        $disciplina_selecionada = $_SESSION['disciplina_selecionada'] ?? null;
-
-        // 🚀 Depuração - Mostra os valores armazenados na sessão
-        echo "<h3>Debug da sessão:</h3>";
-        var_dump($_SESSION);
-
-        // 🔄 Busca os dados corretamente
-        $turmas = $this->alunoModel->getAllTurmas();
-        $disciplinas = $this->alunoModel->getAllDisciplinas();
-        $dados = $this->dinamicActions->getConteudosPorTurmaEDisciplina($turma_selecionada, $disciplina_selecionada);
-
-        // 🚀 Depuração - Mostra os resultados obtidos da Model
-        echo "<h3>Debug dos dados:</h3>";
-        echo "<pre>";
-        print_r($dados);
-        echo "</pre>";
-
-        //require_once __DIR__ . '/../views/aluno/Dinamic_selection.php';
     }
 
     public function showStaticServicesPage()
@@ -193,46 +168,6 @@ class Aluno_controller
 
     }
 
-    //
-    public function showDynamicOptions()
-    {   
-        //echo "A função foi chamada!"; 
-        //exit();
-
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-
-        // Verifica se o usuário está logado e é um aluno
-        if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true || $_SESSION['tipo_usuario'] !== 'aluno') {
-            header("Location: index.php?controller=auth&action=showLoginForm");
-            exit();
-        }
-
-        // Obtém as turmas e disciplinas do modelo
-        $turmas = $this->alunoModel->getAllTurmas();
-        $disciplinas = $this->alunoModel->getAllDisciplinas();
-
-        // Verifica se houve erro na conexão ou no formulário
-        $erro_conexao = null;
-        $erro_form = null;
-
-        $conteudosPorTurmaEDisciplina = [];
-
-        // Itera sobre as turmas e disciplinas e chama o método do modelo
-        foreach ($turmas as $turma) {
-            foreach ($disciplinas as $disciplina) {
-                $conteudosPorTurmaEDisciplina[$turma][$disciplina] = $this->dinamicActions->getConteudosPorTurmaEDisciplina($turma, $disciplina);
-            }
-        }
-
-        //include __DIR__ . 'models/DinamicActions_model.php';
-        
-        
-        return $conteudosPorTurmaEDisciplina;    
-
-    }
-
     // Método para processar a submissão do formulário de atualização
     public function updateAluno() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_aluno'])) {
@@ -311,6 +246,129 @@ class Aluno_controller
         }
     }
 
+     public function showDynamicOptions() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true || $_SESSION['tipo_usuario'] !== 'aluno') {
+            header("Location: index.php?controller=auth&action=showLoginForm");
+            exit();
+        }
+        $erro_form = null;
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (isset($_POST['turma_selecionada']) && !empty($_POST['turma_selecionada']) &&
+                isset($_POST['disciplina_selecionada']) && !empty($_POST['disciplina_selecionada'])) {
+                $_SESSION['turma_selecionada'] = $_POST['turma_selecionada'];
+                $_SESSION['disciplina_selecionada'] = $_POST['disciplina_selecionada'];
+                header('Location: index.php?controller=aluno&action=showDynamicServicesPage');
+                exit();
+            } else {
+                $erro_form = "Por favor, selecione tanto a Turma quanto a Disciplina.";
+            }
+        }
+        $turmas = $this->alunoModel->getAllTurmas();
+        $disciplinas = $this->alunoModel->getAllDisciplinas();
+        require_once __DIR__ . '/../views/aluno/Dinamic_selection.php';
+    }
 
+    public function showDynamicServicesPage()
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true || $_SESSION['tipo_usuario'] !== 'aluno') {
+            header("Location: index.php?controller=auth&action=showLoginForm");
+            exit();
+        }
+
+        $turma_selecionada = $_SESSION['turma_selecionada'] ?? null;
+        $disciplina_selecionada = $_SESSION['disciplina_selecionada'] ?? null;
+
+        if (!$turma_selecionada || !$disciplina_selecionada) {
+            $_SESSION['erro_selecao'] = "Por favor, selecione a turma e a disciplina para ver os conteúdos.";
+            header('Location: index.php?controller=aluno&action=showDynamicOptions');
+            //exit();
+        }
+
+        $conteudos = $this->dinamicActions->getConteudosPorTurmaEDisciplina($turma_selecionada, $disciplina_selecionada);
+
+        // --- DEBUG FINAL: Verifique o que está sendo passado para a view ---
+        //echo "<h3>DEBUG CONTROLLER - Conteúdos antes de renderizar a view:</h3>";
+        //var_dump($conteudos);
+        // Descomente a linha abaixo para parar a execução AQUI e ver APENAS este var_dump.
+        // Se este var_dump mostrar os 2 conteúdos, o problema está na view.
+        // Se este var_dump mostrar um array vazio, o problema está no model (novamente) ou nos parâmetros que chegam ao model.
+        // exit(); // REMOVA/COMENTE ESTA LINHA EM PRODUÇÃO E PARA CONTINUAR TESTES!
+
+        $erro_conexao = null; // Inicialize esta variável se sua view espera por ela
+
+        require_once __DIR__ . '/../views/aluno/dashboard_dinamico.php';
+    }
+
+    public function detalheConteudoDinamico() {
+        // Inicia a sessão se ainda não estiver iniciada
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        // Verifica se o usuário está logado e é um aluno
+        if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true || $_SESSION['tipo_usuario'] !== 'aluno') {
+            header("Location: index.php?controller=auth&action=showLoginForm");
+            exit(); // Garante que o script pare após o redirecionamento
+        }
+
+        $id_conteudo = $_GET['id'] ?? null; // Obtém o ID do conteúdo da URL (parâmetro 'id')
+
+        // Inicializa as variáveis que serão passadas para a view de detalhes
+        $conteudo = false; // Será preenchido com os dados do conteúdo ou permanecerá false
+        $erro = null; // Será preenchido se houver um erro
+        $imagem_associada = null; // Variável para imagem, se for implementada
+
+        // Valida se o ID do conteúdo é válido e numérico
+        if (!$id_conteudo || !is_numeric($id_conteudo)) {
+            $erro = "ID de conteúdo inválido ou não fornecido.";
+            // Para este tipo de erro, a mensagem é exibida na própria view de detalhes
+            // Não redirecionamos, para o usuário ver o problema.
+        } else {
+            // Busca os detalhes do conteúdo no modelo pelo ID
+            // O model 'getConteudoById' deve retornar também a coluna 'disciplina'
+            $conteudo = $this->dinamicActions->getConteudoById((int)$id_conteudo);
+
+            // Verifica se o conteúdo foi encontrado
+            if (!$conteudo) {
+                $erro = "Conteúdo não encontrado para o ID fornecido.";
+            }
+        }
+        
+        // Inclui a view de detalhes do conteúdo, passando as variáveis $conteudo, $erro, $imagem_associada
+        require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'aluno' . DIRECTORY_SEPARATOR . 'detalhe_conteudo.php';
+    }
+
+    //EXERCICIOS DIANMICOS: TESTE
+    // NOVO MÉTODO: Para o exercício de Progressão Aritmética (PA)
+    public function exercicioPA() {
+        // Inicia a sessão se ainda não estiver iniciada
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        // Verifica se o usuário está logado e é um aluno
+        if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true || $_SESSION['tipo_usuario'] !== 'aluno') {
+            header("Location: index.php?controller=auth&action=showLoginForm");
+            exit();
+        }
+
+        // Simplesmente carrega a view do exercício de PA
+        // A lógica de cálculo do formulário é auto-contida na própria view (exercicio_pa.php)
+        require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'aluno' . DIRECTORY_SEPARATOR . 'exercicio_pa.php';
+    }
+
+    // Se você tiver outros métodos como viewProva, exercicioPG, exercicioPorcentagem, etc., mantenha-os aqui:
+    // public function viewProva() { /* ... */ }
+    // public function exercicioPG() { /* ... */ }
+    // public function exercicioPorcentagem() { /* ... */ }
+
+    
 }
 ?>
