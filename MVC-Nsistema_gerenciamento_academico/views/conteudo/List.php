@@ -55,7 +55,9 @@ $error = isset($_GET['erros']) ? htmlspecialchars($_GET['erros']) : '';
                 <th>Título</th>
                 <th>Descrição</th>
                 <th>Data</th>
-                <th>Professor</th>         <th>Disciplina</th>        <th>Tipo</th>
+                <th>Professor</th>         
+                <th>Disciplina</th>        
+                <th>Tipo</th>
                 <th>Ações</th>
             </tr>
         </thead>
@@ -70,7 +72,9 @@ $error = isset($_GET['erros']) ? htmlspecialchars($_GET['erros']) : '';
                         <td><?= htmlspecialchars($conteudo['titulo']) ?></td>
                         <td><?= htmlspecialchars($conteudo['descricao']) ?></td>
                         <td><?= htmlspecialchars($conteudo['data_postagem']) ?></td>
-                        <td><?= htmlspecialchars($conteudo['professor'] ?? 'N/A') ?></td>   <td><?= htmlspecialchars($conteudo['nome_disciplina'] ?? 'N/A') ?></td> <td><?= htmlspecialchars($conteudo['tipo_conteudo']) ?></td>
+                        <td><?= htmlspecialchars($conteudo['professor'] ?? 'N/A') ?></td>   
+                        <td><?= htmlspecialchars($conteudo['nome_disciplina'] ?? 'N/A') ?></td> 
+                        <td><?= htmlspecialchars($conteudo['tipo_conteudo']) ?></td>
                         <td id='buttons-wrapper'>
                             <!-- Botão Atualizar agora usa a função JS -->
                             <button onclick="atualizarConteudo(<?= htmlspecialchars($conteudo['id_conteudo']) ?>)">

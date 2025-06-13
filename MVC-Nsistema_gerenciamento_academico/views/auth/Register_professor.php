@@ -45,7 +45,7 @@ $isUpdating = isset($professorData['id_professor']) && !empty($professorData['id
 
             <?php if ($isUpdating): ?>
                 <label for="novaSenha">Nova Senha:</label>
-                <input type="password" id="novaSenha" name="novaSenha" placeholder="Digite a nova senha (opcional)">
+                <input type="password" id="novaSenha" name="novaSenha" placeholder="Precisa implementar ainda..." readonly>
                 <input type="hidden" name="acao" value="atualizar">
             <?php else: ?>
                 <label for="senha">Senha:</label>

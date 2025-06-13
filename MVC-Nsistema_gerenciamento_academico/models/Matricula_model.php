@@ -71,13 +71,14 @@ class MatriculaModel {
             $sql = "INSERT INTO matricula (Aluno_id_aluno, Disciplina_id_disciplina)
                     VALUES (:aluno_id, :disciplina_id)";
             $stmt = $this->db->prepare($sql);
+            error_log("DEBUG: createMatricula - Executando INSERT para AlunoID: $alunoId, DisciplinaID: $disciplinaId");
             return $stmt->execute([
                 ':aluno_id' => $alunoId,
                 ':disciplina_id' => $disciplinaId
             ]);
         } catch (PDOException $e) {
             // Log the error for debugging
-            error_log("Error creating matricula: " . $e->getMessage());
+            error_log("ERROR: createMatricula - Erro ao criar matrícula: " . $e->getMessage());
             return false;
         }
     }
@@ -91,8 +92,7 @@ class MatriculaModel {
      * @return bool True on success, false on failure.
      */
     public function updateMatricula($originalAlunoId, $originalDisciplinaId, $novoAlunoId, $novaDisciplinaId) {
-    
-    
+        error_log("DEBUG: updateMatricula - Início. Original Aluno=$originalAlunoId, Original Disciplina=$originalDisciplinaId, Novo Aluno=$novoAlunoId, Nova Disciplina=$novaDisciplinaId");
         try {
             $stmt = $this->db->prepare("
                 UPDATE matricula SET
@@ -101,15 +101,17 @@ class MatriculaModel {
                 WHERE Aluno_id_aluno = :original_aluno_id
                 AND Disciplina_id_disciplina = :original_disciplina_id
             ");
-            return $stmt->execute([
+            $success = $stmt->execute([
                 ':novo_aluno_id' => $novoAlunoId,
                 ':nova_disciplina_id' => $novaDisciplinaId,
                 ':original_aluno_id' => $originalAlunoId,
                 ':original_disciplina_id' => $originalDisciplinaId
             ]);
+            error_log("DEBUG: updateMatricula - Execução SQL: " . ($success ? "Sucesso" : "Falha"));
+            return $success;
         } catch (PDOException $e) {
             // Log the error for debugging
-            error_log("Error updating matricula: " . $e->getMessage());
+            error_log("ERROR: updateMatricula - Erro ao atualizar matrícula: " . $e->getMessage());
             return false;
         }
     }
@@ -121,9 +123,7 @@ class MatriculaModel {
      * @return bool True on success, false on failure.
      */
     public function deleteMatricula($id) {
-        // Adicione isso para confirmar que o ID chegou ao modelo
-        //error_log("DEBUG: deleteMatricula no modelo - Tentando excluir ID: " . $id);
-        //echo "aqui";
+        error_log("DEBUG: deleteMatricula - Tentando excluir ID: " . $id);
         $stmt = $this->db->prepare("DELETE FROM matricula WHERE Aluno_id_aluno = :id");
         return $stmt->execute([':id' => $id]);
     }
@@ -150,9 +150,12 @@ class MatriculaModel {
             $params[':exclude_disciplina_id'] = $excludeOriginalDisciplinaId;
         }
 
+        error_log("DEBUG: matriculaExists - SQL: $sql, Params: " . print_r($params, true));
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
-        return $stmt->fetchColumn() > 0;
+        $count = $stmt->fetchColumn();
+        error_log("DEBUG: matriculaExists - Contagem: $count");
+        return $count > 0;
     }
 
     /**

@@ -15,7 +15,7 @@ class ProvaModel {
                 p.*,
                 d.nome AS nome_disciplina,          -- Adiciona o nome da disciplina
                 d.codigoDisciplina AS codigo_disciplina, -- Adiciona o código da disciplina
-                prof.nome AS nome_professor,        -- Adiciona o nome do professor
+                p.professor AS nome_professor,        -- Adiciona o nome do professor
                 prof.registroProfessor AS registro_professor -- Adiciona o registro do professor
             FROM
                 prova AS p
@@ -27,13 +27,7 @@ class ProvaModel {
         // --- FIM DA ALTERAÇÃO ---
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    /*
-    public function getProvaById($id) {
-        $stmt = $this->db->prepare("SELECT * FROM prova WHERE id_prova = :id");
-        $stmt->execute([':id' => $id]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }*/
-
+    
     public function getProvaById($id) {
         $stmt = $this->db->prepare("
             SELECT
@@ -57,15 +51,7 @@ class ProvaModel {
 
 
     public function createProva($data) {
-        //$sql = "INSERT INTO prova (titulo, descricao, data_prova) VALUES (:titulo, :descricao, :data_prova)";
-        //$stmt = $this->db->prepare($sql);
-        /*
-        return $stmt->execute([
-            ':titulo' => $data['titulo'],
-            ':descricao' => $data['descricao'],
-            ':data_prova' => $data['data_prova']
-        ]);*/
-
+        
 
         $sql = "INSERT INTO prova (codigoProva, tipo_prova, disciplina, conteudo, data_prova, professor, Disciplina_id_disciplina, Disciplina_Professor_id_professor)
                 VALUES (:codigo, :tipo, :disciplina, :conteudo, :data, :professor_nome, :id_disciplina, :id_professor)";
@@ -84,18 +70,7 @@ class ProvaModel {
 
     }
 
-    /*
-    public function updateProva($data) {
-        $sql = "UPDATE prova SET titulo = :titulo, descricao = :descricao, data_prova = :data_prova WHERE id_prova = :id_prova";
-        $stmt = $this->db->prepare($sql);
-        return $stmt->execute([
-            ':titulo' => $data['titulo'],
-            ':descricao' => $data['descricao'],
-            ':data_prova' => $data['data_prova'],
-            ':id_prova' => $data['id_prova']
-        ]);
-    }*/
-
+    
     public function updateProva($data) {
         $sql = "UPDATE prova SET
                     codigoProva = :codigoProva,
@@ -103,7 +78,7 @@ class ProvaModel {
                     disciplina = :disciplina,
                     conteudo = :conteudo,
                     data_prova = :data_prova,
-                    professor = :professor,
+                    professor = :nome_professor,
                     Disciplina_id_disciplina = :Disciplina_id_disciplina,
                     Disciplina_Professor_id_professor = :Disciplina_Professor_id_professor
 
@@ -117,7 +92,7 @@ class ProvaModel {
             ':disciplina' => $data['disciplina'],
             ':conteudo' => $data['conteudo'],
             ':data_prova' => $data['data_prova'],
-            ':professor' => $data['nome_professor'],
+            ':nome_professor' => $data['nome_professor'],
             ':id_prova' => $data['id_prova'],
             ':Disciplina_id_disciplina' => $data['id_disciplina'],
             ':Disciplina_Professor_id_professor' => $data['id_professor']

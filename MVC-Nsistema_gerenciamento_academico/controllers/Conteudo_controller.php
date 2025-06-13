@@ -45,12 +45,7 @@ class Conteudo_controller {
      */
     public function showCreateForm() {
         $conteudoData = null; // Para formulário vazio
-        //$errors = [];
-        // Carrega disciplinas para o dropdown
-        //$disciplinas = $this->disciplinaModel->getAllDisciplinas();
-        // REMOVIDO: $professores = $this->professorModel->getAllProfessores();
-        //include __DIR__ . '/../views/conteudo/Create_edit.php';
-    
+        
         $disciplinas = $this->disciplinaModel->getAllDisciplinas(); // Precisará retornar Professor_id_professor
         $professores = $this->professorModel->getAllProfessores();
 
@@ -71,24 +66,7 @@ class Conteudo_controller {
      * Exibe o formulário de edição de conteúdo.
      * @param int $id ID do conteúdo a ser editado.
      */
-    /*
-    public function showEditForm($id) {
-        if (!$id) {
-            displayErrorPage("ID do conteúdo não especificado.", 'index.php?controller=conteudo&action=list');
-            return;
-        }
-        $conteudoData = $this->conteudoModel->getConteudoById($id);
-        if (!$conteudoData) {
-            displayErrorPage("Conteúdo não encontrado.", 'index.php?controller=conteudo&action=list');
-            return;
-        }
-        $errors = [];
-        // Carrega disciplinas para o dropdown
-        $disciplinas = $this->disciplinaModel->getAllDisciplinas();
-        // REMOVIDO: $professores = $this->professorModel->getAllProfessores();
-        include __DIR__ . '/../views/conteudo/Create_edit.php';
-    }*/
-
+    
     public function showEditForm($id) {
         if (!$id) {
                 displayErrorPage("ID do conteúdo não especificado.", 'index.php?controller=conteudo&action=list');
@@ -103,24 +81,19 @@ class Conteudo_controller {
 
         $errors = []; // Mantenha como está
 
-        // Carrega disciplinas para o dropdown (isto você já tem)
         $disciplinas = $this->disciplinaModel->getAllDisciplinas();
 
-        // ADICIONE ESTAS DUAS LINHAS PARA BUSCAR PROFESSORES
         $professores = $this->professorModel->getAllProfessores();
 
-        // ADICIONE ESTE BLOCO PARA CRIAR O LOOKUP DE PROFESSORES
         $professorsLookup = [];
         foreach ($professores as $professor) {
             $professorsLookup[$professor['id_professor']] = $professor['nome'];
         }
 
-        // ADICIONE ESTA LINHA PARA DEFINIR O NOME DA DISCIPLINA ATUAL
-        // Isso assume que seu ConteudoModel::getConteudoById() retorna 'nomeDisciplina'
         $nomeDisciplinaAtual = $conteudoData['nomeDisciplina'] ?? 'Nome da Disciplina Desconhecido';
+        //var_dump($conteudoData);
 
-        // Inclui a view (isto você já tem)
-            include __DIR__ . '/../views/conteudo/Create_edit.php';
+        include __DIR__ . '/../views/conteudo/Create_edit.php';
         
     }
 

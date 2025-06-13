@@ -162,6 +162,7 @@ class Prova_controller {
     }
 
     public function update($id) {
+        
         if (isset($id)) {
             $prova = $this->provaModel->getProvaById($id);
             if ($prova) {
