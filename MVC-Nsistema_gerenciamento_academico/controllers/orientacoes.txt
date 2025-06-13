@@ -21,13 +21,12 @@ update: turma, disciplina, questoes, prova, conteudo
 delete: turma, aluno, professor, questoes, prova, conteudo
 
 
-//4 junho 2025
+//13 junho 2025
 //Preocupação no Inserir e Atualizar
 tente Questoes, na atualização
 na inserção, pode ser qualquer outro
 
-Update: Falta 1, a maioria com erros, outros nao carregam dados
-matricula
+Update: Ok
 
 Insert: Ok
 List: OK
