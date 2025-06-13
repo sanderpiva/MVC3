@@ -1,7 +1,6 @@
 <?php
 
-//Nao funciona o session e nao tem segurança
-// Inicia a sessão apenas se nenhuma estiver ativa
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
