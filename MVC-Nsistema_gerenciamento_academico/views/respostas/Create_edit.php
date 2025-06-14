@@ -1,12 +1,7 @@
 <?php
-// views/resposta/Create_edit.php
 
-// AQUI ESTÁ A CORREÇÃO PRINCIPAL:
-// A variável $isUpdating deve verificar 'id_respostas', que é a chave primária correta do seu banco de dados.
 $isUpdating = isset($respostaData['id_respostas']) && !empty($respostaData['id_respostas']);
 
-// Garante que as variáveis para os dropdowns e erros estão definidas,
-// para evitar "Undefined variable" se o controller não as passar em todos os casos (ex: primeira carga do form de criação).
 $errors = $errors ?? [];
 $questoes = $questoes ?? [];
 $provas = $provas ?? [];
@@ -15,31 +10,22 @@ $professores = $professores ?? [];
 $alunos = $alunos ?? [];
 $professorsLookup = $professorsLookup ?? [];
 
-// Variáveis para as máscaras (campos readonly no modo de atualização)
-// Elas devem ser populadas pelo Controller, mas garantimos um valor padrão aqui.
 $descricaoQuestaoAtual = $descricaoQuestaoAtual ?? 'N/A';
 $codigoProvaAtual = $codigoProvaAtual ?? 'N/A';
 $nomeDisciplinaAtual = $nomeDisciplinaAtual ?? 'N/A';
 $nomeProfessorAtual = $nomeProfessorAtual ?? 'N/A';
 $nomeAlunoAtual = $nomeAlunoAtual ?? 'N/A';
 
-// Função auxiliar para obter o valor de um campo, priorizando POST (em caso de erro)
-// ou os dados existentes (para atualização), ou vazio.
 function getFormValue($data, $post, $key) {
-    // Se há dados de POST (submissão com erro), use-os.
     if (isset($post[$key])) {
         return htmlspecialchars($post[$key]);
     }
-    // Caso contrário, se há dados existentes (modo de atualização), use-os.
     if (isset($data[$key])) {
         return htmlspecialchars($data[$key]);
     }
-    // Caso contrário, vazio.
     return '';
 }
 
-// Para campos de seleção (dropdowns), precisamos do ID selecionado para pré-selecionar
-// Prioriza o POST (em caso de erro de submissão), senão os dados existentes.
 $selectedQuestaoId = $_POST['id_questao'] ?? ($respostaData['Questoes_id_questao'] ?? '');
 $selectedProvaId = $_POST['id_prova'] ?? ($respostaData['Questoes_Prova_id_prova'] ?? '');
 $selectedDisciplinaId = $_POST['id_disciplina'] ?? ($respostaData['Questoes_Prova_Disciplina_id_disciplina'] ?? '');

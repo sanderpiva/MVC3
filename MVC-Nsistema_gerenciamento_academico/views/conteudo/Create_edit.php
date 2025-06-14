@@ -1,20 +1,18 @@
 <?php
-// views/conteudo/Create_edit.php
 
-// Define se estamos atualizando ou criando
 $isUpdating = isset($conteudoData['id_conteudo']) && !empty($conteudoData['id_conteudo']);
 
-// Garante que $disciplinas e $errors estão definidos (devem vir do controller)
 $disciplinas = $disciplinas ?? [];
 $errors = $errors ?? [];
 
 $nomeDisciplinaAtual = $nomeDisciplinaAtual ?? '';
 $professorsLookup = $professorsLookup ?? [];
 
-// Determina qual disciplina deve ser pré-selecionada no dropdown (para o caso de erro de validação no POST ou criação)
 $selectedDisciplinaId = $conteudoData['Disciplina_id_disciplina'] ?? ($_POST['id_disciplina'] ?? '');
 
 ?>
+
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -72,8 +70,8 @@ $selectedDisciplinaId = $conteudoData['Disciplina_id_disciplina'] ?? ($_POST['id
             <?php if ($isUpdating): ?>
                 <input type="text" name="disciplina" value="<?= htmlspecialchars($nomeDisciplinaAtual) ?>" readonly required>
                 <input type="hidden" name="id_disciplina" value="<?= htmlspecialchars($conteudoData['id_disciplina'] ?? '') ?>">
-
                 <hr>
+                
             <?php else: ?>
                 <select name="id_disciplina" required>
                     <option value="">Selecione código da disciplina (Professor)</option>

@@ -1,5 +1,4 @@
 <?php
-// servicos-professor/respostas/controllers/RespostaController.php
 
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
@@ -20,16 +19,16 @@ class Respostas_controller {
     public function __construct($conexao) {
         $this->conexao = $conexao;
         $this->respostaModel = new RespostaModel($this->conexao);
-        $this->questoesModel = new QuestoesModel($conexao); // INSTANCIADO
-        $this->provaModel = new ProvaModel($conexao);       // INSTANCIADO
-        $this->disciplinaModel = new DisciplinaModel($conexao); // INSTANCIADO
-        $this->professorModel = new ProfessorModel($conexao);   // INSTANCIADO
+        $this->questoesModel = new QuestoesModel($conexao); 
+        $this->provaModel = new ProvaModel($conexao);       
+        $this->disciplinaModel = new DisciplinaModel($conexao); 
+        $this->professorModel = new ProfessorModel($conexao);   
         $this->alunoModel = new AlunoModel($conexao); 
 
         
     }
 
-    // Displays a list of all responses
+    
     public function list() {
         $respostas = $this->respostaModel->getAllRespostasDetailed();
         include __DIR__ . '/../views/respostas/List.php';
@@ -50,9 +49,8 @@ class Respostas_controller {
     }
 
 
-    // Shows the form for creating a new response
     public function showCreateForm() {
-        $respostaData = null; // No data for creation
+        $respostaData = null; 
         $professores = $this->respostaModel->getAllProfessores();
         $disciplinas = $this->respostaModel->getAllDisciplinas();
         $provas = $this->respostaModel->getAllProvas();
@@ -64,46 +62,9 @@ class Respostas_controller {
             $professorsLookup[$professor['id_professor']] = $professor['nome'];
         }
 
-        $errors = []; // Initialize errors for the view
+        $errors = []; 
         include __DIR__ . '/../views/respostas/Create_edit.php';
     }
-
-    // Shows the form for editing an existing response
-    /*public function showEditForm($id) {
-        if (!isset($id)) {
-            $this->displayErrorPage("ID da resposta não especificado para edição.", 'index.php?controller=respostas&action=list');
-            return;
-        }
-
-        $respostaData = $this->respostaModel->getRespostaById($id);
-        if (!$respostaData) {
-            $this->displayErrorPage("Resposta não encontrada para edição.", 'index.php?controller=respostas&action=list');
-            return;
-        }
-
-        $professores = $this->respostaModel->getAllProfessores();
-        $disciplinas = $this->respostaModel->getAllDisciplinas();
-        $provas = $this->respostaModel->getAllProvas();
-        $questoes = $this->respostaModel->getAllQuestoes();
-        $alunos = $this->respostaModel->getAllAlunos();
-
-        $professorsLookup = [];
-        foreach ($professores as $professor) {
-            $professorsLookup[$professor['id_professor']] = $professor['nome'];
-        }
-
-        // Fetch related data for display in update mode
-        $descricaoQuestaoAtual = $this->respostaModel->getQuestaoDescricaoById($respostaData['Questoes_id_questao']);
-        $codigoProvaAtual = $this->respostaModel->getProvaCodigoById($respostaData['Questoes_Prova_id_prova']);
-        $disciplinaInfo = $this->respostaModel->getDisciplinaInfoById($respostaData['Questoes_Prova_Disciplina_id_disciplina']);
-        $nomeDisciplinaAtual = $disciplinaInfo['nome'] ?? '';
-        $nomeProfessorAtual = $this->respostaModel->getProfessorNomeById($respostaData['Questoes_Prova_Disciplina_Professor_id_professor']);
-        $nomeAlunoAtual = $this->respostaModel->getAlunoNomeById($respostaData['Aluno_id_aluno']);
-
-        $errors = []; // Initialize errors for the view
-
-        include __DIR__ . '/../views/respostas/Create_edit.php';
-    }*/
 
     public function showEditForm($id) {
         if (!isset($id)) {
@@ -111,38 +72,24 @@ class Respostas_controller {
             return;
         }
 
-        // CHAVE PARA O SUCESSO: AQUI O MODELO DEVE RETORNAR TUDO (r.* e os JOINs)
         $respostaData = $this->respostaModel->getRespostaById($id);
-
-        // --- PONTO DE DEPURACAO CRITICO 1 ---
-        // Verifique se $respostaData tem 'id_respostas' e todas as chaves de máscara
-        //echo "<h3>DEBUG: RespostaData (Diretamente do Modelo) em showEditForm</h3>";
-        //var_dump($respostaData);
-        //echo "<hr>";
-        // --- FIM PONTO DE DEPURACAO 1 ---
-
 
         if (!$respostaData) {
             displayErrorPage("Resposta não encontrada para edição.", 'index.php?controller=respostas&action=list');
             return;
         }
 
-        // 1. Carregue todas as listas para os dropdowns (modo de criação / repopulação de erro)
-        // Isso é necessário mesmo para o modo de edição, caso o formulário seja usado para "criação" ou repopulação.
         $professores = $this->professorModel->getAllProfessores(); // Use o modelo de Professor
         $disciplinas = $this->disciplinaModel->getAllDisciplinas(); // Use o modelo de Disciplina
         $provas = $this->provaModel->getAllProvas();             // Use o modelo de Prova
         $questoes = $this->questoesModel->getAllQuestoes();       // Use o modelo de Questoes
         $alunos = $this->alunoModel->getAllAlunos();             // Use o modelo de Aluno
 
-        // 2. Crie o lookup de professores (se necessário para a view)
         $professorsLookup = [];
         foreach ($professores as $professor) {
             $professorsLookup[$professor['id_professor']] = $professor['nome'];
         }
 
-        // 3. Popule as variáveis de "máscara" usando os dados JÁ RETORNADOS pelo getRespostaById
-        //    (os aliases que definimos no SELECT do modelo)
         $descricaoQuestaoAtual = $respostaData['descricao_questao_completa'] ?? 'N/A';
         $codigoProvaAtual = $respostaData['codigo_prova_completa'] ?? 'N/A';
         $nomeDisciplinaAtual = $respostaData['nome_disciplina_completa'] ?? 'N/A';
@@ -151,30 +98,14 @@ class Respostas_controller {
 
         $errors = []; // Initialize errors for the view (se houver erros de validação na submissão anterior)
 
-        // --- PONTO DE DEPURACAO CRITICO 2 ---
-        // Verifique se $isUpdating (calculado na view) será true e se as máscaras estão populadas
-        //echo "<h3>DEBUG: Variáveis para a View em showEditForm (Antes de Incluir)</h3>";
-        //echo "respostaData['id_respostas'] (para isUpdating): "; var_dump($respostaData['id_respostas'] ?? 'Não definido');
-        //echo "descricaoQuestaoAtual: "; var_dump($descricaoQuestaoAtual);
-        //echo "codigoProvaAtual: "; var_dump($codigoProvaAtual);
-        //echo "nomeDisciplinaAtual: "; var_dump($nomeDisciplinaAtual);
-        //echo "nomeProfessorAtual: "; var_dump($nomeProfessorAtual);
-        //echo "nomeAlunoAtual: "; var_dump($nomeAlunoAtual);
-        //echo "<hr>";
-        // --- FIM PONTO DE DEPURACAO 2 ---
-
-        // Inclua a view
         include __DIR__ . '/../views/respostas/Create_edit.php';
     }
 
-
-    // Handles the submission for creating a new response
     public function handleCreatePost($postData) {
         $errors = $this->validateRespostaData($postData);
 
         if (!empty($errors)) {
-            // If there are errors, reload the form with existing data and errors
-            $respostaData = $postData; // Pass submitted data back to form
+            $respostaData = $postData; 
             $professores = $this->respostaModel->getAllProfessores();
             $disciplinas = $this->respostaModel->getAllDisciplinas();
             $provas = $this->respostaModel->getAllProvas();
@@ -186,8 +117,6 @@ class Respostas_controller {
                 $professorsLookup[$professor['id_professor']] = $professor['nome'];
             }
 
-            // Note: In case of validation error on create, related names won't be pre-filled from IDs
-            // You might need to refetch them if you want to display them from the submitted IDs
             $descricaoQuestaoAtual = '';
             $codigoProvaAtual = '';
             $nomeDisciplinaAtual = '';
@@ -215,7 +144,6 @@ class Respostas_controller {
         }
     }
 
-    // Handles the submission for updating an existing response
     public function handleUpdatePost($postData) {
         if (!isset($postData['id_respostas'])) {
             $this->displayErrorPage("ID da resposta não fornecido para atualização.", 'index.php?controller=respostas&action=list');
@@ -225,8 +153,7 @@ class Respostas_controller {
         $errors = $this->validateRespostaData($postData);
 
         if (!empty($errors)) {
-            // If there are errors, reload the form with existing data and errors
-            $respostaData = $postData; // Pass submitted data back to form
+            $respostaData = $postData; 
             $professores = $this->respostaModel->getAllProfessores();
             $disciplinas = $this->respostaModel->getAllDisciplinas();
             $provas = $this->respostaModel->getAllProvas();
@@ -238,7 +165,6 @@ class Respostas_controller {
                 $professorsLookup[$professor['id_professor']] = $professor['nome'];
             }
 
-            // Refetch related data for display in update mode, even with validation errors
             $descricaoQuestaoAtual = $this->respostaModel->getQuestaoDescricaoById($respostaData['id_questao']);
             $codigoProvaAtual = $this->respostaModel->getProvaCodigoById($respostaData['id_prova']);
             $disciplinaInfo = $this->respostaModel->getDisciplinaInfoById($respostaData['id_disciplina']);
@@ -259,7 +185,6 @@ class Respostas_controller {
         } catch (PDOException $e) {
             $erro = $e->getMessage();
             $errorMessage = "Erro ao atualizar dados: " . htmlspecialchars($erro);
-            // Specific foreign key error message could be added here if needed
             $this->displayErrorPage($errorMessage, 'index.php?controller=respostas&action=showEditForm&id=' . $postData['id_respostas']);
         }
     }

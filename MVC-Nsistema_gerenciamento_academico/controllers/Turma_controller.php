@@ -1,12 +1,9 @@
 <?php
-// controllers/Turma_controller.php
 
-// Ativa a exibição de erros (para depuração, pode ser removido em produção)
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
 ini_set('display_startup_errors', '1');
 
-// Inclui o modelo de Turma, que interage com o banco de dados
 require_once __DIR__ . '/../models/Turma_model.php';
 
 class Turma_controller {
@@ -23,24 +20,13 @@ class Turma_controller {
         $this->turmaModel = new TurmaModel($this->conexao);
     }
 
-    /**
-     * Exibe a lista de todas as turmas.
-     * Corresponde à ação 'list'.
-     */
     public function list() { // <--- **MUDANÇA AQUI: de listTurmas() para list()**
         $turmas = $this->turmaModel->getAllTurmas();
-        // Inclui a view para exibir a lista de turmas
         include __DIR__ . '/../views/turma/List.php';
     }
 
-    /**
-     * Exibe o formulário para criar uma nova turma.
-     * Corresponde à ação 'create' (GET).
-     */
     public function showCreateForm() {
-        // A view Create_edit.php pode usar uma variável $turma vazia ou null para diferenciar
-        // entre criação e edição, ou uma flag como $isEditing = false;
-        $turma = null; // Para garantir que a view não tente acessar dados de uma turma existente
+        $turma = null; 
         include __DIR__ . '/../views/turma/Create_edit.php';
     }
 

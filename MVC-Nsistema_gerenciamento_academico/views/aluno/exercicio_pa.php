@@ -31,7 +31,6 @@ if (isset($_POST['calcular_pa'])) {
 <head>
     <title>Progressão Aritmética (PA)</title>
     <meta charset="utf-8">
-    <!-- Caminho do CSS: Ajustado para ser absoluto da raiz do seu projeto web -->
     <link rel="stylesheet" href="public/css/style.css"> 
     <style>
         /* Estilos específicos para esta view */
@@ -187,7 +186,6 @@ if (isset($_POST['calcular_pa'])) {
         }
         ?>
         <br><br>
-        <!-- Ajuste o link para voltar para o dashboard principal -->
         <a class="btn_dashboard" href="index.php?controller=aluno&action=showDynamicServicesPage">Finalizar</a>
         <a class="btn_logout" href="index.php?controller=auth&action=logout">Logout →</a>
     </div>

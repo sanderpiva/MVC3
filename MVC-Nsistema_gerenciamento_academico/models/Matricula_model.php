@@ -1,7 +1,5 @@
 <?php
-// models/Matricula_model.php
 
-// Ensure the connection is available
 require_once "config/conexao.php";
 
 

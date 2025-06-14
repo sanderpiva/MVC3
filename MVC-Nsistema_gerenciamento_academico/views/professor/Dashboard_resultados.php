@@ -1,26 +1,20 @@
 <?php
 
-//Nao funciona o session e nao tem segurança
-// Inicia a sessão apenas se nenhuma estiver ativa
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Verifica se o logout foi solicitado antes de qualquer outra ação
 if (isset($_GET['logout']) && $_GET['logout'] == 'true') {
     header("Location: index.php?controller=auth&action=logout");
     exit();
 }
 
-// Verifica se o usuário está logado e se é um professor antes de exibir a página
 if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true || $_SESSION['tipo_usuario'] !== 'professor') {
     header("Location: index.php?controller=auth&action=showLoginForm"); // Corrigido para o controlador certo
     exit();
 }
 
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="pt" dir="ltr">
@@ -47,29 +41,23 @@ if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true || $_SESSION['ti
         </thead>
         <tbody>
         <?php
-        // Inclui o arquivo de conexão PDO.
-        // Certifique-se de que o caminho está correto para o seu arquivo conexaoDados.php
+
         global $conexao; 
 
         try {
-            // Prepara a consulta SQL para selecionar todos os registros da tabeladados
             $sql = "SELECT * FROM tabeladados";
             $stmt = $conexao->prepare($sql);
             $stmt->execute();
 
-            // Recupera todos os resultados
             $registros = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            // Conta o número de registros
             $num_registros = count($registros);
 
             echo "<caption>Registros encontrados: " . $num_registros . "</caption>";
 
-            // Itera sobre os resultados e exibe cada linha na tabela
             if ($num_registros > 0) {
                 foreach ($registros as $reg) {
                     echo "<tr>";
-                    // htmlspecialchars para evitar ataques XSS ao exibir dados do DB
                     echo "<td>" . htmlspecialchars($reg['nome']) . "</td>";
                     echo "<td>" . htmlspecialchars($reg['email']) . "</td>";
                     echo "<td>" . htmlspecialchars($reg['q1']) . "</td>";
@@ -85,7 +73,6 @@ if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true || $_SESSION['ti
             }
 
         } catch (PDOException $e) {
-            // Em caso de erro na conexão ou consulta
             echo "<tr><td colspan='8' style='color:red;'>Erro ao carregar dados: " . htmlspecialchars($e->getMessage()) . "</td></tr>";
         }
         ?>

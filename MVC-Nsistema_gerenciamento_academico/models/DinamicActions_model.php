@@ -1,5 +1,4 @@
 <?php
-// Arquivo: C:\wamp64\www\php_if\MVC-Nsistema_gerenciamento_academico\models\DinamicActions_model.php
 
 class DinamicActionsModel {
     private $conexao;
@@ -9,7 +8,6 @@ class DinamicActionsModel {
     }
 
     public function getConteudosPorTurmaEDisciplina($turma, $disciplina) {
-        // Remova os debugs de echo/var_dump/exit aqui em ambiente de produção
         $turma_str = is_array($turma) ? implode('', $turma) : (string) $turma;
         $disciplina_str = is_array($disciplina) ? implode('', $disciplina) : (string) $disciplina;
 
@@ -46,10 +44,8 @@ class DinamicActionsModel {
         }
     }
 
-    // MÉTODO 'getConteudoById': CERTIFIQUE-SE DE QUE 'disciplina' ESTÁ NA SELEÇÃO!
     public function getConteudoById($id_conteudo) {
         try {
-            // AQUI: ADICIONAMOS 'disciplina' à lista de colunas selecionadas
             $sql = "SELECT id_conteudo, titulo, descricao, disciplina FROM conteudo WHERE id_conteudo = :id_conteudo"; 
             $stmt = $this->conexao->prepare($sql);
             $stmt->bindParam(':id_conteudo', $id_conteudo, PDO::PARAM_INT);

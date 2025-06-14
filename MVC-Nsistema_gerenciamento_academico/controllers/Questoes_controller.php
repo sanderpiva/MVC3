@@ -14,8 +14,6 @@ class Questoes_controller {
         $this->conexao = $conexao;
         $this->questoesModel = new QuestoesModel($this->conexao);
 
-        // Session check - essential for protected routes
-        //checkUserAuth(); // This function should be defined in config/session.php
     }
 
     public function list() {
@@ -25,14 +23,13 @@ class Questoes_controller {
     }
 
     public function showCreateForm() {
-        //handleLogout();
-        $questaoProvaData = null; // No data for creation
+        
+        $questaoProvaData = null; 
         $professores = $this->questoesModel->getAllProfessores();
         $disciplinas = $this->questoesModel->getAllDisciplinas();
         $provas = $this->questoesModel->getAllProvas();
-        $errors = []; // Initialize errors for the view
+        $errors = []; 
 
-        // Build lookup maps for display purposes (similar to original form logic)
         $professorsLookup = [];
         foreach ($professores as $professor) {
             $professorsLookup[$professor['id_professor']] = $professor['nome'];
@@ -42,7 +39,7 @@ class Questoes_controller {
     }
 
     public function showEditForm($id) {
-        //handleLogout();
+        
         if (!isset($id) || !is_numeric($id)) {
             displayErrorPage("ID da questão da prova não especificado ou inválido para edição.", 'index.php?controller=questoes&action=list');
             return;
@@ -57,15 +54,13 @@ class Questoes_controller {
         $professores = $this->questoesModel->getAllProfessores();
         $disciplinas = $this->questoesModel->getAllDisciplinas();
         $provas = $this->questoesModel->getAllProvas();
-        $errors = []; // Initialize errors for the view
+        $errors = []; 
 
-        // Build lookup maps for display purposes (similar to original form logic)
         $professorsLookup = [];
         foreach ($professores as $professor) {
             $professorsLookup[$professor['id_professor']] = $professor['nome'];
         }
 
-        // Populate names for display in readonly fields for update form
         $nomeDisciplinaAtual = '';
         foreach ($disciplinas as $disciplina) {
             if ($disciplina['id_disciplina'] == ($questaoProvaData['Prova_Disciplina_id_disciplina'] ?? null)) {
@@ -114,19 +109,16 @@ class Questoes_controller {
         $errors = $this->validateQuestaoProvaData($postData);
 
         if (!empty($errors)) {
-            // If there are errors, reload the form with existing data and errors
             $questaoProvaData = $postData; // Pass submitted data back to form for sticky fields
             $professores = $this->questoesModel->getAllProfessores();
             $disciplinas = $this->questoesModel->getAllDisciplinas();
             $provas = $this->questoesModel->getAllProvas();
 
-            // Re-build lookup maps for display
             $professorsLookup = [];
             foreach ($professores as $professor) {
                 $professorsLookup[$professor['id_professor']] = $professor['nome'];
             }
 
-            // Populate current names for display in readonly fields (if editing with errors)
             $nomeDisciplinaAtual = '';
             foreach ($disciplinas as $disciplina) {
                 if ($disciplina['id_disciplina'] == ($questaoProvaData['id_disciplina'] ?? null)) {
@@ -155,14 +147,12 @@ class Questoes_controller {
 
         try {
             if (isset($postData['id_questao']) && !empty($postData['id_questao'])) {
-                // Update existing question
                 if ($this->questoesModel->updateQuestao($postData)) {
                     redirect('index.php?controller=questoes&action=list&message=' . urlencode("Questão atualizada com sucesso!"));
                 } else {
                     displayErrorPage("Erro ao atualizar questão.", 'index.php?controller=questoes&action=showEditForm&id=' . $postData['id_questao']);
                 }
             } else {
-                // Insert new question
                 if ($this->questoesModel->insertQuestao($postData)) {
                     redirect('index.php?controller=questoes&action=list&message=' . urlencode("Questão cadastrada com sucesso!"));
                 } else {
@@ -229,53 +219,49 @@ class Questoes_controller {
     public function create($id) {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Processa os dados do formulário e cria uma nova questão
-        $this->handleCreatePost($_POST);
+          $this->handleCreatePost($_POST);
         } else {
-        // Exibe o formulário de criação/edição
-        if ($id) {
-            $questao = $this->questoesModel->getQuestoesById($id);
-            if ($questao) {
-                include __DIR__ . '/../views/questoes/Create_edit.php';
+            // Exibe o formulário de criação/edição
+            if ($id) {
+                $questao = $this->questoesModel->getQuestoesById($id);
+                if ($questao) {
+                    include __DIR__ . '/../views/questoes/Create_edit.php';
+                } else {
+                    displayErrorPage("Questão não encontrada para edição.", 'index.php?controller=questoes&action=list');
+                }
             } else {
-                displayErrorPage("Questão não encontrada para edição.", 'index.php?controller=questoes&action=list');
+                displayErrorPage("ID da questão não especificado para edição.", 'index.php?controller=questoes&action=list');
             }
-        } else {
-            displayErrorPage("ID da questão não especificado para edição.", 'index.php?controller=questoes&action=list');
         }
     }
-  }
 
-  public function handleCreatePost($postData) {
-    // Filtrar e validar os dados recebidos do formulário
-    $codigoQuestao = filter_var($postData['codigoQuestaoProva'] ?? null, FILTER_SANITIZE_STRING);
-    $descricao = filter_var($postData['descricao_questao'] ?? null, FILTER_SANITIZE_STRING);
-    $tipoProva = filter_var($postData['tipo_prova'] ?? null, FILTER_SANITIZE_STRING);
-    $provaId = filter_var($postData['id_prova'] ?? null, FILTER_SANITIZE_NUMBER_INT);
-    $disciplinaId = filter_var($postData['id_disciplina'] ?? null, FILTER_SANITIZE_NUMBER_INT);
-    $professorId = filter_var($postData['id_professor'] ?? null, FILTER_SANITIZE_NUMBER_INT);
-
-    // Verificar se todos os campos obrigatórios estão preenchidos
-    if (!$codigoQuestao || !$descricao || !$tipoProva || !$provaId || !$disciplinaId || !$professorId) {
-        //var_dump($postData);
-        //exit;
-        displayErrorPage("Dados incompletos para criar questão.", 'index.php?controller=questoes&action=showCreateForm');
-    }
-
-    $data = [
-        'codigoQuestaoProva' => $codigoQuestao,
-        'descricao_questao' => $descricao,
-        'tipo_prova' => $tipoProva,
-        'id_prova' => $provaId,
-        'id_disciplina' => $disciplinaId,
-        'id_professor' => $professorId
-    ];
+    public function handleCreatePost($postData) {
     
-    // Chamar o método do modelo para criar a questão no banco de dados
+        $codigoQuestao = filter_var($postData['codigoQuestaoProva'] ?? null, FILTER_SANITIZE_STRING);
+        $descricao = filter_var($postData['descricao_questao'] ?? null, FILTER_SANITIZE_STRING);
+        $tipoProva = filter_var($postData['tipo_prova'] ?? null, FILTER_SANITIZE_STRING);
+        $provaId = filter_var($postData['id_prova'] ?? null, FILTER_SANITIZE_NUMBER_INT);
+        $disciplinaId = filter_var($postData['id_disciplina'] ?? null, FILTER_SANITIZE_NUMBER_INT);
+        $professorId = filter_var($postData['id_professor'] ?? null, FILTER_SANITIZE_NUMBER_INT);
+
+        if (!$codigoQuestao || !$descricao || !$tipoProva || !$provaId || !$disciplinaId || !$professorId) {
+            displayErrorPage("Dados incompletos para criar questão.", 'index.php?controller=questoes&action=showCreateForm');
+        }
+
+        $data = [
+            'codigoQuestaoProva' => $codigoQuestao,
+            'descricao_questao' => $descricao,
+            'tipo_prova' => $tipoProva,
+            'id_prova' => $provaId,
+            'id_disciplina' => $disciplinaId,
+            'id_professor' => $professorId
+        ];
+        
     
-    if ($this->questoesModel->insertQuestao($data)) {
-        redirect('index.php?controller=questoes&action=list&message=' . urlencode("Questão criada com sucesso!"));
-    } else {
-        displayErrorPage("Erro ao criar questão. Tente novamente.", 'index.php?controller=questoes&action=showCreateForm');
+        if ($this->questoesModel->insertQuestao($data)) {
+            redirect('index.php?controller=questoes&action=list&message=' . urlencode("Questão criada com sucesso!"));
+        } else {
+            displayErrorPage("Erro ao criar questão. Tente novamente.", 'index.php?controller=questoes&action=showCreateForm');
+        }
     }
-  }
 }

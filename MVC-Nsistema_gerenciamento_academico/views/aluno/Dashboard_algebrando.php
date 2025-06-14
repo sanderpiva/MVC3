@@ -1,27 +1,24 @@
 <?php
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Verifica se o logout foi solicitado antes de qualquer outra ação
 if (isset($_GET['logout']) && $_GET['logout'] == 'true') {
     header("Location: index.php?controller=auth&action=logout");
     exit();
 }
 
-// Verifica se o usuário está logado e se é um aluno
 if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true || $_SESSION['tipo_usuario'] !== 'aluno') {
     header("Location: index.php?controller=auth&action=showLoginForm");
     exit();
 }
 
-// Status das atividades
 $pa_status = $_SESSION['pa_status'] ?? 0;
 $pg_status = $_SESSION['pg_status'] ?? 0;
 $porcentagem_status = $_SESSION['porcentagem_status'] ?? 0;
 $proporcao_status = $_SESSION['proporcao_status'] ?? 0;
 
-// Verifica se todas as atividades foram concluídas
 $all_activities_completed = ($pa_status == 1 && $pg_status == 1 && $porcentagem_status == 1 && $proporcao_status == 1);
 ?>
 

@@ -1,5 +1,5 @@
 <?php
-// models/Prova_model.php
+
 
 class ProvaModel {
     private $db;
@@ -9,7 +9,6 @@ class ProvaModel {
     }
     
     public function getAllProvas() {
-        // --- INÍCIO DA ALTERAÇÃO ---
         $stmt = $this->db->query("
             SELECT
                 p.*,
@@ -24,7 +23,6 @@ class ProvaModel {
             LEFT JOIN
                 professor AS prof ON p.Disciplina_Professor_id_professor = prof.id_professor
         ");
-        // --- FIM DA ALTERAÇÃO ---
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     

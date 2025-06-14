@@ -1,16 +1,12 @@
 <?php
-// models/AuthModel.php
 
-// Inclui o arquivo de conexão PDO.
-// A variável $conexao se tornará global neste escopo.
-//require_once __DIR__ . '/conexao.php';
 require_once "config/conexao.php";
 
 class AuthModel {
     private $pdo;
 
     public function __construct() {
-        // Acessa a variável global $conexao definida em conexao.php
+
         global $conexao;
         $this->pdo = $conexao;
     }
@@ -22,7 +18,7 @@ class AuthModel {
      * @return array|false Retorna um array com 'type' (professor/aluno) e 'data' (dados do usuário), ou false se a autenticação falhar.
      */
     public function authenticate($login, $senhaDigitada) {
-        // 1. Tenta autenticar como professor
+
         $stmtProfessor = $this->pdo->prepare("SELECT id_professor, nome, email, senha FROM professor WHERE email = :login");
         $stmtProfessor->bindParam(':login', $login, PDO::PARAM_STR);
         $stmtProfessor->execute();
@@ -34,7 +30,6 @@ class AuthModel {
             }
         }
 
-        // 2. Se não for professor, tenta autenticar como aluno
         $stmtAluno = $this->pdo->prepare("SELECT a.id_aluno, a.nome, a.email, a.senha, t.nomeTurma
                                            FROM aluno a
                                            JOIN turma t ON a.Turma_id_turma = t.id_turma
@@ -49,7 +44,7 @@ class AuthModel {
             }
         }
 
-        return false; // Autenticação falhou para ambos os tipos
+        return false; 
     }
 
     /**
@@ -94,14 +89,12 @@ class AuthModel {
     public function validateProfessorData($data) {
         $errors = "";
 
-        // Verificação de campos obrigatórios
         if (empty($data["registroProfessor"]) || empty($data["nomeProfessor"]) ||
             empty($data["emailProfessor"]) || empty($data["enderecoProfessor"]) ||
             empty($data["telefoneProfessor"]) || empty($data["senha"])) {
             $errors .= "Todos os campos devem ser preenchidos.<br>";
         }
 
-        // Validações individuais (como no seu script valida-inserir-professor.php)
         if (strlen($data["registroProfessor"]) < 3 || strlen($data["registroProfessor"]) > 20) {
             $errors .= "Erro: campo 'Registro do Professor' deve ter entre 3 e 20 caracteres.<br>";
         }
@@ -131,7 +124,6 @@ class AuthModel {
             $errors .= "Todos os campos devem ser preenchidos.<br>";
         }
 
-        // Validações individuais (como no seu script valida-inserir-aluno.php)
         if (strlen($data["matricula"]) < 3 || strlen($data["matricula"]) > 20) {
             $errors .= "Erro: campo 'Matricula do Aluno' deve ter entre 3 e 20 caracteres.<br>";
         }
@@ -158,8 +150,7 @@ class AuthModel {
     }
 
     public function registerAluno($data) {
-        //var_dump($data);
-        //die(); // só
+        
         $matricula = $data['matricula'] ?? '';
         $nome = $data['nome'] ?? '';
         $cpf = $data['cpf'] ?? '';
@@ -171,12 +162,10 @@ class AuthModel {
         $id_turma = $data['Turma_id_turma'] ?? '';
         $senha = $data['senha'] ?? '';
         $hashSenha = password_hash($senha, PASSWORD_DEFAULT);
-        //ate aqui ok!
-        //var_dump($data);
-        //die(); // só
+        
         try {
             $sql = "INSERT INTO aluno (matricula, nome, cpf, email, data_nascimento, endereco, cidade, telefone, Turma_id_turma, senha) VALUES (:matricula, :nome, :cpf, :email, :data_nascimento, :endereco, :cidade, :telefone, :id_turma, :senha)";
-            $stmt = $this->pdo->prepare($sql); // Usando $this->pdo para a conexão
+            $stmt = $this->pdo->prepare($sql); 
             return $stmt->execute([
                 ':matricula' => $matricula,
                 ':nome' => $nome,
@@ -190,9 +179,9 @@ class AuthModel {
                 ':senha' => $hashSenha
             ]);
         } catch (PDOException $e) {
-            // Registra o erro em vez de exibi-lo diretamente
+            
             error_log("Erro ao cadastrar aluno: " . $e->getMessage());
-            return false; // Retorna false em caso de erro
+            return false; 
         }
     }
    

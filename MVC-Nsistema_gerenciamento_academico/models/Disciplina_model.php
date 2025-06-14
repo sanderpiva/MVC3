@@ -1,5 +1,5 @@
 <?php
-// models/Disciplina_model.php
+
 
 require_once "config/conexao.php";
 
@@ -98,13 +98,11 @@ class DisciplinaModel {
         return $stmt->execute([':id' => $id]);
     }
 
-    // Helper method to get all professors for dropdowns
     public function getAllProfessors() {
         $stmt = $this->db->query("SELECT id_professor, registroProfessor, nome FROM professor");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Helper method to get all turmas for dropdowns
     public function getAllTurmas() {
         $stmt = $this->db->query("SELECT id_turma, nomeTurma FROM turma");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

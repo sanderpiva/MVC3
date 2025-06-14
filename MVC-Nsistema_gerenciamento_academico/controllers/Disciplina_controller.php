@@ -1,5 +1,5 @@
 <?php
-// controllers/Disciplina_controller.php
+
 
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
@@ -24,10 +24,10 @@ class Disciplina_controller {
     }
 
     public function showCreateForm() {
-        $disciplinaData = null; // No data for creation
+        $disciplinaData = null; 
         $professores = $this->disciplinaModel->getAllProfessors();
         $turmas = $this->disciplinaModel->getAllTurmas();
-        $errors = ''; // Initialize errors for the view
+        $errors = ''; 
         include __DIR__ . '/../views/disciplina/Create_edit.php';
     }
 
@@ -45,7 +45,7 @@ class Disciplina_controller {
         
         $professores = $this->disciplinaModel->getAllProfessors();
         $turmas = $this->disciplinaModel->getAllTurmas();
-        $errors = ''; // Initialize errors for the view
+        $errors = ''; 
 
         include __DIR__ . '/../views/disciplina/Create_edit.php';
     }
@@ -68,7 +68,6 @@ class Disciplina_controller {
         $errors = $this->validateDisciplinaData($postData);
 
         if (!empty($errors)) {
-            // If there are errors, reload the form with existing data and errors
             $disciplinaData = $postData; // Pass submitted data back to form
             $professores = $this->disciplinaModel->getAllProfessors();
             $turmas = $this->disciplinaModel->getAllTurmas();
@@ -105,8 +104,7 @@ class Disciplina_controller {
         $errors = $this->validateDisciplinaData($postData);
 
         if (!empty($errors)) {
-            // If there are errors, reload the form with existing data and errors
-            $disciplinaData = $postData; // Pass submitted data back to form
+            $disciplinaData = $postData; 
             $professores = $this->disciplinaModel->getAllProfessors();
             $turmas = $this->disciplinaModel->getAllTurmas();
             include __DIR__ . '/../views/disciplina/Create_edit.php';

@@ -1,7 +1,9 @@
 <?php
-// views/matricula/Create_edit.php
-$isUpdating = isset($matricula); // $matricula will be set if we are editing
+
+$isUpdating = isset($matricula); 
+
 ?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -53,7 +55,7 @@ $isUpdating = isset($matricula); // $matricula will be set if we are editing
         </form>
 
         <?php
-            // Display messages/errors passed from the controller
+            
             if (isset($_GET['message'])) {
                 echo "<p style='color:green;'>" . htmlspecialchars($_GET['message']) . "</p>";
             }

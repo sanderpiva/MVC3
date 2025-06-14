@@ -1,6 +1,6 @@
 <?php
 
-require_once "config/conexao.php"; // Certifique-se de que o caminho para sua conexão está correto
+require_once "config/conexao.php"; 
 
 class AlunoModel {
     private $db;
@@ -15,7 +15,6 @@ class AlunoModel {
      */
     public function getAllAlunos() {
         try {
-            // Ajuste as colunas para a tabela 'aluno'
             $stmt = $this->db->query("SELECT * FROM aluno");
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
@@ -31,7 +30,6 @@ class AlunoModel {
      */
     public function getAlunoById($id) {
         try {
-            // Ajuste as colunas para a tabela 'aluno' e a condição WHERE
             $stmt = $this->db->prepare("SELECT * FROM aluno WHERE id_aluno = :id");
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
             $stmt->execute();
@@ -57,7 +55,7 @@ class AlunoModel {
         $hashSenha = password_hash($senha, PASSWORD_DEFAULT); // Hash da senha para segurança
 
         try {
-            // Ajuste a query SQL e os parâmetros para a tabela 'aluno'
+            
             $sql = "INSERT INTO aluno (matricula, nome, cpf, email, data_nascimento, endereco, cidade, telefone, Turma_id_turma, senha)
                     VALUES (:matricula, :nome, :cpf, :email, :data_nascimento, :endereco, :cidade, :telefone, :turma_id, :senha )";
             $stmt = $this->db->prepare($sql);
@@ -88,7 +86,7 @@ class AlunoModel {
     public function deleteAluno($id) {
         error_log("DEBUG: deleteAluno no modelo - Tentando excluir ID: " . $id);
         try {
-            // Ajuste a query SQL e a condição WHERE para a tabela 'aluno'
+            
             $stmt = $this->db->prepare("DELETE FROM aluno WHERE id_aluno = :id");
             return $stmt->execute([':id' => $id]);
         } catch (PDOException $e) {
@@ -122,14 +120,14 @@ class AlunoModel {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);   
     } 
     //
-    // 🔍 Método para buscar conteúdos filtrados por turma e disciplina
+    
     public function getConteudosPorTurmaEDisciplina($turma_selecionada, $disciplina_selecionada) {
-        // 🚀 Verificando se os valores foram passados corretamente
+    
         echo "<h3>Debug das variáveis recebidas:</h3>";
         var_dump($turma_selecionada, $disciplina_selecionada);
 
         try {
-            // 🚀 Teste de conexão
+    
             $this->conexao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             echo "<p style='color:green;'>✅ Conexão com o banco estabelecida!</p>";
 
@@ -153,14 +151,7 @@ class AlunoModel {
             $stmt_conteudos->execute();
             
             $resultado = $stmt_conteudos->fetchAll(PDO::FETCH_ASSOC);
-
-            // 🚀 Teste para verificar se há resultados
-            echo "<h3>Debug dos resultados da consulta:</h3>";
-            echo "<pre>";
-            print_r($resultado);
-            echo "</pre>";
-            exit(); // Remova após testes!
-
+            
             return $resultado;
             
         } catch (PDOException $e) {
@@ -169,9 +160,7 @@ class AlunoModel {
     }
 
     public function updateAluno($data) {
-        // --- DEBUG LOG: Dados recebidos no Model ---
-        //var_dump($data);
-        //exit(); // Exibe os dados recebidos para depuração
+        
         error_log("DEBUG ALUNO MODEL: Dados recebidos para atualização: " . print_r($data, true)); //
 
         $sql = "UPDATE aluno SET
@@ -206,7 +195,6 @@ class AlunoModel {
 
         $sql .= " WHERE id_aluno = :id_aluno";
 
-        // --- DEBUG LOG: Query SQL gerada e Parâmetros ---
         error_log("DEBUG ALUNO MODEL: SQL: " . $sql); //
         error_log("DEBUG ALUNO MODEL: Parâmetros: " . print_r($params, true)); //
 
@@ -214,14 +202,13 @@ class AlunoModel {
             $stmt = $this->db->prepare($sql);
             $result = $stmt->execute($params);
 
-            // --- DEBUG LOG: Resultado da execução da query ---
             error_log("DEBUG ALUNO MODEL: Resultado da execução (true/false): " . ($result ? 'true' : 'false')); //
             if (!$result) {
                 error_log("DEBUG ALUNO MODEL: Erro PDOInfo: " . print_r($stmt->errorInfo(), true)); //
             }
 
-            // Retorna se a execução foi bem-sucedida E se alguma linha foi afetada
             return $result && $stmt->rowCount() > 0;
+        
         } catch (PDOException $e) {
             error_log("DEBUG ALUNO MODEL: Erro PDO ao atualizar aluno: " . $e->getMessage()); //
             return false;

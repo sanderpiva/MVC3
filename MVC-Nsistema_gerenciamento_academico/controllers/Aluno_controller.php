@@ -7,10 +7,10 @@ require_once __DIR__ . '/../models/Turma_model.php'; // Adicione esta linha!
 
 class Aluno_controller
 {
-    private $turmaModel; // Propriedade para armazenar o modelo TurmaModel
+    private $turmaModel; 
     private $alunoModel;
-    private $dinamicActions; // Propriedade para armazenar o modelo DinamicActions
-    private $conexao; // Propriedade para armazenar a conexão
+    private $dinamicActions; 
+    private $conexao; 
 
     /**
      * Construtor da classe Turma_controller.
@@ -18,10 +18,10 @@ class Aluno_controller
      * @param object $conexao Objeto de conexão com o banco de dados.
      */
     public function __construct($conexao) {
-        $this->conexao = $conexao; // Armazena a conexão
-        $this->alunoModel = new AlunoModel($this->conexao); // Corrigido o nome da classe para ProfessorModel (com P maiúsculo)
-        $this->dinamicActions = new DinamicActionsModel($this->conexao); // Inicializa o modelo DinamicActions com a conexão
-        $this->turmaModel = new TurmaModel($this->conexao); // Inicializa o modelo TurmaModel com a conexão
+        $this->conexao = $conexao; 
+        $this->alunoModel = new AlunoModel($this->conexao); 
+        $this->dinamicActions = new DinamicActionsModel($this->conexao); 
+        $this->turmaModel = new TurmaModel($this->conexao); 
     }
 
     public function list() {
@@ -61,7 +61,6 @@ class Aluno_controller
             displayErrorPage("Aluno não encontrado para edição.", 'index.php?controller=aluno&action=list');
         }
     } else {
-        // Para o caso de não ter ID, ainda precisamos de $turmas para o formulário de cadastro
         $turmas = $this->turmaModel->getAllTurmas(); 
         include __DIR__ . '/../views/auth/Register_aluno.php';
     }
@@ -79,17 +78,13 @@ class Aluno_controller
                 header("Location: index.php?controller=aluno&action=showDynamicServicesPage");
                 exit();
             } elseif ($tipo_atividade === 'estatica') {
-                // Redireciona para a AÇÃO 'showResultsPage' dentro do MESMO controlador
                 header("Location: index.php?controller=aluno&action=showStaticServicesPage");
                 exit();
             } else {
-                // Opção inválida, exibe o dashboard de login com mensagem de erro
                 $error = "Selecione uma opção válida.";
                 require_once __DIR__ . '/../views/aluno/Dashboard_login.php';
             }
         } else {
-            // Se não for POST (ex: alguém acessou handleSelection via GET),
-            // exibe o dashboard de login, talvez com uma mensagem.
             $error = "Requisição inválida."; // Mensagem mais apropriada para GET em um handler POST
             require_once __DIR__ . '/../views/aluno/Dashboard_login.php';
         }
@@ -104,14 +99,15 @@ class Aluno_controller
         }
     }
 
-     // 🔥 Novo método para acessar PA.php
+    //Matemática Estática: Algebrando
+    // 🔥 Novo método para acessar PA.php
     public function viewPA() {
         
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
 
-        // Definir status na sessão
+        
         $_SESSION['pa_status'] = 1;
         
         require_once __DIR__ . '/../views/aluno/matematica-estatica/pa.php';
@@ -124,7 +120,7 @@ class Aluno_controller
             session_start();
         }
 
-        // Definir status na sessão
+        
         $_SESSION['pg_status'] = 1;
         
         require_once __DIR__ . '/../views/aluno/matematica-estatica/pg.php';
@@ -137,7 +133,7 @@ class Aluno_controller
             session_start();
         }
 
-        // Definir status na sessão
+        
         $_SESSION['porcentagem_status'] = 1;
         
         require_once __DIR__ . '/../views/aluno/matematica-estatica/Porcentagem.php';
@@ -149,7 +145,7 @@ class Aluno_controller
             session_start();
         }
 
-        // Definir status na sessão
+        
         $_SESSION['proporcao_status'] = 1;
         
         require_once __DIR__ . '/../views/aluno/matematica-estatica/Proporcao.php';
@@ -167,6 +163,7 @@ class Aluno_controller
         require_once __DIR__ . '/../views/aluno/matematica-estatica/prova.php';
 
     }
+    //FIM Matemática Estática: Algebrando
 
     // Método para processar a submissão do formulário de atualização
     public function updateAluno() {
@@ -186,7 +183,6 @@ class Aluno_controller
 
             $errors = []; // Array para armazenar erros de validação
 
-            // --- Validação dos dados ---
             if (empty($matricula)) {
                 $errors[] = "A matrícula é obrigatória.";
             }
@@ -196,9 +192,7 @@ class Aluno_controller
             if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $errors[] = "Formato de e-mail inválido.";
             }
-            // Adicione mais validações conforme necessário (ex: CPF, data, etc.)
-            // --- Fim da Validação ---
-
+            
             if (empty($errors)) {
                 $dadosParaAtualizar = [
                     'id_aluno' => $id_aluno,
@@ -217,25 +211,19 @@ class Aluno_controller
                     $dadosParaAtualizar['novaSenha'] = $novaSenha; // Inclui a nova senha se fornecida
                 }
 
-                // --- DEBUG LOG: Dados para atualizar no Controller ---
                 error_log("DEBUG ALUNO CONTROLLER: Dados para atualizar: " . print_r($dadosParaAtualizar, true));
 
                 if ($this->alunoModel->updateAluno($dadosParaAtualizar)) {
-                    // --- DEBUG LOG: Sucesso na atualização ---
                     error_log("DEBUG ALUNO CONTROLLER: Aluno atualizado com sucesso (ID: " . $id_aluno . ")");
                     redirect('index.php?controller=aluno&action=list'); // Redireciona para a lista
                 } else {
-                    // --- DEBUG LOG: Falha na atualização ---
                     error_log("DEBUG ALUNO CONTROLLER: Falha ao atualizar aluno (ID: " . $id_aluno . ")");
                     $errors[] = "Erro ao atualizar aluno no banco de dados. Tente novamente.";
-                    // Se falhar na atualização do banco, recarrega o formulário com os dados enviados
                     $alunoData = $_POST; // Preserva os dados digitados
                     include __DIR__ . '/../views/auth/Register_aluno.php'; // Usa a view de formulário novamente
                 }
             } else {
-                // --- DEBUG LOG: Erros de validação ---
                 error_log("DEBUG ALUNO CONTROLLER: Erros de validação: " . print_r($errors, true));
-                // Se houver erros de validação, recarrega o formulário mostrando os erros
                 $alunoData = $_POST; // Preserva os dados digitados
                 include __DIR__ . '/../views/auth/Register_aluno.php'; // Usa a view de formulário novamente
             }
@@ -293,82 +281,58 @@ class Aluno_controller
 
         $conteudos = $this->dinamicActions->getConteudosPorTurmaEDisciplina($turma_selecionada, $disciplina_selecionada);
 
-        // --- DEBUG FINAL: Verifique o que está sendo passado para a view ---
-        //echo "<h3>DEBUG CONTROLLER - Conteúdos antes de renderizar a view:</h3>";
-        //var_dump($conteudos);
-        // Descomente a linha abaixo para parar a execução AQUI e ver APENAS este var_dump.
-        // Se este var_dump mostrar os 2 conteúdos, o problema está na view.
-        // Se este var_dump mostrar um array vazio, o problema está no model (novamente) ou nos parâmetros que chegam ao model.
-        // exit(); // REMOVA/COMENTE ESTA LINHA EM PRODUÇÃO E PARA CONTINUAR TESTES!
-
-        $erro_conexao = null; // Inicialize esta variável se sua view espera por ela
+        
+        $erro_conexao = null; 
 
         require_once __DIR__ . '/../views/aluno/dashboard_dinamico.php';
     }
 
     public function detalheConteudoDinamico() {
-        // Inicia a sessão se ainda não estiver iniciada
+        
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
 
-        // Verifica se o usuário está logado e é um aluno
+        
         if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true || $_SESSION['tipo_usuario'] !== 'aluno') {
             header("Location: index.php?controller=auth&action=showLoginForm");
-            exit(); // Garante que o script pare após o redirecionamento
+            exit(); 
         }
 
-        $id_conteudo = $_GET['id'] ?? null; // Obtém o ID do conteúdo da URL (parâmetro 'id')
+        $id_conteudo = $_GET['id'] ?? null; 
 
-        // Inicializa as variáveis que serão passadas para a view de detalhes
-        $conteudo = false; // Será preenchido com os dados do conteúdo ou permanecerá false
-        $erro = null; // Será preenchido se houver um erro
-        $imagem_associada = null; // Variável para imagem, se for implementada
+        $conteudo = false; 
+        $erro = null; 
+        $imagem_associada = null; 
 
-        // Valida se o ID do conteúdo é válido e numérico
         if (!$id_conteudo || !is_numeric($id_conteudo)) {
             $erro = "ID de conteúdo inválido ou não fornecido.";
-            // Para este tipo de erro, a mensagem é exibida na própria view de detalhes
-            // Não redirecionamos, para o usuário ver o problema.
         } else {
-            // Busca os detalhes do conteúdo no modelo pelo ID
-            // O model 'getConteudoById' deve retornar também a coluna 'disciplina'
             $conteudo = $this->dinamicActions->getConteudoById((int)$id_conteudo);
 
-            // Verifica se o conteúdo foi encontrado
             if (!$conteudo) {
                 $erro = "Conteúdo não encontrado para o ID fornecido.";
             }
         }
         
-        // Inclui a view de detalhes do conteúdo, passando as variáveis $conteudo, $erro, $imagem_associada
+        
         require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'aluno' . DIRECTORY_SEPARATOR . 'detalhe_conteudo.php';
     }
 
-    //EXERCICIOS DIANMICOS: TESTE
+    //EXERCICIOS DINAMICOS: TESTE
     // NOVO MÉTODO: Para o exercício de Progressão Aritmética (PA)
     public function exercicioPA() {
-        // Inicia a sessão se ainda não estiver iniciada
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
 
-        // Verifica se o usuário está logado e é um aluno
         if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true || $_SESSION['tipo_usuario'] !== 'aluno') {
             header("Location: index.php?controller=auth&action=showLoginForm");
             exit();
         }
 
-        // Simplesmente carrega a view do exercício de PA
-        // A lógica de cálculo do formulário é auto-contida na própria view (exercicio_pa.php)
         require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'aluno' . DIRECTORY_SEPARATOR . 'exercicio_pa.php';
     }
-
-    // Se você tiver outros métodos como viewProva, exercicioPG, exercicioPorcentagem, etc., mantenha-os aqui:
-    // public function viewProva() { /* ... */ }
-    // public function exercicioPG() { /* ... */ }
-    // public function exercicioPorcentagem() { /* ... */ }
-
     
 }
 ?>

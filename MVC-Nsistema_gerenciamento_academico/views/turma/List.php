@@ -1,17 +1,14 @@
 <?php
 
-
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Verifica se o logout foi solicitado antes de qualquer outra ação
 if (isset($_GET['logout']) && $_GET['logout'] == 'true') {
     header("Location: index.php?controller=auth&action=logout");
     exit();
 }
 
-// Verifica se o usuário está logado e se é um professor antes de exibir a página
 if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true || $_SESSION['tipo_usuario'] !== 'professor') {
     header("Location: index.php?controller=auth&action=showLoginForm"); // Corrigido para o controlador certo
     exit();
@@ -62,7 +59,7 @@ if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true || $_SESSION['ti
 <a href="index.php?controller=professor&action=showServicesPage">Voltar ao Serviços</a>
 <br><hr>
 <a href="index.php?controller=auth&action=logout" style="margin-left:20px;">Logout →</a>
-<!-- Adicione a seção de script para as funções JavaScript -->
+
 <script>
     function atualizarTurma(id_turma) {
         window.location.href = "index.php?controller=turma&action=showEditForm&id=" + id_turma;

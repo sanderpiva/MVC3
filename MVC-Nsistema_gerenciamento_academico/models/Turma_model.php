@@ -1,5 +1,5 @@
 <?php
-//require_once __DIR__ . '/conexao.php';
+
 require_once "config/conexao.php";
 
 class TurmaModel {
@@ -37,15 +37,7 @@ class TurmaModel {
         ]);
     }
 
-    /*
-    public function deleteTurma($id) {
-        // Adicione isso para confirmar que o ID chegou ao modelo
-        error_log("DEBUG: deleteTurma no modelo - Tentando excluir ID: " . $id);
-
-        $stmt = $this->db->prepare("DELETE FROM turma WHERE id_turma = :id");
-        return $stmt->execute([':id' => $id]);
-    }*/
-
+    
     public function deleteTurma($id) {
         try {
             $sql = "DELETE FROM turma WHERE id_turma = :id";

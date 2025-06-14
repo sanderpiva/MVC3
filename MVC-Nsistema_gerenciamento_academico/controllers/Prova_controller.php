@@ -1,11 +1,11 @@
 <?php
-// controllers/Prova_controller.php
+
 
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
 
 require_once __DIR__ . '/../models/Prova_model.php';
-require_once __DIR__ . '/../models/Disciplina_model.php'; // Adicione esta linha
+require_once __DIR__ . '/../models/Disciplina_model.php'; 
 require_once __DIR__ . '/../models/Professor_model.php';  
 
 class Prova_controller {
@@ -15,8 +15,8 @@ class Prova_controller {
     
     public function __construct($conexao) {
         $this->provaModel = new ProvaModel($conexao);
-        $this->disciplinaModel = new DisciplinaModel($conexao); // <-- Adicione esta linha
-        $this->professorModel = new ProfessorModel($conexao);   // <-- Adicione esta linha
+        $this->disciplinaModel = new DisciplinaModel($conexao); 
+        $this->professorModel = new ProfessorModel($conexao);   
     }
 
     public function list() {
@@ -121,7 +121,7 @@ class Prova_controller {
 
     private function validateProvaData($data) {
         $erros = "";
-        //var_dump($_POST);
+        
 
         if (
             empty($_POST["codigoProva"]) ||
@@ -173,8 +173,6 @@ class Prova_controller {
         } else {
             displayErrorPage("ID da prova não especificado para edição.", 'index.php?controller=prova&action=list');
         }
-    }
-
-    
+    }  
 }
 ?>

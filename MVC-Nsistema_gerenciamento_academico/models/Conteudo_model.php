@@ -1,5 +1,5 @@
 <?php
-// app/Models/ConteudoModel.php
+
 
 require_once "config/conexao.php";
 
@@ -34,32 +34,7 @@ class ConteudoModel {
      * @return array|false Um array associativo com os dados do conteúdo ou false se não encontrado.
      */
     
-    /* public function getConteudoById($id) {
-        $stmt = $this->db->prepare("
-            SELECT
-                c.*,
-                d.nome AS nome_disciplina,
-                d.codigoDisciplina AS codigo_disciplina
-            FROM
-                conteudo AS c
-            LEFT JOIN
-                disciplina AS d ON c.Disciplina_id_disciplina = d.id_disciplina
-            WHERE
-                c.id_conteudo = :id
-        ");
-        $stmt->execute([':id' => $id]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }*/
-
-    // models/Conteudo_model.php
-    /*public function getConteudoById($id) {
-        $stmt = $this->db->prepare("SELECT c.*, d.nome AS nomeDisciplina, d.codigoDisciplina, d.Professor_id_professor
-                                   FROM conteudo c
-                                   JOIN disciplina d ON c.Disciplina_id_disciplina = d.id_disciplina
-                                   WHERE c.id_conteudo = :id");
-        $stmt->execute([':id' => $id]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }*/
+    
     public function getConteudoById($id) {
         $query = "SELECT 
                       c.*, 
@@ -84,11 +59,6 @@ class ConteudoModel {
      * @return bool True em caso de sucesso, false caso contrário.
      */
     public function createConteudo($data) {
-        // As colunas 'professor' e 'disciplina' como texto direto foram removidas na lógica MVC.
-        // A tabela 'conteudo' agora só terá 'Disciplina_id_disciplina' como FK.
-        // Se a coluna 'professor' (texto) ainda existe na sua tabela 'conteudo'
-        // e você quer mantê-la como texto livre sem FK, adicione-a aqui.
-        // Exemplo: INSERT INTO conteudo (..., professor, ...) VALUES (..., :professor, ...)
         $sql = "INSERT INTO conteudo (codigoConteudo, titulo, descricao, data_postagem, professor, disciplina, tipo_conteudo, Disciplina_id_disciplina)
                 VALUES (:codigoConteudo, :titulo, :descricao, :data_postagem, :professor, :disciplina, :tipo_conteudo, :id_disciplina)";
         $stmt = $this->db->prepare($sql);
@@ -110,9 +80,7 @@ class ConteudoModel {
      * @return bool True em caso de sucesso, false caso contrário.
      */
     public function updateConteudo($data) {
-        // Se a coluna 'professor' (texto) ainda existe na sua tabela 'conteudo'
-        // e você quer mantê-la como texto livre sem FK, adicione-a aqui.
-        // Exemplo: SET professor = :professor
+    
         $sql = "UPDATE conteudo SET
                     codigoConteudo = :codigoConteudo,
                     titulo = :titulo,

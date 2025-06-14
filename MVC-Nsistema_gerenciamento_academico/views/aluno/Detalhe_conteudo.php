@@ -1,7 +1,4 @@
-<?php
-// app/Views/aluno/detalhe_conteudo.php
-// As variáveis $conteudo, $erro e $imagem_associada são passadas pelo Controller.
-?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -113,32 +110,24 @@
 
             <?php
             
-            // Temporariamente pare a execução aqui para ver os valores exatos
-            // exit(); // Descomente esta linha para testar o debug e REMOVA depois
 
-            // Variável para controlar se um exercício foi encontrado
             $exercicio_encontrado = false;
             
-            // Lógica para exibir links de exercícios demonstrativos
             if(isset($conteudo['disciplina']) && isset($conteudo['titulo']) && $conteudo['disciplina'] == 'Matematica') {
                 $titulo_lower = strtolower($conteudo['titulo']); // Converte o título para minúsculas para comparação flexível
 
-                // Verificação para Progressão Geométrica (PG)
                 if(strpos($titulo_lower, 'progressao geometrica') !== false):
                     echo '<a class="botao-exercicio" href="index.php?controller=aluno&action=exercicioPG">Exercício demonstrativo (PG)</a>';
                     $exercicio_encontrado = true;
-                // Verificação para Progressão Aritmética (PA)
                 elseif(strpos($titulo_lower, 'progressao aritmetica') !== false):
                     echo '<a class="botao-exercicio" href="index.php?controller=aluno&action=exercicioPA">Exercício demonstrativo (PA)</a>';
                     $exercicio_encontrado = true;
-                // Verificação para Porcentagem
                 elseif(strpos($titulo_lower, 'porcentagem') !== false):
                     echo '<a class="botao-exercicio" href="index.php?controller=aluno&action=exercicioPorcentagem">Exercício demonstrativo (Porcentagem)</a>';
                     $exercicio_encontrado = true;
                 endif;
             }
 
-            // Se nenhum exercício específico foi encontrado após todas as verificações
             if (!$exercicio_encontrado) {
                 echo '<p>IMPORTANTE! Não há exercício demonstrativo disponível para este conteúdo.</p>';
             }

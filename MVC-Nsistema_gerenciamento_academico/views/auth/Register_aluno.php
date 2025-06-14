@@ -1,11 +1,16 @@
 <?php
+
 require_once "config/conexao.php";
+
 if (!isset($alunoData)) {
     $alunoData = [];
 }
+
 $isUpdating = isset($alunoData['id_aluno']) && !empty($alunoData['id_aluno']);
 $errors = "";
 ?>
+
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>

@@ -1,5 +1,5 @@
 <?php
-// controllers/Matricula_controller.php
+
         
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
@@ -7,8 +7,6 @@ ini_set('display_startup_errors', '1');
 
 require_once __DIR__ . '/../models/Matricula_model.php';
 
-// Assumindo que as funções 'redirect' e 'displayErrorPage'
-// estão definidas em um arquivo helper ou globalmente acessível.
 
 class Matricula_controller {
     private $matriculaModel;
@@ -17,7 +15,7 @@ class Matricula_controller {
     public function __construct($conexao) {
         $this->conexao = $conexao;
         $this->matriculaModel = new MatriculaModel($this->conexao);
-        // checkProfessorAuth(); // Garante que apenas professores podem acessar estas ações
+        
     }
 
     /**
@@ -41,7 +39,7 @@ class Matricula_controller {
             $professorsLookup[$professor['id_professor']] = $professor['nome'];
         }
         
-        $matricula = null; // Indica o modo de criação
+        $matricula = null; 
         include __DIR__ . '/../views/matricula/Create_edit.php';
     }
 

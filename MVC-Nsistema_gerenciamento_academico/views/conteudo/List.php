@@ -1,18 +1,14 @@
 <?php
 
-//Nao funciona o session e nao tem segurança
-// Inicia a sessão apenas se nenhuma estiver ativa
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Verifica se o logout foi solicitado antes de qualquer outra ação
 if (isset($_GET['logout']) && $_GET['logout'] == 'true') {
     header("Location: index.php?controller=auth&action=logout");
     exit();
 }
 
-// Verifica se o usuário está logado e se é um professor antes de exibir a página
 if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true || $_SESSION['tipo_usuario'] !== 'professor') {
     header("Location: index.php?controller=auth&action=showLoginForm"); // Corrigido para o controlador certo
     exit();
@@ -22,13 +18,12 @@ if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true || $_SESSION['ti
 
 
 <?php
-// views/conteudo/List.php
 
-// The controller should pass $conteudos to this view.
-// Messages from successful operations can be passed via GET parameters and displayed here.
 $message = isset($_GET['message']) ? htmlspecialchars($_GET['message']) : '';
 $error = isset($_GET['erros']) ? htmlspecialchars($_GET['erros']) : '';
+
 ?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>

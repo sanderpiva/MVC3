@@ -1,5 +1,5 @@
 <?php
-// app/Models/QuestaoProva_model.php
+
 
 require_once "config/conexao.php";
 
@@ -8,7 +8,7 @@ class QuestoesModel {
 
     public function __construct(PDO $conexao) {
         $this->db = $conexao;
-        //$this->questoesModel = new QuestoesModel($this->db); // ou o
+        
     }
     
     public function insertQuestao(array $data) {
@@ -18,28 +18,20 @@ class QuestoesModel {
         try {
             $stmt = $this->db->prepare($sql);
             
-            // --- PONTO DE DEPURACAO NO MODEL (temporário) ---
-            // Você pode logar os dados que estão sendo enviados para depuração
-            // error_log("Dados para insertQuestao: " . print_r($data, true));
-            // --- FIM PONTO DE DEPURACAO ---
-
+            
             $success = $stmt->execute([
-                ':codigo' => $data['codigoQuestaoProva'], // Verifique se esta chave existe no $data e é o nome da coluna
-                ':descricao' => $data['descricao_questao'], // Verifique se esta chave existe no $data e é o nome da coluna
-                ':tipo' => $data['tipo_prova'], // Verifique se esta chave existe no $data
-                ':id_prova' => $data['id_prova'], // Verifique se esta chave existe no $data
-                ':id_disciplina' => $data['id_disciplina'], // Verifique se esta chave existe no $data
-                ':id_professor' => $data['id_professor'] // Verifique se esta chave existe no $data
+                ':codigo' => $data['codigoQuestaoProva'], 
+                ':descricao' => $data['descricao_questao'], 
+                ':tipo' => $data['tipo_prova'], 
+                ':id_prova' => $data['id_prova'], 
+                ':id_disciplina' => $data['id_disciplina'], 
+                ':id_professor' => $data['id_professor'] 
             ]);
 
-            return $success; // Retorna true ou false
-        } catch (PDOException $e) {
-            // --- PONTO DE DEPURACAO CRITICO NO MODEL ---
-            // Log do erro completo para ajudar na depuração.
-            error_log("Erro de PDO ao inserir questão: " . $e->getMessage() . " | SQLSTATE: " . $e->getCode());
-            // --- FIM PONTO DE DEPURACAO ---
+            return $success; 
 
-            // Você pode retornar false ou um código de erro específico para o controller
+        } catch (PDOException $e) {
+            error_log("Erro de PDO ao inserir questão: " . $e->getMessage() . " | SQLSTATE: " . $e->getCode());
             return false;
         }
      
@@ -53,7 +45,7 @@ class QuestoesModel {
                     Prova_id_prova = :id_prova,
                     Prova_Disciplina_id_disciplina = :id_disciplina,
                     Prova_Disciplina_Professor_id_professor = :id_professor
-                WHERE id_questao = :id_questao"; // Make sure 'id_questao' is in $data
+                WHERE id_questao = :id_questao"; 
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([
             ':codigo' => $data['codigoQuestaoProva'],
@@ -62,7 +54,7 @@ class QuestoesModel {
             ':id_prova' => $data['id_prova'],
             ':id_disciplina' => $data['id_disciplina'],
             ':id_professor' => $data['id_professor'],
-            ':id_questao' => $data['id_questao'] // Ensure this ID is passed for update
+            ':id_questao' => $data['id_questao'] 
         ]);
     }
 

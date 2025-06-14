@@ -1,18 +1,14 @@
 <?php
 
-//Nao funciona o session e nao tem segurança
-// Inicia a sessão apenas se nenhuma estiver ativa
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Verifica se o logout foi solicitado antes de qualquer outra ação
 if (isset($_GET['logout']) && $_GET['logout'] == 'true') {
     header("Location: index.php?controller=auth&action=logout");
     exit();
 }
 
-// Verifica se o usuário está logado e se é um professor antes de exibir a página
 if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true || $_SESSION['tipo_usuario'] !== 'professor') {
     header("Location: index.php?controller=auth&action=showLoginForm"); // Corrigido para o controlador certo
     exit();
@@ -22,13 +18,12 @@ if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true || $_SESSION['ti
 
 
 <?php
-// app/Views/QuestaoProva/List.php
 
-// The controller should pass $questoes to this view.
-// Messages from successful operations can be passed via GET parameters and displayed here.
 $message = isset($_GET['message']) ? htmlspecialchars($_GET['message']) : '';
 $error = isset($_GET['erros']) ? htmlspecialchars($_GET['erros']) : '';
+
 ?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -96,7 +91,6 @@ $error = isset($_GET['erros']) ? htmlspecialchars($_GET['erros']) : '';
     <a href="index.php?controller=professor&action=showServicesPage">Voltar aos Serviços</a>
     <hr>
     <a href="index.php?controller=auth&action=logout" style="margin-left:20px;">Logout →</a>
-<!-- Adicione a seção de script para as funções JavaScript -->
     <script>
         function atualizarQuestao(id_questao) {
             window.location.href = "index.php?controller=questoes&action=showEditForm&id=" + id_questao;

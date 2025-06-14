@@ -1,7 +1,4 @@
 <?php
-//error_reporting(E_ALL);
-//ini_set('display_errors', '1');
-//ini_set('display_startup_errors', '1');
 
 require_once __DIR__ . '/../models/Auth_model.php';
 
@@ -34,11 +31,10 @@ class Auth_controller {
                 $_SESSION['nome_usuario'] = $user['data']['nome'];
                 $_SESSION['email_usuario'] = $user['data']['email'];
 
-                // Redireciona para o dashboard correto com base no tipo de usuário
                 if ($user['type'] === 'aluno') {
                     $_SESSION['nome_turma'] = $user['data']['nomeTurma'] ?? 'N/A';
                     redirect('index.php?controller=dashboard&action=showAlunoDashboard');
-                } else { // Professor
+                } else { 
                     
                     redirect('index.php?controller=dashboard&action=showProfessorDashboard');
                 }
@@ -46,7 +42,6 @@ class Auth_controller {
                 displayErrorPage("Login ou senha inválidos. Por favor, tente novamente.", 'index.php?controller=auth&action=showLoginForm');
             }
         } else {
-            // Se a requisição não for POST (tentativa de acessar diretamente), redireciona para o formulário de login
             redirect('index.php?controller=auth&action=showLoginForm');
         }
     }
@@ -55,15 +50,15 @@ class Auth_controller {
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
-        session_unset();   // Remove todas as variáveis de sessão
-        session_destroy(); // Destrói a sessão
+        session_unset();   
+        session_destroy(); 
         displayErrorPage("Você foi desconectado com sucesso!", 'index.php?controller=auth&action=showLoginForm');
     }
 
     public function showProfessorRegisterForm() {
-        $isUpdating = false; // Usado na view para diferenciar cadastro de edição
-        $professorData = []; // Inicializa para evitar erros se a view esperar dados
-        $errors = "";        // Inicializa para evitar erros se a view esperar erros
+        $isUpdating = false; 
+        $professorData = []; 
+        $errors = "";        
         require_once __DIR__ . '/../views/auth/register_professor.php';
     }
 
@@ -86,17 +81,15 @@ class Auth_controller {
 
             if (!empty($errors)) {
                 $isUpdating = false;
-                $professorData = $_POST; // Preserva os dados digitados para reexibir
-                //echo "<p style='color:red;'>Erros encontrados:</p>";
-                //include __DIR__ . '/../views/auth/register_professor.php';
+                $professorData = $_POST; 
                 require_once __DIR__ . '/../views/auth/register_professor.php';
-                return; // Para a execução para mostrar o formulário com erros
+                return; 
             }
 
             if ($this->authModel->registerProfessor($_POST)) {
                 echo "<p>Professor cadastrado com sucesso!</p>";
                 echo '<button onclick="window.location.href=\'index.php?controller=auth&action=showLoginForm\'">Voltar para o Login</button>';
-                exit(); // Para a execução para mostrar a mensagem de sucesso
+                exit(); 
             } else {
                 displayErrorPage("Erro ao cadastrar professor. Por favor, tente novamente.", 'index.php?controller=auth&action=showLoginForm');
             }
@@ -113,23 +106,21 @@ class Auth_controller {
     public function registerAluno() {
         
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            //var_dump($_POST); // Para depuração, remova em produção
-            //exit;
             $errors = $this->authModel->validateAlunoData($_POST);
             
             if (!empty($errors)) {
                 $isUpdating = false;
-                $alunoData = $_POST; // Preserva os dados digitados para reexibir
+                $alunoData = $_POST; 
                 $turmas = $this->authModel->getTurmas(); 
 
                 require_once __DIR__ . '/../views/auth/register_aluno.php';
-                return; // Para a execução para mostrar o formulário com erros
+                return; 
             }
 
             if ($this->authModel->registerAluno($_POST)) {
                 echo "<p>Aluno cadastrado com sucesso!</p>";
                 echo '<button onclick="window.location.href=\'index.php?controller=auth&action=showLoginForm\'">Voltar para o Login</button>';
-                exit(); // Para a execução para mostrar a mensagem de sucesso
+                exit(); 
             } else {
                 displayErrorPage("Erro ao cadastrar aluno. Por favor, tente novamente.", 'index.php?controller=auth&action=showLoginForm');
             }

@@ -1,5 +1,5 @@
 <?php
-require_once "config/conexao.php"; // Certifique-se de que o caminho para sua conexão está correto
+require_once "config/conexao.php"; 
 
 class ProfessorModel {
     private $db;
@@ -70,12 +70,9 @@ class ProfessorModel {
      * @param string|null $senha A nova senha do professor (opcional, se não for alterada, passe null ou string vazia).
      * @return bool True em caso de sucesso, false em caso de falha.
      */
-    public function updateProfessor($data) { // Agora $data é o array que recebemos do controlador
+    public function updateProfessor($data) { 
         
-        //var_dump($data);
-        //exit();
-    // die(); // Para depuração, remova ou comente em produção
-
+       
         $sql = "UPDATE professor SET 
                     registroProfessor = :registroProfessor, 
                     nome = :nome, 
@@ -92,7 +89,6 @@ class ProfessorModel {
             ':id_professor'      => $data['id_professor'] // Usando id_professor da chave do array
         ];
 
-        // Verifica se uma nova senha foi fornecida e não está vazia
         if (isset($data['novaSenha']) && !empty($data['novaSenha'])) {
             $hashSenha = password_hash($data['novaSenha'], PASSWORD_DEFAULT);
             $sql .= ", senha = :senha";

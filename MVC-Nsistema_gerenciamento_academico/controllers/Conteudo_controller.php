@@ -1,5 +1,5 @@
 <?php
-// app/Controllers/ConteudoController.php
+
 
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
@@ -32,17 +32,11 @@ class Conteudo_controller {
         $this->professorModel = new ProfessorModel($conexao);
     }
 
-    /**
-     * Exibe a lista de todos os conteúdos.
-     */
     public function list() {
         $conteudos = $this->conteudoModel->getAllConteudos();
         include __DIR__ . '/../views/conteudo/List.php';
     }
 
-    /**
-     * Exibe o formulário de criação de conteúdo.
-     */
     public function showCreateForm() {
         $conteudoData = null; // Para formulário vazio
         
@@ -57,7 +51,6 @@ class Conteudo_controller {
         $conteudoData = null; // Garante que $conteudoData está vazio para não entrar no $isUpdating
         $errors = [];
 
-        // Passa as variáveis para a view
         include __DIR__ . '/../views/conteudo/Create_edit.php';
     
     }
@@ -79,7 +72,7 @@ class Conteudo_controller {
             return;
         }
 
-        $errors = []; // Mantenha como está
+        $errors = []; 
 
         $disciplinas = $this->disciplinaModel->getAllDisciplinas();
 
@@ -118,9 +111,8 @@ class Conteudo_controller {
     public function handleCreatePost($postData) {
         $errors = $this->validateConteudoData($postData);
         if (!empty($errors)) {
-            $conteudoData = $postData; // Repopula o formulário
+            $conteudoData = $postData; 
             $disciplinas = $this->disciplinaModel->getAllDisciplinas();
-            // REMOVIDO: $professores = $this->professorModel->getAllProfessores();
             include __DIR__ . '/../views/conteudo/Create_edit.php';
             return;
         }
@@ -155,9 +147,8 @@ class Conteudo_controller {
         }
         $errors = $this->validateConteudoData($postData);
         if (!empty($errors)) {
-            $conteudoData = $postData; // Repopula o formulário
+            $conteudoData = $postData; 
             $disciplinas = $this->disciplinaModel->getAllDisciplinas();
-            // REMOVIDO: $professores = $this->professorModel->getAllProfessores();
             include __DIR__ . '/../views/conteudo/Create_edit.php';
             return;
         }
@@ -208,12 +199,10 @@ class Conteudo_controller {
         if (empty($data['data_postagem'])) {
             $errors[] = "A data de postagem é obrigatória.";
         }
-        // Se a coluna 'professor' é um campo de texto livre na tabela 'conteudo', valide-a aqui.
-        // Caso contrário, remova esta validação.
         if (empty($data['professor']) || strlen($data['professor']) < 5 || strlen($data['professor']) > 20) {
              $errors[] = "Erro: campo 'Professor' deve ter entre 5 e 20 caracteres.";
         }
-        if (empty($data['id_disciplina'])) { // Valida a FK da disciplina
+        if (empty($data['id_disciplina'])) { 
             $errors[] = "A disciplina é obrigatória.";
         }
         if (empty($data['tipo_conteudo']) || strlen($data['tipo_conteudo']) < 5 || strlen($data['tipo_conteudo']) > 20) {

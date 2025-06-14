@@ -60,8 +60,6 @@ class Professor_controller
         if (isset($id)) {
             $professorData = $this->professorModel->getProfessorById($id); // Alterado para $professorData para melhor clareza na view
             if ($professorData) {
-                // VERIFIQUE ESTE CAMINHO DA VIEW!
-                // Deve ser a mesma view que você usa para registrar, que contém o formulário.
                 include __DIR__ . '/../views/auth/register_professor.php'; 
             } else {
                 displayErrorPage("Professor não encontrado para edição.", 'index.php?controller=professor&action=list');
@@ -82,11 +80,10 @@ class Professor_controller
             $emailProfessor = htmlspecialchars($_POST['emailProfessor'] ?? '');
             $enderecoProfessor = htmlspecialchars($_POST['enderecoProfessor'] ?? '');
             $telefoneProfessor = htmlspecialchars($_POST['telefoneProfessor'] ?? '');
-            $novaSenha = $_POST['novaSenha'] ?? null; // A senha pode ser opcional na atualização
+            $novaSenha = $_POST['novaSenha'] ?? null; 
 
-            $errors = []; // Array para armazenar erros de validação
+            $errors = []; 
 
-            // --- Validação dos dados (Adicione mais validações conforme necessário) ---
             if (empty($registroProfessor)) {
                 $errors[] = "O registro do professor é obrigatório.";
             }
@@ -96,8 +93,7 @@ class Professor_controller
             if (!filter_var($emailProfessor, FILTER_VALIDATE_EMAIL)) {
                 $errors[] = "Formato de e-mail inválido.";
             }
-            // --- Fim da Validação ---
-
+            
             if (empty($errors)) {
                 $dadosParaAtualizar = [
                     'id_professor' => $id_professor,
@@ -112,24 +108,19 @@ class Professor_controller
                     $dadosParaAtualizar['novaSenha'] = $novaSenha; // Inclui a nova senha se fornecida
                 }
 
-                // Chamar o método do modeldao para atualizar
-                // Você precisará ter um método `updateProfessorData` no seu Professor_model.php
                 if ($this->professorModel->updateProfessor($dadosParaAtualizar)) { 
                     redirect('index.php?controller=professor&action=list'); // Redireciona para a lista
                 } else {
                     $errors[] = "Erro ao atualizar professor no banco de dados. Tente novamente.";
-                    // Se falhar na atualização do banco, recarrega o formulário com os dados enviados
-                    $professorData = $_POST; // Preserva os dados digitados
+                    $professorData = $_POST; 
                     include __DIR__ . '/../views/auth/register_professor.php'; // Usa a view de formulário novamente
                 }
             } else {
-                // Se houver erros de validação, recarrega o formulário mostrando os erros
-                $professorData = $_POST; // Preserva os dados digitados
+                $professorData = $_POST; 
                 include __DIR__ . '/../views/auth/register_professor.php'; // Usa a view de formulário novamente
             }
 
         } else {
-            // Se a requisição não for POST ou não tiver ID, é um acesso inválido
             displayErrorPage("Requisição inválida para atualização de professor.", 'index.php?controller=professor&action=list');
         }
     }
@@ -144,17 +135,4 @@ class Professor_controller
         }
     }
 
-    // Sugiro remover ou renomear este método, pois ele duplica a função de showEditForm
-    // public function update($id) {
-    //     if (isset($id)) {
-    //         $professor = $this->professorModel->getProfessorById($id);
-    //         if ($professor) {
-    //             include __DIR__ . '/../views/professor/Register_professor.php';
-    //         } else {
-    //             displayErrorPage("Prof não encontrada para edição.", 'index.php?controller=professor&action=list');
-    //         }
-    //     } else {
-    //         displayErrorPage("ID do prof não especificado para edição.", 'index.php?controller=professor&action=list');
-    //     }
-    // }
 }
