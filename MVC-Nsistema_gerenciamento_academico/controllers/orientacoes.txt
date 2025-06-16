@@ -26,9 +26,8 @@ delete: turma, aluno, professor, questoes, prova, conteudo
 tente Questoes, na atualização
 na inserção, pode ser qualquer outro
 
-Update: Falta 1, a maioria com erros, outros nao carregam dados
-matricula
-
+//13 junho 2025
+Update: Ok
 Insert: Ok
 List: OK
 Delete: OK
