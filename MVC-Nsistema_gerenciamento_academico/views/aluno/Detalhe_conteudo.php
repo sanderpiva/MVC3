@@ -145,4 +145,8 @@
     </div>
 
 </body>
+<footer>
+    <p>Desenvolvido por Juliana e Sander</p>
+</footer>
+
 </html>
