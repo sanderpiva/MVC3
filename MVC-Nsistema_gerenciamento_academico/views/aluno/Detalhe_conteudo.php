@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -116,15 +115,19 @@
             if(isset($conteudo['disciplina']) && isset($conteudo['titulo']) && $conteudo['disciplina'] == 'Matematica') {
                 $titulo_lower = strtolower($conteudo['titulo']); // Converte o título para minúsculas para comparação flexível
 
-                if(strpos($titulo_lower, 'progressao geometrica') !== false):
-                    echo '<a class="botao-exercicio" href="index.php?controller=aluno&action=exercicioPG">Exercício demonstrativo (PG)</a>';
-                    $exercicio_encontrado = true;
-                elseif(strpos($titulo_lower, 'progressao aritmetica') !== false):
+                if(strpos($titulo_lower, 'progressao aritmetica') !== false):
                     echo '<a class="botao-exercicio" href="index.php?controller=aluno&action=exercicioPA">Exercício demonstrativo (PA)</a>';
                     $exercicio_encontrado = true;
+                //Para outras funcionalidades
+                /*
+                elseif(strpos($titulo_lower, 'progressao geometrica') !== false):
+                    echo '<a class="botao-exercicio" href="index.php?controller=aluno&action=exercicioPG">Exercício demonstrativo (PG)</a>';
+                    $exercicio_encontrado = true;
+                
                 elseif(strpos($titulo_lower, 'porcentagem') !== false):
                     echo '<a class="botao-exercicio" href="index.php?controller=aluno&action=exercicioPorcentagem">Exercício demonstrativo (Porcentagem)</a>';
                     $exercicio_encontrado = true;
+                */
                 endif;
             }
 
